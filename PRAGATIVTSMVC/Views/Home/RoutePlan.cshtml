@@ -1,0 +1,70 @@
+﻿
+@{
+    ViewBag.Title = "RoutePlan";
+    Layout = "~/Views/Shared/Layout2.cshtml";
+}
+
+
+<div class="row">
+    <div class="card-head">
+        <h4>Route Plan</h4>
+
+    </div>
+</div>
+<div class="card card-box">
+    
+    <div class="card-body ">
+        <div class="row" id="divrow">
+            <div class="col-lg-6">
+                <input type="file" id="file_upload" class="form-control" style="width:200px;" />
+                <input type="button" id="btn_upload" class="btn btn-primary" style="margin-top:-36px;margin-left:250px;" value="Upload" />
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        $('#btn_upload').click(function () {
+            
+
+
+            var fileUpload = $("#file_upload").get(0);
+            var files = fileUpload.files;
+
+            // Create FormData object  
+            var fileData = new FormData();
+
+            // Looping over all files and add it to FormData object  
+            for (var i = 0; i < files.length; i++) {
+                fileData.append(files[i].name, files[i]);
+            }
+                
+                $.ajax({
+                    url: "/Home/UploadExcel",
+                    type: 'POST',
+                    async: false,
+                    processData: false,
+                    cache: false,
+                    contentType: false,
+                    data: fileData,
+                    success: function (data) {
+                        
+                        var value = data;
+                        if (data) {
+
+                            
+                            alert(data);
+                        }
+                        else {
+                            alert("Failed to upload file");
+                        }
+                    },
+                    error: function (err) {
+
+                    }
+
+                });
+          
+        });
+    });
+</script>

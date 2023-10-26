@@ -1,0 +1,99 @@
+﻿@{
+    ViewBag.Title = "frm_allnotworkingdevices";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div id="load"></div>
+<div class="container-fluid">
+    <div class="row page-titles">
+        <div class="col-md-5 col-8 align-self-center">
+            <h3 class="text-themecolor m-b-0 m-t-0">Current Service Data</h3>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/Home/frm_GridTrack_Distance">Home</a></li>
+                <li class="breadcrumb-item active">Current Service Data</li>
+            </ol>
+        </div>
+    </div>
+    <div class="row" id="divrow">
+        <div class="col-lg-6" style="margin-left: 235px; text-align: center; margin-bottom: 15px; ">
+            Client Name<select class="form-control" id="ddlcategs" onchange="binddata()">
+                <option value="0">-Select-</option>
+                @foreach (var item in ViewBag.categs)
+                {
+                    <option value="@item.CATEG_ID">@item.CATEG_NAME</option>
+                }
+            </select>
+        </div>
+        <div class="col-lg-6">
+
+        </div>
+    </div>
+    <div>
+        <table id="tbldevices" border="1" style="width: 100%" class="table table-bordered table-hover">
+            <thead>
+                <tr>
+                    <th>SNO</th>
+                    <th>Vehicle No</th>
+                    <th>Last RecordDate</th>
+                    <th>Last Location</th>
+                    <th>Remark</th>
+                    <th>Update</th>
+                </tr>
+            </thead>
+            <tbody id="tbldevicebody"></tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+
+    window.onload = function () {
+        $("#ddlcategs").select2();
+        $("#load").hide();
+    }
+
+
+    function binddata() {
+        
+        var ID = $("#ddlcategs").val();
+        if (ID != 0) {
+            $("#load").show();
+            $.post("/Home/_frmnotworkingdevices", { "ID": ID }, function (data) {
+              
+                var dataT = data['data'];
+                   $("#tbldevicebody").empty();
+                for (var i = 0; i < dataT.length; i++) {
+                    tr = $('<tr/>');
+
+                    tr.append("<td>" + (i + 1) + "</td>");
+                    tr.append("<td>" + dataT[i].NW_VNO + "</td>");
+                    tr.append("<td>" + dataT[i].NW_LASTRECDATE_ONE + "</td>");
+                    tr.append("<td>" + dataT[i].NW_LASTLOCATION + "</td>");
+                    tr.append("<td><textarea style='width: 274px;' id='txtremark"+dataT[i].NW_VNO+"' class='form-control'>" + dataT[i].NW_SERVICE_REMARKS + "</textarea></td>");
+                    tr.append('<td><input type="button" class="btn btn-primary" onclick="UPDATE(\'' + dataT[i].NW_VNO + '\')" value="UPDATE" /></td>')
+
+                    $('#tbldevices').append(tr);
+                }
+                $("#load").hide();
+            });
+        }
+    }
+        
+
+    function UPDATE(VNO) {
+
+       
+        var Remark=$("#txtremark"+VNO).val();
+        $.post("/Home/Rg_Contracts_update", { "CATEG_ID": $("#ddlcategs").val(), "VNO": VNO, "REMARKS": Remark }, function (data) {
+            var dataT = data['data']
+
+            if (dataT == 'true') {
+                alert("update successfully..");
+                location.reload();
+            }
+            else {
+                alert(dataT);
+            }
+
+            });
+        }
+</script>

@@ -1,0 +1,18 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="PRAGATIVTSMVC.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="PRAGATIVTSMVC_WebReference_VTSAcknowledgementSent_OutService" Type="(Web Service URL)" Scope="Application">
+      <Value Profile="(Default)">http://agni.bajajauto.co.in:9095/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_VTS&amp;receiverParty=&amp;receiverService=&amp;interface=VTSAcknowledgementSent_Out&amp;interfaceNamespace=http%3A%2F%2Fbajajauto.co.in%2FVTS%2FIB%2FAcknowledgement</Value>
+    </Setting>
+    <Setting Name="PRAGATIVTSMVC_WebReference1_VTSLRReceipt_OutService" Type="(Web Service URL)" Scope="Application">
+      <Value Profile="(Default)">http://agni.bajajauto.co.in:9095/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_VTS&amp;receiverParty=&amp;receiverService=&amp;interface=VTSLRReceipt_Out&amp;interfaceNamespace=http%3A%2F%2Fbajajauto.co.in%2FVTS%2FIB%2FLRReceipt</Value>
+    </Setting>
+    <Setting Name="PRAGATIVTSMVC_LRRECEIPTDEVELOPMENT_VTSLRReceipt_OutService" Type="(Web Service URL)" Scope="Application">
+      <Value Profile="(Default)">http://agni.bajajauto.co.in:9099/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_VTS&amp;receiverParty=&amp;receiverService=&amp;interface=VTSLRReceipt_Out&amp;interfaceNamespace=http%3A%2F%2Fbajajauto.co.in%2FVTS%2FIB%2FLRReceipt</Value>
+    </Setting>
+    <Setting Name="PRAGATIVTSMVC_mahamining_Service" Type="(Web Service URL)" Scope="Application">
+      <Value Profile="(Default)">http://gps.mahamining.com/Service.asmx</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>

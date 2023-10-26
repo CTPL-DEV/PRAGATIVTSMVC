@@ -1,0 +1,195 @@
+﻿
+@{
+    ViewBag.Title = "KMS_Monthly";
+    Layout = "~/Views/Shared/Layout2.cshtml";
+}
+<div id="load" style="display:none;"></div>
+<style>
+    .table td {
+        padding: 5px;
+        vertical-align: middle;
+        font-size: 12px !important;
+    }
+
+    .table th {
+        font-weight: 500;
+        font-size: 13px !important;
+    }
+    </style>
+    <div class="container-fluid"> 
+    <div class="row" id="divrow"> 
+        <div>
+
+        </div>
+        <div class="col-lg-3"> 
+            
+        <label> Select Month </label>
+            @*<select id="drp_selectMonth" class="form-control">
+                <option value="0">---Select-</option>
+                <option value="01-31">Jan</option>
+                <option value="02-28">Feb</option>
+                <option value="03-31">Mar</option>
+                <option value="04-30">Apr</option>
+                <option value="05-31">May</option>
+                <option value="06-30">Jun</option>
+                <option value="07-31">Jul</option>
+                <option value="08-31">Aug</option>
+                <option value="09-30">Sep</option>
+                <option value="10-31">Oct</option>
+                <option value="11-30">Nov</option>
+                <option value="12-31">Dec</option>
+            </select*@>
+         <input type="text" id="txtstartdate" placeholder="Select StartDate" class="form-control" />
+        @*<label> End Date </label>
+         <input type="text" id="txtenddate" placeholder="Select EndDate" class="form-control" />*@ 
+        </div > 
+        <div class="col-lg-3">
+         <input type="button" style="margin-top:32px" class="btn btn-primary" value="Search" onclick="Search()" /> 
+        </div>
+    </div> 
+    <div class="card card-box" style="margin-top:5px;" > <div class="card-body" >
+         <div style="margin-top:20px"> 
+        <table id="tbl_monthly" border="1" style="font-size:13px" class="table table-striped table-bordered">
+         <thead>
+             <tr id="trdashboard"></tr>
+            </thead>
+            <tbody id="tbodydashboard"></tbody> 
+        </table>
+        </div>
+        </div>
+        </div>
+    </div>
+
+ <script >
+     //$(document).ready(function () {
+     //    $('#tbl_monthly').DataTable({
+     //        dom: 'Bfrtip',
+     //        "scrollX": true,
+     //        buttons: [
+     //            //'copy', 'csv', 'excel', 'pdf', 'print'
+     //            'excel', 'pdf', 'print'
+     //        ]
+     //    });
+     //});
+
+ 
+
+     window.onload = function () {
+    
+        //$('#txtstartdate').bootstrapMaterialDatePicker ({
+        //             shortTime: true,
+        //             format: 'MM/YYYY',
+        //             //  switchOnClick: true,
+        //             twelvehour: true
+
+        //});
+        $('#txtstartdate').datepicker({
+          
+            format: 'mm-yyyy',
+            startView:"months",
+            minViewMode: "months",
+            endDate:"0m"
+          
+
+        });
+
+        $('#txtenddate').bootstrapMaterialDatePicker ({
+               shortTime: true,
+               format: 'MM/DD/YYYY',
+               // switchOnClick: true,
+               twelvehour: true
+
+           });
+    }
+     function getDaysInMonth(month, year)
+     {
+         return new Date(year, month, 0).getDate();
+     }
+     function Search() {
+         
+         // $('#dataTable').dataTable().fnClearTable();
+         $("#load").show();
+
+         var sel_date = $("#txtstartdate").val();
+         var month =parseInt(sel_date.split('-')[0]);
+         var year =parseInt(sel_date.split('-')[1]);
+         var days = getDaysInMonth(month, year);
+         var date_new = month + "-" + days + "-" + year;
+         $.post("/Reports/Get_KMS_Monthly", { "startdate": date_new }, function (data) {
+
+                
+               
+              
+                //$('#tbl_monthly tbody > tr').remove();
+            //$('#tbl_monthly thead > tr').remove();
+              
+                var thead = "";
+                thead += "<th>S.no</th><th>Vehicle Number</th><th>Vehicle Type</th>";
+
+              //  var month = $("#drp_selectMonth").val();
+              //  var date = new Date();
+            // var firstDate = (date.getMonth() + 1) + "/" + "01" + "/" + date.getFullYear();
+                var firstDate = month + "/" + "01" + "/" + year;
+                var date1 = new Date(firstDate);
+                var endDate = month + "-" + days + "-" + year;
+                var date2 = new Date(endDate);
+                var diffDays = parseInt((date2 - date1) / (1000 * 60 * 60 * 24));
+              //  var numofDays = month.split('-')[1];
+                for (var j = 0; j < days; j++)
+                {
+                    thead += "<th>" + ("0" + (date1.getDate() + j)).slice(-2) + "-" + ("0" + (date1.getMonth() + 1)).slice(-2) + "-" + date1.getFullYear() + "</th>";
+                }
+                thead += "<th>Total</th>";
+                if ($.fn.dataTable.isDataTable('#tbl_monthly')) {
+                    $('#tbl_monthly').DataTable().destroy();
+                }
+                $("#trdashboard").empty();
+                $("#trdashboard").append(thead);
+                $('#tbodydashboard').empty();
+                
+              
+
+                var dataT = [];
+                dataT = JSON.parse(data);
+                var rows = dataT.length;
+
+                var total_kms;
+                for (var i = 0; i < dataT.length; i++) {
+                    total_kms = 0;
+                    tr = $('<tr/>');
+                    tr.append("<td>" + (i + 1) + "</td>");
+                    tr.append("<td>" + (dataT[i].VehicleNo) + "</td>");
+                    tr.append("<td>" + (dataT[i].VehicleType) + "</td>");
+                    for (var k = 0; k < days; k++)
+                    {
+                        var column = "Kms" + date1.getFullYear() + "" + ("0" + (date1.getMonth() + 1)).slice(-2) + "" + ("0" + (date1.getDate() + k)).slice(-2) + "";
+                        if (dataT[i][column] != null)
+                        {
+                            tr.append("<td>" + dataT[i][column] + "</td>");
+                            if(dataT[i][column]!="" || dataT[i][column]!=null)
+                            {
+                                total_kms += dataT[i][column];
+                            }
+                        }
+                        else {
+                            tr.append("<td></td>");
+                        }
+
+                    }
+                    tr.append("<td>" + total_kms + "</td>");
+                    $("#tbl_monthly").append(tr);
+                }
+                $('#tbl_monthly').DataTable({
+                    dom: 'Bfrtip',
+                    "scrollX": true,
+                    buttons: [
+                        //'copy', 'csv', 'excel', 'pdf', 'print'
+                        'excel', 'pdf', 'print'
+                    ]
+                });
+              $("#load").hide();
+            });
+    }
+
+
+    </script >

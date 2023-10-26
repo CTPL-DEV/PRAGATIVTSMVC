@@ -1,0 +1,419 @@
+﻿@{
+    ViewBag.Title = "frm_GridTrack_CAB";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<style>
+    .cssfont {
+        color: black !important;
+        font-size: 14px !important;
+        font-family: "Times New Roman", Times, serif;
+        font-weight: normal !important;
+    }
+</style>
+<div class="container-fluid">
+    <div class="row page-titles">
+        <div class="col-md-5 col-8 align-self-center">
+            <h3 class="text-themecolor m-b-0 m-t-0">Dashboard</h3>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-3 col-md-6">
+            <div class="card">
+                <div class="d-flex flex-row">
+                    <div class="p-10" style="background-color: #143182">
+                        <h3 class="text-white box m-b-0"><i class="ti-wallet"></i></h3>
+                    </div>
+                    <div class="align-self-center m-l-20">
+                        <h3 id="spntotal" class="m-b-0" style="color: #143182">0</h3>
+                        <h3 class="text-muted m-b-0 cssfont"><a onclick="Searchtrips()">TOTAL</a></h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-3 col-md-6">
+            <div class="card">
+                <div class="d-flex flex-row">
+                    <div class="p-10" style="background-color: #7d1a1a">
+                        <h3 class="text-white box m-b-0"><i class="ti-wallet"><a></a></i></h3>
+                    </div>
+                    <div class="align-self-center m-l-20">
+                        <h3 id="spnwforload" class="m-b-0" style="color: #7d1a1a">0</h3>
+                        <h5 class="text-muted m-b-0 cssfont"><a onclick="Searchtrips('WAITING FOR LOAD')">WAITING FOR LOAD</a></h5>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-3 col-md-6">
+            <div class="card">
+                <div class="d-flex flex-row">
+                    <div class="p-10" style="background-color: #246417">
+                        <h3 class="text-white box m-b-0"><i class="ti-wallet"></i></h3>
+                    </div>
+                    <div class="align-self-center m-l-20">
+                        <h3 id="spnintransittoplanemo" class="m-b-0" style="color: #246417">0</h3>
+                        <h5 class="text-muted m-b-0 cssfont"><a onclick="Searchtrips('IN TRANSIT TOWARDS PLANT MOVING')">IN TRANSIT TOWARDS PLANT MOVING</a></h5>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-3 col-md-6">
+            <div class="card">
+                <div class="d-flex flex-row">
+                    <div class="p-10" style="background-color: #FF0000">
+                        <h3 class="text-white box m-b-0"><i class="ti-wallet"></i></h3>
+                    </div>
+                    <div class="align-self-center m-l-20">
+                        <h3 id="spnintransittoplanest" class="m-b-0" style="color: #FF0000">0</h3>
+                        <h5 class="text-muted m-b-0 cssfont"><a onclick="Searchtrips('IN TRANSIT TOWARDS PLANT STOPPED')">IN TRANSIT TOWARDS PLANT STOPPED</a></h5>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="col-lg-3 col-md-6">
+            <div class="card">
+                <div class="d-flex flex-row">
+                    <div class="p-10" style="background-color: #9b9823">
+                        <h3 class="text-white box m-b-0"><i class="ti-wallet"></i></h3>
+                    </div>
+                    <div class="align-self-center m-l-20">
+                        <h3 id="spnatpalnt" class="m-b-0" style="color: #9b9823">0</h3>
+                        <h5 class="text-muted m-b-0 cssfont"><a onclick="Searchtrips('AT PLANT')">AT PLANT</a></h5>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-3 col-md-6">
+            <div class="card">
+                <div class="d-flex flex-row">
+                    <div class="p-10 " style="background-color: #808080">
+                        <h3 class="text-white box m-b-0"><i class="ti-wallet"></i></h3>
+                    </div>
+                    <div class="align-self-center m-l-20">
+                        <h3 id="spnintranport" class="m-b-0" style="color: #808080">0</h3>
+                        <h5 class="text-muted m-b-0 cssfont"><a onclick="Searchtrips('IN TRANSIT TOWARDS PORT')">IN TRANSIT TO PORT</a></h5>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-3 col-md-6">
+            <div class="card">
+                <div class="d-flex flex-row">
+                    <div class="p-10" style="background-color: #FF69B4">
+                        <h3 class="text-white box m-b-0"><i class="ti-wallet"></i></h3>
+                    </div>
+                    <div class="align-self-center m-l-20">
+                        <h3 id="spninport" class="m-b-0" style="color: #FF69B4">0</h3>
+                        <h5 class="text-muted m-b-0 cssfont"><a onclick="Searchtrips('IN PORT')">IN PORT</a></h5>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-3 col-md-6">
+            <div class="card">
+                <div class="d-flex flex-row">
+                    <div class="p-10" style="background-color: #4d4367">
+                        <h3 class="text-white box m-b-0"><i class="ti-wallet"></i></h3>
+                    </div>
+                    <div class="align-self-center m-l-20">
+                        <h3 id="spnothertrips" class="m-b-0" style="color: #4d4367">42</h3>
+                        <h5 class="text-muted m-b-0 cssfont"><a onclick="Searchtrips('OTHER TRIP')">OTHER TRIPS</a></h5>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6">
+            <div class="card">
+                <div class="d-flex flex-row">
+                    <div class="p-10" style="background-color: #808080">
+                        <h3 class="text-white box m-b-0"><i class="ti-wallet"></i></h3>
+                    </div>
+                    <div class="align-self-center m-l-20">
+                        <h3 id="spnnodata" class="m-b-0" style="color: #808080">0</h3>
+                        <h5 class="text-muted m-b-0 cssfont"><a onclick="Searchtrips('NO DATA')">NO DATA</a></h5>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="divreport"  class="col-lg-3 col-md-6">
+            <div class="card">
+                <div class="d-flex flex-row">
+                    <div class="p-10" style="background-color: aquamarine">
+                        <h3 class="text-white box m-b-0"><i class="ti-wallet"></i></h3>
+                    </div>
+                    <div class="align-self-center m-l-20">
+                        
+                        <h5 class="text-muted m-b-0 cssfont"><a href="/bajajib/ib_reports"><u> TRAILER REPORT</a></u></h5>
+                       
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="divreport1"  class="col-lg-3 col-md-6">
+            <div class="card">
+                <div class="d-flex flex-row">
+                    <div class="p-10" style="background-color: aquamarine">
+                        <h3 class="text-white box m-b-0"><i class="ti-wallet"></i></h3>
+                    </div>
+                    <div class="align-self-center m-l-20">
+
+                        <h5 class="text-muted m-b-0 cssfont"><a href="/BAJAJIB/IB_SUMMARYREPORTS"><u>WO SUMMARY REPORT</u></a></h5>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div style="margin-left:18px">
+          
+            <a href="/HOME/Tracking"><img src="~/IMAGES/tracksmart.gif" title="track" style="width:80px" /></a>
+            @*<img src="~/assets/images/browser/safari-logo.png" alt="logo">*@
+            
+        </div>
+    </div>
+  
+    <div style="overflow-x: auto; margin-top: -31px;">
+        <table id="tblgridtrack" border="1" style="font-size: 11px; color: black !important; font-family: Times New Roman, Times, serif; width: 100%" class="display nowrap table table-hover table-striped table-bordered" cellspacing="0" width="100%">
+            <thead>
+                <tr>
+                    <th>SNO</th>
+                    <th>STATUS</th>
+                    <th>SPEED</th>
+                    <th>VEHICLE<br /> NUMBER</th>
+                    <th>NEAREST<br /> LANDMARKS</th>
+                    <th>LAST RECORD<br />(D&T)</th>
+                    <th>DRIVER <br /> NAME</th>
+                    <th>DRIVER <br /> NUMBER</th>
+                    <th>Distance<br />(Day)<br />(Km)</th>
+                    <th>DURATION<br />(DAYS:HRS:MINS)</th>
+                    <th>ROUTE NAME</th>
+                    <th>TRACK</th>
+                    <th>WORK ORDER</th>
+                    <th>STATUS</th>
+                </tr>
+            </thead>
+            <tbody>
+                @{
+                    int i = 1;
+                    string TDCOLOR = "";
+                    if (ViewBag.DASHBOARDDATA != null)
+                    {
+                          foreach (var item in ViewBag.DASHBOARDDATA)
+                    {
+                        if (item.VEHSTATUS == "IN TRANSIT TOWARDS PORT")
+                        {
+
+                            TDCOLOR = "#808080";
+                        }
+                        else if (item.VEHSTATUS == "AT PLANT")
+                        {
+                            TDCOLOR = "#B8860B";
+                        }
+                        else if (item.VEHSTATUS == "WAITING FOR LOAD")
+                        {
+                            TDCOLOR = "#7d1a1a";
+                        }
+                        else if (item.VEHSTATUS == "IN TRANSIT TOWARDS PLANT MOVING")
+                        {
+                            TDCOLOR = "#246417";
+                        }
+                        else if (item.VEHSTATUS == "IN TRANSIT TOWARDS PLANT STOPPED")
+                        {
+                            TDCOLOR = "#FF0000";
+                        }
+
+                        else if (item.VEHSTATUS == "IN PORT")
+                        {
+                            TDCOLOR = "#FF69B4";
+                        }
+                        else if (item.VEHSTATUS == "OTHER TRIP")
+                        {
+                            TDCOLOR = "#4d4367";
+                        }
+                        else if (item.VEHSTATUS == "NO DATA")
+                        {
+                            TDCOLOR = "#fff";
+                        }
+
+                        <tr style="color:black;background-color:@TDCOLOR;">
+                            <td>@i</td>
+                            @if (item.COLOR == "G")
+                            {
+                                <td><img src="~/Truck/truck_g.png" /></td>
+                            }
+                            else if (item.COLOR == "R")
+                            {
+                                <td><img src="~/Truck/truck_r.png" /></td>
+                            }
+                            else if (item.COLOR == "Y")
+                            {
+                                <td><img src="~/Truck/truck_y.png" /></td>
+                            }
+                            else
+                            {
+                                <td></td>
+                            }
+
+                            <td>@item.SPEED</td>
+                            <td>@item.VEHICLENUMBER</td>
+                            <td align="left"><div style="word-wrap: break-word;white-space:normal;width:100px">@item.PLACE</div></td>
+                            <td align="left"><div style="word-wrap: break-word;white-space:normal;width:80px">@item.DATE</div></td>
+                            <td align="left"><div style="word-wrap: break-word;white-space:normal;width:80px">@item.DRIVER_NAME</div></td>
+                            <td align="left"><div style="word-wrap: break-word;white-space:normal;width:80px">@item.DRIVERNUMBER</div></td>
+
+                            <td align="left"><div style="word-wrap: break-word;white-space:normal;width:80px">@item.DISTANCE</div></td>
+
+                            <td align="left">@item.DURATION</td>
+                            <td align="left"><div style="word-wrap: break-word; white-space: normal; width: 80px">@item.TRIPPLAN</div></td>
+                            <td><input type="button" value="TRACK" onclick="TRACK(@item.DEVICEID)" style="font-weight:bold" /></td>
+                            <td align="left"><div style="word-wrap: break-word;white-space:normal;width:80px">@item.WORKORDERID</div></td>
+                            <td align="left"><div style="word-wrap: break-word;white-space:normal;width:80px">@item.VEHSTATUS</div></td>
+
+                        </tr>
+                            i++;
+                    }
+                    }
+                  
+                }
+
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+<script>
+    window.onload = function () {
+        $('#tblgridtrack').DataTable({
+            dom: 'Bfrtip',
+            "searching": false,
+            "ordering": false,
+            'scroll-y': true,
+            "paging": false,
+            buttons: [
+                'excel', 'pdf', 'print',
+            ]
+        });
+        gridtrack();
+
+    }
+
+    var CategID = localStorage.getItem("USERS_CATEG_ID")
+
+    //if (CategID == 87) {
+    //    $("#divreport").css('display', 'block');
+    //    $("#divreport1").css('display', 'block');
+    //}
+   
+
+    function Searchtrips(Value){
+        //  alert(Value);
+        //  $('#tblgridtrack').destroy();
+
+      
+        if ($.fn.dataTable.isDataTable('#tblgridtrack')) {
+            $('#tblgridtrack').DataTable().destroy();
+        }
+        var tbl = $('#tblgridtrack').DataTable({ 
+            "oSearch": {"sSearch": Value},
+            dom: 'Brtip',
+            "ordering": false,
+            'scroll-y': true,
+            "paging": false,
+            buttons: [
+                'excel', 'pdf', 'print',
+            ],
+        });
+   
+
+
+
+
+
+
+
+
+
+    }
+
+
+
+
+
+    function gridtrack() {
+        $.post("/bajajib/_frm_GridTrack_CAB", function (data) {
+            // console.log(data);
+
+
+            var dataT = data['data'];
+
+            var WL = 0;
+            var ITP = 0;
+            var ITPM = 0;
+            var ITPS = 0;
+            var AP = 0;
+            var OT = 0;
+            var ND = 0;
+            var IP = 0;
+            $("#spntotal").text(dataT.length);
+            for (var i = 0; i < dataT.length; i++) {
+
+                if (dataT[i].VEHSTATUS == "IN TRANSIT TOWARDS PORT") {
+                    ITP++;
+                }
+                if (dataT[i].VEHSTATUS == "WAITING FOR LOAD") {
+                    WL++;
+                }
+                if (dataT[i].VEHSTATUS == "AT PLANT") {
+                    AP++;
+                }
+                if (dataT[i].VEHSTATUS == "IN TRANSIT TOWARDS PLANT MOVING") {
+                    ITPM++;
+                }
+                if (dataT[i].VEHSTATUS == "IN TRANSIT TOWARDS PLANT STOPPED") {
+                    ITPS++;
+                }
+                if (dataT[i].VEHSTATUS == "IN PORT") {
+                    IP++;
+                }
+
+                if (dataT[i].VEHSTATUS == "OTHER TRIP") {
+                    OT++;
+                }
+                if (dataT[i].VEHSTATUS == "NO DATA") {
+                    ND++;
+                }
+
+                if (dataT.length - 1 == i) {
+
+
+                    $("#spnnodata").text(ND);
+                    $("#spnothertrips").text(OT);
+                    $("#spninport").text(IP);
+                    $("#spnintranport").text(ITP);
+                    $("#spnatpalnt").text(AP);
+                    $("#spnintransittoplanemo").text(ITPM);
+                    $("#spnintransittoplanest").text(ITPS);
+                    $("#spnwforload").text(WL);
+                }
+
+            }
+
+
+
+        });
+    }
+
+
+    function TRACK(DEVICEID) {
+
+        localStorage.setItem("DEVICEID", DEVICEID);
+        location.href = "/Home/Tracking";
+    }
+</script>

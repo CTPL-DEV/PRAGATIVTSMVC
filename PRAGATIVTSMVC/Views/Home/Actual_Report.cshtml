@@ -1,0 +1,327 @@
+﻿@{
+    ViewBag.Title = "Actual_Report";
+    Layout = "~/Views/Shared/_NewLayout.cshtml";
+}
+<div id="load"></div>
+<div class="container-fluid">
+    <div class="row page-titles">
+        <div class="col-md-5 col-8 align-self-center">
+            <h3 class="text-themecolor m-b-0 m-t-0">Reports</h3>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/Home/frm_GridTrack_Distance">Home</a></li>
+                <li class="breadcrumb-item active">Reports</li>
+            </ol>
+        </div>
+    </div>
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css" />
+    <div class="w3-container">
+        @*<h2>Reports </h2>*@
+        <div class="w3-bar w3-black">
+            <button class="w3-bar-item w3-button tablink w3-red" onclick="openCity(event,'London')">Summary Report</button>
+            <button class="w3-bar-item w3-button tablink" onclick="openCity(event,'Paris')">Distance Report</button>
+            <button class="w3-bar-item w3-button tablink" onclick="openCity(event,'Ind')">Detailed Report</button>
+        </div>
+        <div id="London" class="w3-container w3-border city">
+            <input type="text" style="width:180px;margin-top:10px" id="txtdate0" placeholder="Select Date" class="form-control" />
+            <input type="button" style="margin-left:10px" onclick="Searchdevice()" value="Search" />
+            <div style=" overflow-y: auto;">
+                <table id="tblsummaryreports" style="margin-top:30px;font-size:13px" class="display nowrap table table-hover table-striped table-bordered" cellspacing="0" width="100%">
+                    <thead>
+                        <tr id="Columns0"></tr>
+                    </thead>
+                    <tbody id="tbldata0"></tbody>
+                </table>
+            </div>
+        </div>
+        <div id="Paris" class="w3-container w3-border city" style="display:none">
+            <input type="text" style="width: 180px; margin-top: 10px" id="txtdate" placeholder="Select Date" class="form-control" />
+            <input type="button" style="margin-left:10px" onclick="Search()" value="Search" />
+            <div style=" overflow-y: auto;">
+                <table id="tblschedulerreports" style="margin-top:30px;font-size:13px" class="display nowrap table table-hover table-striped table-bordered" cellspacing="0" width="100%">
+
+                    <thead>
+                        <tr id="Columns"></tr>
+                    </thead>
+                    <tbody id="tbldata"></tbody>
+                </table>
+            </div>
+        </div>
+
+
+        <div id="Ind" class="w3-container w3-border city" style="display:none">
+            <input type="text" style="width: 180px; margin-top: 10px" id="txtdatereport" placeholder="Select Date" class="form-control" />
+            <input type="button" style="margin-left:10px" onclick="Searchdetailed()" value="Search" />
+            <div style=" overflow-y: auto;">
+                <table id="tblreports" style="margin-top:30px;font-size:13px" class="display nowrap table table-hover table-striped table-bordered" cellspacing="0" width="100%">
+
+                    <thead>
+                        <tr>
+                            <th>SNO</th>
+                            <th>VEHICLENUMBER</th>
+                            <th>ROUTENAME</th>
+                            <th>SHIFTTIME</th>
+                            <th>STATIONPLACE</th>
+                            <th>PLANNEDTIME</th>
+                            <th>ACTUALTIME</th>
+                            <th>REPORTDATE</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tblreportbody"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+    <script>
+        function openCity(evt, cityName) {
+            var i, x, tablinks;
+            x = document.getElementsByClassName("city");
+            for (i = 0; i < x.length; i++) {
+                x[i].style.display = "none";
+            }
+            tablinks = document.getElementsByClassName("tablink");
+            for (i = 0; i < x.length; i++) {
+                tablinks[i].className = tablinks[i].className.replace(" w3-red", "");
+            }
+            document.getElementById(cityName).style.display = "block";
+            evt.currentTarget.className += " w3-red";
+        }
+
+
+
+
+        window.onload = function () {
+            $("#load").hide();
+            $('#txtdate0').bootstrapMaterialDatePicker
+    ({
+        format: 'MM/DD/YYYY',
+        time: false,
+        switchOnClick: true,
+    });
+            $('#txtdate').bootstrapMaterialDatePicker
+    ({
+        format: 'MM/DD/YYYY',
+        time: false,
+        switchOnClick: true,
+    });
+
+            $("#txtdatereport").bootstrapMaterialDatePicker
+    ({
+        format: 'MM/DD/YYYY',
+        time: false,
+        switchOnClick: true,
+    });
+        }
+
+        function Searchdevice() {
+            $("#load").show();
+            if ($("#txtdate0").val() != '') {
+
+                $.post("/Home/_summaryreport", { "Enddate": $("#txtdate0").val() }, function (data) {
+                    $("#load").hide();
+                    //alert(data["Report"].length);
+                    if (data["Report"].length > 0) {
+
+                        if ($.fn.dataTable.isDataTable('#tblsummaryreports')) {
+                            $('#tblsummaryreports').DataTable().destroy();
+                        }
+                        $('#tbldata0').empty();
+                        //  $('#tbldata0').remove();
+                        var data1 = data["Report"];
+                        var columnsIn = data1[0];
+                        console.log(columnsIn);
+                        var Columnsdata0 = "";
+                        var Columnsvalues0;
+                        var count = 0;
+                        $("#Columns0").empty();
+                        columnsdata0 = "<th>VEHICLES_NO</th><th>STATION_PLACE</th>";
+                        var Columnsvalues0 = "";
+                        for (var key in columnsIn) {
+                            count++;
+                        }
+
+                        ////alert(count);
+                        for (var i = 0; i < (count - 3) ; i++) {
+                            var d = i + 1;
+                            columnsdata0 = columnsdata0 + '<th>' + d + '</th>';
+                        }
+
+                        var _ViaSt = data["Report"].map(function (lom, i) {
+                            Columnsvalues0 = Columnsvalues0 + "<tr>";
+                            Columnsvalues0 = Columnsvalues0 + '<td>' + lom["REPORT_VEHICLENO"] + '</td>';
+                            Columnsvalues0 = Columnsvalues0 + '<td>' + lom["STATION_PLACE"] + '</td>';
+                            //    Columnsvalues = Columnsvalues + '<td>' + lom["REPORT_VEHICLENO"] + '</td>';
+                            //    //Columnsvalues = Columnsvalues + '<td>' + lom["VEHICLE_NAME"] + '</td>';
+                            //    //Columnsvalues = Columnsvalues + '<td>' + lom["DRIVER_NAME"] + '</td>'
+                            // alert(count);
+                            for (var i = 1; i < (count - 2) ; i++) {
+                                //        //
+                                var d;
+                                //if (i < 10)
+                                //    d = '0' + i;
+                                //else
+                                d = i;
+                                //  alert(lom[d]);
+                                if (lom[d] == null || lom[d] == 'null') {
+                                    lom[d] = 'NA';
+                                }
+                                if (lom[d] > 500) {
+                                    lom[d] = 'NA';
+                                }
+                                Columnsvalues0 = Columnsvalues0 + '<td>' + lom[d] + '</td>';
+                                //        //Columnsvalues = Columnsvalues + '<td onclick="Trip_Details(' + d + ',' + lom["VEHICLES_NO"] + ')">' + lom[d] + '</td>';
+                                //      //  Columnsvalues = Columnsvalues + '<td onclick="Trip_Details(\'' + d + '\',\'' + lom["REPORT_VEHICLENO"] + '\')">' + lom[d] + '</td>';
+                            }
+
+                            Columnsvalues0 = Columnsvalues0 + "</tr>";
+                        });
+                    }
+                    $("#Columns0").append(columnsdata0);
+                    $("#tblsummaryreports").append(Columnsvalues0);
+
+                    $('#tblsummaryreports').DataTable({
+                        dom: 'Bfrtip',
+                        "paging": false,
+                        buttons: [
+                            //'copy', 'csv', 'excel', 'pdf', 'print'
+                            'excel', 'pdf', 'print',
+                        ]
+                    });
+
+                });
+                //tr = $('<tr/>');
+
+                //tr.append('<td><img src="/NumberMarkers/marker' + (i + 1) + '.png"  onclick="movemarker000(\'' + dataT[i].LATITUDE + '\',\'' + dataT[i].LONGITUDE + '\',' + (i + 1) + ')"></ img></td>');
+                //tr.append("<td>" + dataT[i].PLACE + "</td>");
+                //tr.append("<td>" + dataT[i].TRIPDATAT_SPEED + "</td>");
+                //tr.append("<td>" + dataT[i].ODOMETER + "</td>");
+                //$('#tblhistory').append(tr);
+            }
+        }
+
+
+
+
+        function Search() {
+            $("#load").show();
+            if ($("#txtdate").val() != '') {
+
+                $.post("/Home/_Distancereport", { "Enddate": $("#txtdate").val() }, function (data) {
+                    $("#load").hide();
+                    ////console.log(data);
+                    //alert(data["Report"].length);
+                    if ($.fn.dataTable.isDataTable('#tblschedulerreports')) {
+                        $('#tblschedulerreports').DataTable().destroy();
+                    }
+                    if (data["Report"].length > 0) {
+                        
+                        $('#tblschedulerreports tbody').remove();
+                        var data1 = data["Report"];
+                        var columnsIn = data1[0];
+                        var Columnsdata = "";
+                        var Columnsvalues;
+                        var count = 0;
+                        $("#Columns").empty();
+                        var columnsdata = "<th>VEHICLES_NO</th>";
+                        var Columnsvalues = "";
+                        for (var key in columnsIn) {
+                            count++;
+                        }
+
+                        ////alert(count);
+                        for (var i = 0; i < (count - 1) ; i++) {
+                            var d = i + 1;
+                            columnsdata = columnsdata + '<th>' + d + '</th>';
+                        }
+
+                        var _ViaSt = data["Report"].map(function (lom, i) {
+                            Columnsvalues = Columnsvalues + "<tr>";
+                            Columnsvalues = Columnsvalues + '<td>' + lom["REPORT_VEHICLENO"] + '</td>';
+                            //    Columnsvalues = Columnsvalues + '<td>' + lom["REPORT_VEHICLENO"] + '</td>';
+                            //    //Columnsvalues = Columnsvalues + '<td>' + lom["VEHICLE_NAME"] + '</td>';
+                            //    //Columnsvalues = Columnsvalues + '<td>' + lom["DRIVER_NAME"] + '</td>'
+
+                            for (var i = 1; i < count ; i++) {
+                                //        //
+                                var d;
+                                //if (i < 10)
+                                //    d = '0' + i;
+                                //else
+                                d = i;
+                                //  alert(lom[d]);
+                                if (lom[d] == null || lom[d] == 'null') {
+                                    lom[d] = 'NA';
+                                }
+                                if (lom[d] > 500) {
+                                    lom[d] = 'NA';
+                                }
+                                Columnsvalues = Columnsvalues + '<td>' + lom[d] + '</td>';
+                                //        //Columnsvalues = Columnsvalues + '<td onclick="Trip_Details(' + d + ',' + lom["VEHICLES_NO"] + ')">' + lom[d] + '</td>';
+                                //      //  Columnsvalues = Columnsvalues + '<td onclick="Trip_Details(\'' + d + '\',\'' + lom["REPORT_VEHICLENO"] + '\')">' + lom[d] + '</td>';
+
+                            }
+
+                            Columnsvalues = Columnsvalues + "</tr>";
+                        });
+                    }
+                    $("#Columns").append(columnsdata);
+                    $("#tblschedulerreports").append(Columnsvalues);
+                    $('#tblschedulerreports').DataTable({
+                        dom: 'Bfrtip',
+                        "paging": false,
+                        buttons: [
+                            //'copy', 'csv', 'excel', 'pdf', 'print'
+                            'excel', 'pdf', 'print',
+
+                        ]
+                    });
+
+                });
+                //tr = $('<tr/>');
+
+                //tr.append('<td><img src="/NumberMarkers/marker' + (i + 1) + '.png"  onclick="movemarker000(\'' + dataT[i].LATITUDE + '\',\'' + dataT[i].LONGITUDE + '\',' + (i + 1) + ')"></ img></td>');
+                //tr.append("<td>" + dataT[i].PLACE + "</td>");
+                //tr.append("<td>" + dataT[i].TRIPDATAT_SPEED + "</td>");
+                //tr.append("<td>" + dataT[i].ODOMETER + "</td>");
+                //$('#tblhistory').append(tr);
+            }
+        }
+        function Searchdetailed() {
+            $("#load").show();
+            $.post("/Home/_detailedreport", { "Enddate": $("#txtdatereport").val() }, function (data) {
+                $("#load").hide();
+                var dataT = data['Report'];
+                // $('#tblreportbody').empty();
+                //  $('#tblreportbody').clear();
+                if ($.fn.dataTable.isDataTable('#tblreports')) {
+                    $('#tblreports').DataTable().destroy();
+                }
+                $('#tblreports tbody').remove();
+
+
+                for (var i = 0; i < dataT.length; i++) {
+                    tr = $('<tr/>');
+                    tr.append("<td>" + (i + 1) + "</td>");
+                    tr.append("<td>" + dataT[i].REPORT_VEHICLENO + "</td>");
+                    tr.append("<td>" + dataT[i].REPORT_ROUTENAME + "</td>");
+                    tr.append("<td>" + dataT[i].SHIFT_TIME + "</td>");
+                    tr.append("<td>" + dataT[i].REPORT_STATIONPLACE + "</td>");
+                    tr.append("<td>" + dataT[i].PLANEDTIME + "</td>");
+                    tr.append("<td>" + dataT[i].ACTUALTIME + "</td>");
+                    tr.append("<td>" + dataT[i].REPORT_DATE + "</td>");
+
+                    $('#tblreports').append(tr);
+                }
+                $('#tblreports').DataTable({
+                    dom: 'Bfrtip',
+                    "paging": false,
+                    buttons: [
+                        'excel', 'pdf', 'print',
+                    ]
+                });
+            });
+
+
+        }
+
+    </script>

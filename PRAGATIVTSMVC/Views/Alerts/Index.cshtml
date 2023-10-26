@@ -1,0 +1,655 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/Layout2.cshtml";
+}
+
+<style>
+    -webkit-scrollbar {
+        width: 0px;
+        background: transparent;
+    }
+
+    .box {
+        border-radius: 4px;
+        padding: 10px;
+    }
+
+    .table td {
+        padding: 5px;
+        vertical-align: middle;
+        font-size: 12px !important;
+    }
+
+    .table th {
+        font-weight: 500;
+        font-size: 13px !important;
+    }
+    .geofence {
+        width: 600px !important;
+    }
+</style>
+
+<div id="divrow">
+    <h4>Alerts Configuration</h4>
+    @*<div class="row">
+            Select Vehicle:<select id="ddlVehicle" class="form-control" style="width:200px;margin-left:35px;">
+                <option value="0">-Select-</option>
+                @foreach (var item in ViewBag.Vehicles)
+                {
+                    <option value="@item.VEHICLES_REGNUMBER">@item.VEHICLES_REGNUMBER</option>
+                }
+
+            </select>
+        </div>*@
+    <input type="hidden" id="hid_event" value="" />
+    <input type="hidden" id="hid_config" value="" />
+    <div class="row" style="CENTER" id="divrow">
+        <div class="col-lg-6">
+            <div id="div_events">
+                Select Event:<select id="ddlEvents" class="form-control" style="width:400px">
+                    <option value='0' selected>-Select Event-</option>
+                </select>
+            </div>
+
+
+        </div>
+    </div>
+    <div class="row" id="div_add" style="margin-top:10px;margin-left:250px;">
+
+
+        <div id="dashboardcolumns">
+            <div class="row">
+                <label style="word-wrap:break-word">
+                    <input id="chk_App" type="checkbox" value="" />APP Alert
+                </label>
+
+            </div>
+            <div class="row">
+                <label style="word-wrap:break-word">
+                    <input id="chk_Sms" type="checkbox" value="" />SMS Alert
+                </label>
+
+            </div>
+            <div class="row">
+                <label style="word-wrap:break-word">
+                    <input id="chk_Email" type="checkbox" value="" />Email Alert
+                </label>
+
+            </div>
+        </div>
+
+    </div>
+    <input type="button" id="btnsave" style="margin-left:auto;margin-right:auto;display:block;margin-top:2%;margin-bottom:0%" class="btn btn-primary" onclick="SAVE()" value="Submit" />
+    <input type="button" id="btnupdate" style="margin-left:auto;margin-right:auto;display:block;margin-top:2%;margin-bottom:0%" class="btn btn-primary" onclick="Update()" value="Update" />
+    <input type="button" value="BACK" style="margin-left:auto;margin-right:auto;display:block;margin-bottom:0%;margin-top:2%" id="btnback" onclick="location.reload()" class="btn btn-primary" />
+    @*<input type="button" id="btnsave" class="btn btn-success" onclick="SAVE()"  value="Submit" />
+        <input type="button" id="btnupdate" class="btn btn-success" onclick="Update()"  value="Update" />
+        <input type="button" value="BACK" style="margin-left:92%;margin-top:-38px" id="btnback" onclick="location.reload()" class="btn btn-danger" />*@
+</div>
+<div class="row">
+    <div class="col-md-2">
+        <div>
+            <input type="button" id="btnadd" class="btn btn-primary" onclick="showrow()" style="width:153px;margin-top:10px" value="ADD" />
+        </div>
+    </div>
+    <div class="col-md-10">
+        <div class="card-head" style="text-align:center;">
+            <h4>Alerts Configuration</h4>
+        </div>
+    </div>
+</div>
+<div class="card card-box" id="div_table" style="margin-top:10px;">
+
+    <div class="card-body ">
+
+        <div class="table-scrollable">
+            <table id="tblEvents" border="1" style="width: 100%" class="table table-striped table-bordered">
+                <thead>
+                    <tr>
+                        <th class="center">S.no</th>
+                        <th class="center">Alert Type</th>
+                        <th class="center">App Alert</th>
+                        <th class="center">SMS Alert</th>
+                        <th class="center">Email Alert</th>
+                        <th class="center">Edit</th>
+                        <th class="center">Settings</th>
+
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<div class="modal inmodal" id="EditEvents" tabindex="-1" role="dialog" aria-hidden="true" style="display: none;">
+    <div class="modal-dialog">
+        <div class="modal-content animated fadeIn">
+            <div class="modal-header">
+                <h6>Edit</h6>
+                <button type="button" id="closesimotpmodal" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
+            </div>
+            <div class="modal-body">
+                <div id="dashboardcolumns">
+                    <div class="col-md-6">
+                        <div class="row">
+                            <label style="word-wrap:break-word">
+                                <input id="chk_Edit_App" type="checkbox" value="" />APP Alert
+                            </label>
+
+                        </div>
+                        <div class="row">
+                            <label style="word-wrap:break-word">
+                                <input id="chk_Edit_Sms" type="checkbox" value="" />SMS Alert
+                            </label>
+
+                        </div>
+                        <div class="row">
+                            <label style="word-wrap:break-word">
+                                <input id="chk_Edit_Email" type="checkbox" value="" />Email Alert
+                            </label>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer" style="text-align:center;">
+                    <button type="button" id="btn_verify_sim" onclick="UpdateEvents()" class="btn btn-primary">Update</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal inmodal" id="modal_vehicles" tabindex="-1" role="dialog" aria-hidden="true" style="display: none;">
+    <div class="modal-dialog">
+        <div class="modal-content animated fadeIn">
+            <div class="modal-header">
+                <h6>Assign Vehicles</h6>
+                <button type="button" id="closesmodal" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+
+
+                    <div class="col-md-6">
+
+                        <div id="div_vehicles">
+
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div id="div_geofence" style="display:none;">
+                            Select Geofence:<select id="ddlgeofence" class="form-control">
+                                <option value='0' selected>-Select Geofence-</option>
+                            </select>
+                        </div>
+                        Mobile Number:<input type="text" id="txt_mobilenumber" value="" class="form-control" />
+                        To Mail:<input type="text" id="txt_email" value="" class="form-control" />
+                        CC Mail:<input type="text" id="txt_CC_email" value="" class="form-control" />
+                        BCC Mail:<input type="text" id="txt_BCC_email" value="" class="form-control" />
+
+                    </div>
+                </div>
+             
+                <div class="modal-footer" style="text-align:center;">
+                    <button type="button" id="btn_verify_sim" onclick="SaveVehicles()" class="btn btn-primary">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal inmodal" id="modal_geofence" tabindex="-1" role="dialog" aria-hidden="true" style="display: none;">
+    <div class="modal-dialog geofence">
+        <div class="modal-content animated fadeIn" style="width:650px;">
+            <div class="modal-header">
+                <h6>Geofence Configuration</h6>
+                <button type="button" id="closesmodal_geofence" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
+            </div>
+            <div class="modal-body">
+                <div class="card card-box" id="div_table" style="margin-top:10px;">
+
+                    <div class="card-body ">
+                        <input type="button" id="btnadd" class="btn btn-primary" onclick="showGeofence()" style="width:50px;margin-top:10px" value="ADD" />
+                        <div class="table-scrollable">
+                            <table  border="1" style="width: 100%" class="table table-striped table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th class="center">S.no</th>
+                                        <th class="center">Landmark</th>
+                                        <th class="center">Vehicles</th>
+                                        <th class="center">Mobile Number</th>
+                                        <th class="center">Edit</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tblGeofence"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        LoadEvents();
+    });
+    window.onload = function () {
+        $("#divrow").hide();
+    };
+    function showrow()
+    {
+        $("#divrow").show();
+        $("#btnupdate").hide();
+        $("#div_update").hide();
+    }
+    function LoadEvents() {
+
+        $.post("/Alerts/getEvents", function (data) {
+            
+            var dataT = data['data'];
+            var opt = "<option value='0'>--Select Events--</option>";
+            for (var i = 0; i < dataT.length; i++) {
+                opt += "<option value='" + dataT[i].EVENT_ID + "'>" + dataT[i].EVENT_NAME + "</option>";
+            }
+            $("#ddlEvents").append(opt);
+
+        });
+    }
+    function ValidatePhoneNumber(value) {
+
+        return /^(\d{10},)*\d{10}$/.test(value);
+    }
+    $(document).ready(function () {
+
+        getallEvents();
+
+
+    });
+
+    var arr = [];
+
+    function SAVE()
+    {
+        
+        var app_alert = false, sms_alert = false, email_alert = false;
+        if ($("#chk_App").prop('checked') == true) {
+            app_alert = true;
+        }
+        if ($("#chk_Sms").prop('checked') == true) {
+            sms_alert = true;
+        }
+        if ($("#chk_Email").prop('checked') == true) {
+            email_alert = true;
+        }
+
+        var Alldata = JSON.stringify({ "EventId": $("#ddlEvents").val(), "AppAlert": app_alert, "SmsAlert": sms_alert, "EmailAlert": email_alert });
+
+                $.ajax({
+                    url: "/Alerts/SaveAlertConfiguration",
+                    type: 'POST',
+                    async: false,
+                  //  processData: false,
+                    cache: false,
+                    data: Alldata,
+                    contentType: "application/json",
+
+                    success: function (data) {
+                        
+                        if (data.data == true) {
+                            alert("Data Saved Successfully");
+                            location.reload();
+                        }
+                        else {
+                            alert(data.message);
+                            location.reload();
+                        }
+                    },
+                    error: function (err) {
+
+                    }
+                });
+          //  }
+      //  }
+
+    }
+
+
+
+    function getallEvents() {
+        $.post("/Alerts/getEventConfiguration", function (data) {
+            // console.log(dataT);
+            var dataT = data['data'];
+            for (var i = 0; i < dataT.length; i++) {
+                tr = $('<tr/>');
+
+                tr.append("<td>" + (i + 1) + "</td>");
+                tr.append("<td>" + dataT[i].EventName + "</td>");
+                tr.append("<td>" + dataT[i].AppAlert + "</td>");
+                tr.append("<td>" + dataT[i].SmsAlert + "</td>");
+                tr.append("<td>" + dataT[i].EmailAlert + "</td>");
+                tr.append("<td><a href='#' onclick='Edit(" + dataT[i].CONFIG_EVENTID + "," + dataT[i].CONFIG_CATEG_ID + ")' class='btn btn-tbl-edit btn-xs'><i class='fa fa-pencil'></i></a></td>");
+                tr.append("<td><a href='#' onclick='AddVehicles(" + dataT[i].CONFIG_ID + "," + dataT[i].CONFIG_EVENTID + ")' class='btn btn-tbl-edit btn-xs'><i class='c-deep-orange-500 ti-settings'></i></a></td>")
+                $("#tblEvents").append(tr);
+            }
+            $('#tblEvents').DataTable({
+                dom: 'Bfrtip',
+                buttons: [
+                    //'copy', 'csv', 'excel', 'pdf', 'print'
+                    'excel', 'pdf', 'print'
+                ]
+            });
+        });
+
+    }
+    function Edit(eventId,categ_id)
+    {
+        
+        $("#EditEvents").fadeIn();
+        $("#hid_event").val(eventId);
+        $.post("/Alerts/EditEvent", { "evnet_id": eventId, "CATEG_ID": categ_id}, function (data) {
+            
+            var dataT = data['data'];
+           
+            if(dataT!="")
+            {
+                if (dataT[0].CONFIG_APPALERT == true) {
+                    $("#chk_Edit_App").prop('checked', 'checked');
+                }
+                else {
+                    $("#chk_Edit_App").attr('checked', false);
+                }
+                if (dataT[0].CONFIG_SMSALERT == true) {
+                    $("#chk_Edit_Sms").prop('checked', 'checked');
+                }
+                else {
+                    $("#chk_Edit_Sms").prop('checked', false);
+                }
+                if (dataT[0].CONFIG_EMAILALERT == true) {
+                    $("#chk_Edit_Email").prop('checked', 'checked');
+                }
+                else {
+                    $("#chk_Edit_Email").attr('checked', false);
+                }
+            }
+
+        });
+    }
+    function UpdateEvents()
+    {
+        var configid= $("#hid_event").val();
+        var mobile_numbers = $("#txtupdateMobile").val();
+        var app_alert = false, sms_alert = false, email_alert = false;
+        if ($("#chk_Edit_App").prop('checked') == true) {
+            app_alert = true;
+        }
+        if ($("#chk_Edit_Sms").prop('checked') == true) {
+            sms_alert = true;
+        }
+        if ($("#chk_Edit_Email").prop('checked') == true) {
+            email_alert = true;
+        }
+        $.post("/Alerts/UpdateAlertConfiguration", { "EventId": configid, "AppAlert": app_alert, "SmsAlert": sms_alert, "EmailAlert": email_alert  }, function (data) {
+
+            var dataT = data['data'];
+
+            if (dataT ==true) {
+                alert("Updated Successfully");
+                location.reload();
+            }
+            else
+            {
+                alert("Failed");
+            }
+        });
+    }
+    var arrform = [];
+    function LoadVehicles() {
+
+        arrform = [];
+        $('#div_vehicles').empty();
+
+        $.post("/Alerts/LoadVehicles", function (data) {
+            var dataT = data['data'];
+            var opt = "";
+
+            for (var i = 0; i < dataT.length; i++) {
+                arrform.push(dataT[i].DEVICE_ID);
+                opt += "<span>" + dataT[i].DEVICE_NAME + "</span><input type='checkbox' style='margin-top:-21px;margin-left:60px' class='form-control'  id=chk_" + dataT[i].DEVICE_ID + "  /><input type='hidden' id='hid_" + dataT[i].DEVICE_ID + "' value='" + dataT[i].DEVICE_SERIALNUMBER + "'/><br/>";
+            }
+
+            $('#div_vehicles').append(opt);
+        });
+
+    }
+    function AddVehicles(configid, eventId) {
+
+        $("#hid_config").val(configid);
+        LoadVehicles();
+        if (eventId == 4) {
+            $("#modal_geofence").fadeIn();
+            $("#modal_vehicles").hide();
+        }
+        else {
+            $("#modal_vehicles").fadeIn();
+            $("#modal_geofence").hide();
+        }
+        
+
+        $.post("/Alerts/getConfigDetails", { "config_id": configid, "event_Id": eventId} ,function (data) {
+            var dataT = data['data'];
+            var opt = "";
+            
+            if (eventId == 4) {
+                $("#tblGeofence").empty();
+                for (var i = 0; i < dataT.length; i++) {
+                    tr = $('<tr/>');
+
+                    tr.append("<td>" + (i + 1) + "</td>");
+                    tr.append("<td>" + dataT[i].LANDMARK_ADDRESS + "</td>");
+                    tr.append("<td>" + dataT[i].DETAILS_VEHICLEID + "</td>");
+                    tr.append("<td>" + dataT[i].DETAILS_MOBILENO + "</td>");
+                    tr.append("<td><a href='#' onclick='EditGeofence(" + dataT[i].DETAILS_ID + ")' class='btn btn-tbl-edit btn-xs'><i class='fa fa-pencil'></i></a></td>");
+                   
+                    $("#tblGeofence").append(tr);
+                }
+                
+            }
+            else {
+                for (var i = 0; i < dataT.length; i++) {
+
+                    $('#txt_mobilenumber').val(dataT[i].DETAILS_MOBILENO);
+                    $('#txt_email').val(dataT[i].DETAILS_TOMAIL);
+                    $('#txt_CC_email').val(dataT[i].DETAILS_CCMAIL);
+                    $('#txt_BCC_email').val(dataT[i].DETAILS_BCCMAIL);
+                    var vehicles_ids = dataT[i].DETAILS_VEHICLEID;
+                    if (vehicles_ids != "") {
+                        var sel_vehicles = vehicles_ids.split(",");
+                        for (var j = 0; j < sel_vehicles.length; j++) {
+                            for (var k = 0; k < arrform.length; k++) {
+                                if (sel_vehicles[j] == arrform[k]) {
+                                    $("#chk_" + sel_vehicles[j]).prop('checked', 'checked');
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+           
+            var geofence_data = data['data2'];
+            if (geofence_data.length > 0) {
+
+                var opt = "";
+                opt = "<option value=''>--Select geofence</option>";
+                for (var i = 0; i < geofence_data.length; i++) {
+                    opt += "<option value='" + geofence_data[i].LANDMARKS_ID + "_" + geofence_data[i].LANDMARK_GEOFENCE_ID + "'>" + geofence_data[i].LANDMARKS_ADDRESS + "</option>";
+                }
+                $("#ddlgeofence").text("");
+                $("#ddlgeofence").append(opt);
+                $("#div_geofence").show();
+            }
+            else {
+                $("#div_geofence").hide();
+            }
+        });
+    }
+
+    
+    function SaveVehicles() {
+        
+        var length = arrform.length;
+        var landmark_Id = 0;
+        var arr1 = []; var Device_IMEI = [];
+
+        for (var i = 0; i < length; i++) {
+
+            var chk = arrform[i];
+
+            if ($("#chk_" + chk).is(':checked') == true) {
+
+                arr1.push(chk);
+                Device_IMEI.push($("#hid_" + chk).val());
+            }
+        }
+        if ($("#ddlgeofence").val() == '0') {
+            landmark_Id = 0;
+        }
+        else {
+            landmark_Id = $("#ddlgeofence").val().split('_')[0];
+        }
+        var sel_vehicles = JSON.stringify(arr1);
+        $.post("/Alerts/AssignAlertVehicles", { "configId": $("#hid_config").val(), "VehicleIds": sel_vehicles, "MobileNumber": $('#txt_mobilenumber').val(), "ToEmail": $('#txt_email').val(), "CCMail": $('#txt_CC_email').val(), "BccEmail": $('#txt_BCC_email').val(), "LandmarkId": landmark_Id }, function (data) {
+            var dataT = data['data'];
+            if (dataT = true) {
+                alert("Vehicles Added successfully");
+                if (landmark_Id != 0) {
+                    SaveGeofenceInTraccar(Device_IMEI);
+                }
+                
+              
+                location.reload();
+            }
+            else {
+                alert("Failed");
+            }
+        });
+    }
+    function SaveGeofenceInTraccar(deviceIds) {
+        
+       
+        var username = "admin";
+        var password = "admin";
+        var traccar_device_id;
+        if (deviceIds.length > 0) {
+
+
+            //get device_id from traccar
+            for (var i = 0; i < deviceIds.length; i++) {
+            $.ajax
+                ({
+                    type: "GET",
+                    url: "http://52.230.24.18:8082/api/devices?uniqueId=" + deviceIds[i] + "",
+                    async: false,
+                    dataType: 'json',
+                    contentType: 'application/json',
+                    //headers: {
+                    //    "Authorization": "Basic " + btoa(username + ":" + password)
+                    //},
+                    beforeSend: function (xhr) {
+                        xhr.setRequestHeader('Authorization', "Basic " + btoa(username + ":" + password));
+                    },
+                    //data: geofence,
+                    success: function (data) {
+                        
+
+                        traccar_device_id = data[0].id;
+
+                        //insert into traccar_device_geofence
+                        // var geofence = JSON.stringify({ "deviceId": 2, "geofenceId": 4 });
+                        var geofence = JSON.stringify({ "deviceId": traccar_device_id, "geofenceId": parseInt($("#ddlgeofence").val().split('_')[1]) });
+                        $.ajax
+                            ({
+                                type: "POST",
+                                url: "http://52.230.24.18:8082/api/permissions",
+                                async: false,
+                                dataType: 'json',
+                                contentType: 'application/json',
+                                //headers: {
+                                //    "Authorization": "Basic " + btoa(username + ":" + password)
+                                //},
+                                beforeSend: function (xhr) {
+                                    xhr.setRequestHeader('Authorization', "Basic " + btoa(username + ":" + password));
+                                },
+                                data: geofence,
+                                success: function (data) {
+                                    
+
+
+                                }
+                            });
+                    }
+                });
+            
+               
+            }
+        }
+    }
+    function EditGeofence(details_id) {
+
+        $.post("/Alerts/getGeofecneData", { "DetailsId": details_id } ,function (data) {
+            var dataT = data['data'];
+            if (dataT.length > 0) {
+                
+                for (var i = 0; i < dataT.length; i++) {
+                    $('#txt_mobilenumber').val(dataT[i].DETAILS_MOBILENO);
+                    $('#txt_email').val(dataT[i].DETAILS_TOMAIL);
+                    $('#txt_CC_email').val(dataT[i].DETAILS_CCMAIL);
+                    $('#txt_BCC_email').val(dataT[i].DETAILS_BCCMAIL);
+                    $('#ddlgeofence').val(dataT[i].DETAILS_LANDMARKID + '_' + dataT[i].GEOFENCE_ID);
+                    var vehicles_ids = dataT[i].DETAILS_VEHICLEID;
+                    if (vehicles_ids != "") {
+                        var sel_vehicles = vehicles_ids.split(",");
+                        for (var j = 0; j < sel_vehicles.length; j++) {
+                            for (var k = 0; k < arrform.length; k++) {
+                                if (sel_vehicles[j] == arrform[k]) {
+                                    $("#chk_" + sel_vehicles[j]).prop('checked', 'checked');
+                                }
+                            }
+                        }
+                    }
+                }
+                $("#modal_vehicles").fadeIn();
+                $("#modal_geofence").fadeOut();
+            }
+            else {
+                alert("Failed");
+            }
+        });
+    }
+    function showGeofence() {
+        $("#modal_vehicles").fadeIn();
+        $("#modal_geofence").fadeOut();
+        $('#txt_mobilenumber').val('');
+        $('#txt_email').val('');
+        $('#txt_CC_email').val('');
+        $('#txt_BCC_email').val('');
+
+    }
+    $(document).on("click", "#closesimotpmodal", function () {
+        $("#EditEvents").fadeOut();
+
+    });
+    
+    $(document).on("click", "#closesmodal", function () {
+        $("#modal_vehicles").fadeOut();
+
+    });
+    
+    $(document).on("click", "#closesmodal_geofence", function () {
+        $("#modal_geofence").fadeOut();
+
+    });
+</script>
+
+

@@ -1,0 +1,915 @@
+﻿@{
+    ViewBag.Title = "Routes";
+    Layout = "~/Views/Shared/_NewLayout.cshtml";
+}
+
+<style>
+    #txtgeolocations {
+        background-color: #fff;
+        font-family: Roboto;
+        font-size: 15px;
+        font-weight: 300;
+        /*margin-left: 12px;*/
+        padding: 0 11px 0 13px;
+        text-overflow: ellipsis;
+        /*width: 400px;*/
+    }
+
+        #txtgeolocations:focus {
+            border-color: #4d90fe;
+        }
+    input[type=number]::-webkit-inner-spin-button,
+    input[type=number]::-webkit-outer-spin-button {
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+        margin: 0;
+    }
+    }
+</style>
+<div class="container-fluid">
+    <div class="row page-titles">
+        <div class="col-md-5 col-8 align-self-center">
+            <h3 class="text-themecolor m-b-0 m-t-0">Routes</h3>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/Home/frm_GridTrack_Distance">Home</a></li>
+                <li class="breadcrumb-item active">routes</li>
+            </ol>
+        </div>
+    </div>
+    <div id="divrow" style="display:none">
+        <div class="row">
+            <div class="col-lg-6">
+                Route Name:<input type="text" id="txtroutename" class="form-control" />
+                Route Code:<input type="text" id="txtroutecode" class="form-control" />
+                <h3>Stations</h3>
+                <input type="text" class="form-control" style="margin-bottom:10px" id="txtgeolocations" />
+                <input type="button" onclick="getlatlng()" style="margin-bottom:10px" value="Add station" class="btn btn-primary" />
+
+               <select id="ddlvehicles_history" style="display:none" class="form-control">
+                    <option value="0">-Select Vehicle-</option>
+                </select>
+                <input type="text" id="txttodate" style="margin-top: 10px;display:none"  placeholder="TO DATE" class="form-control" />
+
+
+
+
+                <div>
+                </div>
+
+                @*<input type="button" id="btnshow" style="float:right" onclick="Showmap()" class="btn btn-success" value="Showmap" />*@
+
+
+                <div hidden id="info"></div>
+                <input hidden type="text" id="txtroutename1" class="form-control" />
+                <input hidden type="text" id="txtroutecode1" class="form-control" />
+
+            </div>
+            <div class="col-lg-6">
+
+                Stations <div style='overflow:scroll; width:400px;height:175px;margin-top:10px' id="tappanel">
+                </div>
+                <input type="text" id="txtfrmdate" style="margin-top: 47px; display: none" placeholder="FROM DATE" class="form-control" />
+             
+                <input type="button" id="btntrack" style="margin-top: 10px; display: none" class="btn btn-success" value="Track" onclick="Track_history()" />
+
+                <input type="button" id="btnhistory" value="Track Hostory" onclick="dispalyhistory()" style="float:right" class="btn btn-primary" />
+            </div>
+        </div>
+    </div>
+    <div id="divrow1" style="display:none">
+        <div id="map" class="gmaps"></div>.
+        <input type="button" style="float:right" class="btn btn-success" value="Submit" onclick="save()" />
+    </div>
+    <div>
+        <input type="button" id="btnadd" class="btn btn-primary" value="ADD" onclick="show()" />
+    </div>
+
+    
+
+    <table id="tblroutes" style="margin-top:30px;font-size:14px" class="display nowrap table table-hover table-striped table-bordered" cellspacing="0" width="100%">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>ROUTE NAME</th>
+                <th>ROUTE CODE</th>
+                <th>Edit</th>
+            </tr>
+        </thead>
+        <tbody>
+            @{
+                int i = 1;
+                foreach (var item in ViewBag.routes)
+                {
+<tr>
+                        <td>@i</td>
+                        <td>@item.ROUTES_NAME</td>
+                        <td>@item.ROUTES_CODE</td>
+                        @if (item.ROUTES_STATUS == true)
+                        {
+
+<td>
+                                @*<input type="button" value="IN ACTIVE" style="width:100px" onclick="UPDATESTATUS(0,@item.CATEG_CATETYPE_ID)" class="btn btn-danger" />*@
+                                <input type="button" value="EDIT" onclick="EDIT(@item.ROUTES_ID)" class="btn btn-primary" />
+                            </td>
+                        }
+                        else
+                        {
+
+                            <td>
+                                @*<input type="button" value="IN ACTIVE" style="width:100px" onclick="UPDATESTATUS(0,@item.CATEG_CATETYPE_ID)" class="btn btn-danger" />*@
+                                <input type="button" value="EDIT" onclick="EDIT(@item.ROUTES_ID)" class="btn btn-primary" />
+                            </td>
+                        }
+                    </tr>
+                    i++;
+                }
+
+            }
+        </tbody>
+    </table>
+</div>
+<script src="~/Scripts/jquery-1.10.2.min.js"></script>
+
+<script>
+
+
+    window.onload = function () {
+
+        //   $("#btnshow").hide();
+        bindvehicles();
+        $('#tblroutes').DataTable({
+            dom: 'Bfrtip',
+            buttons: [
+                //'copy', 'csv', 'excel', 'pdf', 'print'
+                'excel', 'pdf', 'print'
+            ]
+        });
+
+
+
+        $('#txtfrmdate').bootstrapMaterialDatePicker({
+            format: 'MM/DD/YYYY HH:mm',
+            weekStart: 1,
+            time: true,
+            nowButton: true,
+            clearButton: false,
+            cancelText: 'Cancel',
+            okText: 'OK',
+            clearText: 'Clear',
+            triggerEvent: 'dblclick',
+
+            //  nowText: 'Aujourd\'hui'
+        });
+
+
+        $('#txttodate').bootstrapMaterialDatePicker({
+            format: 'MM/DD/YYYY HH:mm',
+            weekStart: 1,
+            time: true,
+            nowButton: true,
+            clearButton: false,
+            cancelText: 'Cancel',
+            okText: 'OK',
+            clearText: 'Clear',
+            triggerEvent: 'dblclick',
+
+            // nowText: 'Aujourd\'hui'
+        });
+
+
+        var dt = new Date();
+
+        var onedayAgo = new Date();
+
+        onedayAgo.setDate(onedayAgo.getDate() - 1);
+
+        var time = dt.getHours() + ":" + dt.getMinutes();
+
+        var date001 = onedayAgo.getMonth() + 1 + "/" + onedayAgo.getDate() + "/" + onedayAgo.getFullYear() + " " + time;
+        $('#txtfrmdate').val(date001);
+
+        var date002 = dt.getMonth() + 1 + "/" + dt.getDate() + "/" + dt.getFullYear() + " " + time;
+        $('#txttodate').val(date002);
+
+    }
+
+    function show() {
+        $("#divrow").css('display', 'block');
+        $("#divrow1").css('display', 'block');
+
+        $("#btnadd").hide();
+    }
+
+    var arr001 = [];
+    var arraddress = []
+
+    function initMap() {
+        var input = document.getElementById('txtgeolocations');
+        var autocomplete = new google.maps.places.Autocomplete(input);
+
+
+        var directionsService = new google.maps.DirectionsService;
+        var directionsDisplay = new google.maps.DirectionsRenderer;
+        var map = new google.maps.Map(document.getElementById('map'), {
+            zoom: 6,
+            center: { lat: 41.85, lng: -87.65 }
+        });
+        directionsDisplay.setMap(map);
+
+        //document.getElementById('submit').addEventListener('click', function () {
+        //    calculateAndDisplayRoute(directionsService, directionsDisplay);
+        //});
+    }
+
+    function calculateAndDisplayRoute(directionsService, directionsDisplay) {
+        var waypts = [];
+        var checkboxArray = document.getElementById('waypoints');
+        for (var i = 0; i < checkboxArray.length; i++) {
+            if (checkboxArray.options[i].selected) {
+                waypts.push({
+                    location: checkboxArray[i].value,
+                    stopover: true
+                });
+            }
+        }
+
+        directionsService.route({
+            origin: document.getElementById('start').value,
+            destination: document.getElementById('end').value,
+            waypoints: waypts,
+            optimizeWaypoints: true,
+            travelMode: 'DRIVING'
+        }, function (response, status) {
+            if (status === 'OK') {
+                directionsDisplay.setDirections(response);
+                var route = response.routes[0];
+                var summaryPanel = document.getElementById('directions-panel');
+                summaryPanel.innerHTML = '';
+                // For each route, display summary information.
+                for (var i = 0; i < route.legs.length; i++) {
+                    var routeSegment = i + 1;
+                    summaryPanel.innerHTML += '<b>Route Segment: ' + routeSegment +
+                        '</b><br>';
+                    summaryPanel.innerHTML += route.legs[i].start_address + ' to ';
+                    summaryPanel.innerHTML += route.legs[i].end_address + '<br>';
+                    summaryPanel.innerHTML += route.legs[i].distance.text + '<br><br>';
+                }
+            } else {
+                window.alert('Directions request failed due to ' + status);
+            }
+        });
+    }
+
+
+
+    function showResult(result) {
+
+        //  alert(result.geometry.location.lat())
+        arr001.push([result.geometry.location.lat(), result.geometry.location.lng()]);
+        arraddress.push($("#txtgeolocations").val());
+
+
+
+        var tap = "";
+        for (var i = 0; i < arr001.length; i++) {
+
+            $("#tappanel").empty();
+            var name = $("#txtgeolocations").val();
+            tap += '<input type="number" id="txtnumber'+i+'" value='+(i+1)+' style="width:22px" min="0" max=' + arr001.length + '><input typ="Text" id="txtarray' + i + '" class="form-control" style="width:333px;margin-bottom:5px;margin-left:4px" title="' + arraddress[i] + '" readonly value="' + arraddress[i] + '" /><a id="anc' + i + '" href="#" onclick="remove(' + i + ')" class="fa fa-close"></a>'
+
+            $("#tappanel").append(tap);
+            $("#txtgeolocations").val(" ");
+        }
+    }
+
+    function remove(val) {
+     //   alert("ok"+val);
+        arr001.splice(val, 1);
+
+        $("#txtarray" + val).remove();
+        $("#txtnumber" + val).remove();
+        $("#anc" + val).remove();
+        Showmap();
+
+        arraddress.splice(val, 1);
+        console.log(arraddress);
+    }
+
+
+
+    function getLatitudeLongitude(callback, address) {
+        // alert(address);
+        // If adress is not supplied, use default value 'Ferrol, Galicia, Spain'
+        address = address || 'Ferrol, Galicia, Spain';
+        // Initialize the Geocoder
+        geocoder = new google.maps.Geocoder();
+        if (geocoder) {
+            geocoder.geocode({
+                'address': address
+            }, function (results, status) {
+                if (status == google.maps.GeocoderStatus.OK) {
+                    callback(results[0]);
+                }
+            });
+        }
+    }
+
+
+
+
+
+
+    function getlatlng() {
+        
+        var address = document.getElementById('txtgeolocations').value;
+        getLatitudeLongitude(showResult, address)
+        //$("#btnshow").show();
+        window.setTimeout(function () {
+            Showmap();
+        }, 1000);
+        
+    }
+
+
+
+    //  
+
+    function geocodePosition(pos) {
+        var geocoder = new google.maps.Geocoder();
+        geocoder.geocode({
+            latLng: pos
+        }, function (responses) {
+            if (responses && responses.length > 0) {
+                // updateMarkerAddress(responses[0].formatted_address);
+            } else {
+                //   updateMarkerAddress('Cannot determine address at this location.');
+            }
+        });
+    }
+    function updateMarkerPosition(latLng) {
+        document.getElementById('info').innerHTML = [
+          latLng.lat(),
+          latLng.lng()
+        ].join(', ');
+    }
+    function Showmap() {
+
+
+        var len = arr001.length;
+
+        var markerss = [];
+
+        var LATITUDELng = { lat: parseFloat(17.701961), lng: parseFloat(83.233461) };
+
+        var map = new google.maps.Map(document.getElementById('map'), {
+            zoom: 13,
+            center: new google.maps.LatLng(arr001[0][0], arr001[0][1]),
+            gestureHandling: 'greedy',
+            mapTypeId: google.maps.MapTypeId.ROADMAP
+        });
+
+        var infowindow = new google.maps.InfoWindow();
+
+        var marker, i;
+      
+        for (i = 0; i < arr001.length; i++) {
+
+
+
+            var latLng = new google.maps.LatLng(arr001[i][0], arr001[i][1]);
+
+            var  buscolor = '/NumberMarkers/marker' + (i+1) + '.png';
+
+            marker = new google.maps.Marker({
+                position: latLng,
+                map: map,
+                title: 'hello',
+                icon: buscolor,
+                draggable: true,  
+            });
+
+            updateMarkerPosition(latLng);
+            geocodePosition(latLng);
+            markerss.push(marker);
+            marker.setMap(map);
+            var perlatlng = "";
+
+            google.maps.event.addListener(marker, 'drag', function (event) {
+                document.getElementById("txtroutename1").value = event.latLng.lat() + "," + event.latLng.lng();
+                //  document.getElementById("txtroutecode").value = event.latLng.lng();
+            });
+
+
+
+            google.maps.event.addListener(marker, 'dragstart', function (event) {
+
+                // document.getElementById("txtroutecode1").value = event.latLng.lat() + "," + event.latLng.lng();
+
+                document.getElementById("txtroutecode1").value = event.latLng.lat();
+                geocodePosition(marker.getPosition());
+
+                var STARTLN = "" + marker.getPosition() + "";
+                perlatlng = STARTLN;
+
+
+            });
+
+
+            google.maps.event.addListener(marker, 'dragend', function () {
+
+
+
+
+                //    alert("previous" + perlatlng);
+
+
+
+                //  updateMarkerStatus('Drag ended');
+                geocodePosition(marker.getPosition());
+
+
+
+                var latlon = "" + marker.getPosition() + "";
+                var updatelatlng = latlon.match(/[-+]?[0-9]*\.?[0-9]+/g)
+
+                //  alert("UPDATE........ ==>"+updatelatlng)
+
+                var prelaln = "" + perlatlng + "";
+                var oldlatlng = prelaln.match(/[-+]?[0-9]*\.?[0-9]+/g)
+                //  alert("OLD ==>" + oldlatlng);
+
+                //    console.log(arr001);
+                var j = 0;
+                for (j = 0; j < arr001.length; j++) {
+
+                    var fn = arr001[j][0];
+                    var sn = oldlatlng;
+                    //  alert("fn" + fn+  "sn"  +sn);
+                    //var str = oldlatlng.toString()
+                    //var output = str.split(',');
+                    //alert(output[0]);
+
+                    //  alert("textvalues"+$("#txtroutecode").val() + "" + $("#txtroutename").val());
+                    //  if (fn.toString() == sn.toString() || "" + fn.toString() + "" == sn.toString()) {
+                 //   alert(fn + "==" + $("#txtroutecode1").val());
+                 
+                    if (fn == $("#txtroutecode1").val().toString()) {
+                        //      alert("yes" + j);
+                        //  var y
+                        var final_latlong = $("#txtroutename1").val();
+
+                        var final_split = final_latlong.split(',');
+
+
+                        arr001[j] = [final_split[0], final_split[1]];
+                        //    console.log(arr001);
+                    }
+                    else {
+                    }
+                }
+            });
+        }
+    }
+
+    function save() {
+
+        var ROUTESID = localStorage.getItem("ROUTESID")
+        
+        $.post("/HOME/_ROUTES", { "ROUTES_NAME": $("#txtroutename").val(), "ROUTES_CODE": $("#txtroutecode").val(), "ROUTESID": ROUTESID }, function (data) {
+
+            GetAddress();
+        });
+
+
+
+    }
+
+
+
+
+    var arrlongaddres = [];
+    var arrshortaddres = [];
+
+
+
+    function GetAddress() {
+        var j = 1;
+        for (var i = 0; i < arr001.length; i++) {
+
+
+            $.ajax({
+                url: 'https://maps.googleapis.com/maps/api/geocode/json?latlng=' + arr001[i][0] + ',' + arr001[i][1] + '&sensor=true&&key=AIzaSyC0souWqrnGUzqJbZ1CTO-CW5rw0QTYkuU',
+                success: function (data) {
+
+
+               //     alert(data.results[0].formatted_address + "----" + data.results[0].address_components[0].short_name);
+
+                    arrlongaddres.push(data.results[0].formatted_address);
+                    arrshortaddres.push(data.results[0].address_components[0].short_name);
+
+
+                    if (arr001.length == j) {
+
+                        save1();
+                    }
+                    j++;
+
+
+
+
+
+                }
+            });
+        }
+      
+    }
+
+
+    var j = 1;
+    function save1() {
+       var rid= localStorage.getItem("ROUTESID")
+       for (var k = 0; k < arr001.length; k++) {
+           var lengthhh = arr001.length-1;
+           //alert(arrlongaddres[lengthhh - k]);
+            $.post("/Home/_STATTIONS", {
+                "STATION_GOOGLEName": arrlongaddres[k], "STATION_ShortCode": arrshortaddres[k],
+                "STATION_Lat": arr001[k][0], "STATION_Lng": arr001[k][1], "STATION_PLACE": arraddress[k], "ROUTE_ID": rid, "SNUMBER": $("#txtnumber" + k).val()
+            }, function (data) {
+                if (arr001.length == j) {
+                    alert("success");
+                    location.reload();
+                }
+                j++;
+            });
+        }
+
+    }
+
+
+
+
+    localStorage.setItem("ROUTESID",null);
+    
+    function EDIT(ROUTES_ID) {
+
+        $("body").scrollTop(0);
+
+        $.post("/Home/_RoutesBYID", { "ROUTES_ID": ROUTES_ID }, function (datay) {
+            $("#btnadd").hide();
+            var dataM = datay['data'];
+            $("#txtroutename").val(dataM[0].ROUTES_NAME);
+            $("#txtroutecode").val(dataM[0].ROUTES_CODE);
+
+            $.post("/Home/_stationsbyroute", { "ROUTES_ID": ROUTES_ID }, function (data) {
+                localStorage.setItem("ROUTESID", ROUTES_ID);
+                $("#divrow").css('display', 'block');
+                $("#divrow1").css('display', 'block');
+                var dataT = data['data'];
+                
+                var tap = "";
+
+                arr001 = [];
+                arraddress = [];
+                
+                var M = 1;
+                for (var i = 0; i < dataT.length; i++) {
+
+                 //   alert(dataT[i].STATION_PLACE);
+                    // alert(dataT[i].STATION_Lat + "" + dataT[i].STATION_Long);
+                    arr001.push([dataT[i].STATION_Lat, dataT[i].STATION_Long]);
+
+                    arraddress.push(dataT[i].STATION_PLACE);
+
+                    $("#tappanel").empty();
+                    var name = $("#txtgeolocations").val();
+                    tap += '<input style="width:22px" type="number" id="txtnumber'+i+'" min="0" value=' +dataT[i].SNUMBER + ' ><input typ="Text" id="txtarray' + i + '" class="form-control" style="width:333px;margin-bottom:5px;margin-left:4px" title="' + dataT[i].STATION_PLACE + '" readonly value="' + dataT[i].STATION_PLACE + '" /><a id="anc' + i + '" href="#" onclick="Removemarker(\'' + dataT[i].STATION_ID + '\',' + i + ')" class="fa fa-close"></a>'
+                    $("#tappanel").append(tap);
+
+
+                    if (dataT.length == M) {
+                       
+                       
+                        Showmap();
+                    }
+                    M++;
+                }
+
+            });
+
+        });
+    }
+
+
+
+    function Removemarker(Stationid, val) {
+
+        if (confirm("are you sure to delete this station !")) {
+            arr001.splice(val, 1);
+            $("#txtarray" + val).remove();
+            $("#txtnumber" + val).remove();
+            $("#anc" + val).remove();
+            arraddress.splice(val, 1);
+
+            $.post("/Home/STATIONS_DELETE", { "STATION_ID": Stationid }, function () {
+                Showmap();
+            });
+
+        } else {
+            
+        }
+
+        //alert(Stationid);
+        
+        //arr001.splice(val, 1);
+
+        //$("#txtarray1" + val).remove();
+        //$("#anc" + val).remove();
+        //Showmap();
+
+        //arraddress.splice(val, 1);
+        //console.log(arraddress);
+    }
+
+
+  
+    //function EDITMAP() {
+
+    //    alert("yes");
+    //    var len = arr001.length;
+    //    alert(len);
+    //    var markerss = [];
+
+    //    var LATITUDELng = { lat: parseFloat(17.701961), lng: parseFloat(83.233461) };
+
+    //    var map = new google.maps.Map(document.getElementById('map'), {
+    //        zoom: 13,
+    //        center: new google.maps.LatLng(arr001[0][0], arr001[0][1]),
+    //        gestureHandling: 'greedy',
+    //        mapTypeId: google.maps.MapTypeId.ROADMAP
+    //    });
+
+    //    var infowindow = new google.maps.InfoWindow();
+
+    //    var marker, i;
+
+
+    //    for (i = 0; i < arr001.length; i++) {
+
+
+
+    //        var latLng = new google.maps.LatLng(arr001[i][0], arr001[i][1]);
+
+
+    //        marker = new google.maps.Marker({
+
+    //            position: latLng,
+    //            map: map,
+    //            title: 'hello',
+    //            draggable: true,
+
+    //        });
+
+    //        // updateMarkerPosition(latLng);
+    //        // geocodePosition(latLng);
+    //        markerss.push(marker);
+    //        marker.setMap(map);
+    //        var perlatlng = "";
+
+    //        google.maps.event.addListener(marker, 'drag', function (event) {
+    //            document.getElementById("txtroutename1").value = event.latLng.lat() + "," + event.latLng.lng();
+    //            //  document.getElementById("txtroutecode").value = event.latLng.lng();
+    //        });
+
+    //        google.maps.event.addListener(marker, "click", function (e) {
+    //            alert(e.latLng.lat() + "," + e.latLng.lng());
+    //            var stringContent = '<input type="button" vlaue="Delete Marker" onclick="Removemarker(\'' + e.latLng.lat() + '\')" />'
+    //            var infowindow = new google.maps.InfoWindow({
+    //                content: stringContent
+    //            });
+    //            infoWindow.open(map, marker);
+    //        });
+    //        google.maps.event.addListener(marker, 'dragstart', function (event) {
+
+    //            document.getElementById("txtroutecode1").value = event.latLng.lat() + "," + event.latLng.lng();
+    //            geocodePosition(marker.getPosition());
+
+    //            var STARTLN = "" + marker.getPosition() + "";
+    //            perlatlng = STARTLN;
+
+
+    //        });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    //        google.maps.event.addListener(marker, 'dragend', function () {
+
+
+
+
+    //            //    alert("previous" + perlatlng);
+
+
+
+    //            //  updateMarkerStatus('Drag ended');
+    //            geocodePosition(marker.getPosition());
+
+
+
+    //            var latlon = "" + marker.getPosition() + "";
+    //            var updatelatlng = latlon.match(/[-+]?[0-9]*\.?[0-9]+/g)
+
+    //            //  alert("UPDATE........ ==>"+updatelatlng)
+
+    //            var prelaln = "" + perlatlng + "";
+    //            var oldlatlng = prelaln.match(/[-+]?[0-9]*\.?[0-9]+/g)
+    //            //  alert("OLD ==>" + oldlatlng);
+
+    //            //    console.log(arr001);
+    //            var j = 0;
+    //            for (j = 0; j < arr001.length; j++) {
+
+    //                var fn = arr001[j];
+    //                var sn = oldlatlng;
+    //                //  alert("fn" + fn+  "sn"  +sn);
+    //                //var str = oldlatlng.toString()
+    //                //var output = str.split(',');
+    //                //alert(output[0]);
+
+    //                //  alert("textvalues"+$("#txtroutecode").val() + "" + $("#txtroutename").val());
+    //                //  if (fn.toString() == sn.toString() || "" + fn.toString() + "" == sn.toString()) {
+    //                //  alert(fn + "==" + $("#txtroutecode1").val());
+    //                if (fn == $("#txtroutecode1").val().toString()) {
+    //                    //      alert("yes" + j);
+    //                    //  var y
+    //                    var final_latlong = $("#txtroutename1").val();
+
+    //                    var final_split = final_latlong.split(',');
+
+
+    //                    arr001[j] = [final_split[0], final_split[1]];
+    //                    //    console.log(arr001);
+    //                }
+    //                else {
+
+    //                }
+
+    //            }
+
+    //        });
+
+
+
+
+    //    }
+    //}
+
+
+
+
+
+
+   
+
+    function bindvehicles() {
+
+        $.post("/Home/Load_Vehicles", function (data) {
+
+            var dataT = data['data'];
+            var opt = "<option value='0'>-Select-</option>";
+            var opt = "<option value='-1'>Select Vehicle</option>";
+            for (var i = 0; i < dataT.length; i++) {
+                opt += "<option value='" + dataT[i].VEHICLES_DEVICE_ID + "'>" + dataT[i].VEHICLES_REGNUMBER + "</option>";
+            }
+         
+            $("#ddlvehicles_history").text("");
+            $('#ddlvehicles_history').append(opt);
+           // $("#ddlvehicles_history").select2();
+        });
+    }
+
+
+
+
+    function Track_history() {
+        $.post("/Home/Tracking_history", { "Startdate": $("#txtfrmdate").val(), "Enddate": $("#txttodate").val(), "Dev_ID": $("#ddlvehicles_history").val() }, function (data) {
+
+            var DATAT = data['TripData'];
+            //   Slider_TrackInfo = DATAT;
+            console.log(data);
+            setdata(data);
+
+        });
+    }
+
+
+    function setdata(data) {
+        var markerss = [];
+        dataT = data['TripData'];
+        var datalength = data['TripData'].length
+
+
+        var mapOptions = {
+            center: new google.maps.LatLng(dataT[0].LATITUDE, dataT[0].LONGITUDE),
+            icon: '/Truck/truck_green_0.png',
+            zoom: 10,
+            gestureHandling: 'greedy',
+       
+        };
+        map = new google.maps.Map(document.getElementById("map"), mapOptions);
+        var infowindow = new google.maps.InfoWindow();
+        var lat_lng = new Array();
+        var latlngbounds = new google.maps.LatLngBounds();
+        for (i = 0; i < datalength; i++) {
+           
+            tr = $('<tr/>');
+            tr.append('<td><img src="/NumberMarkers/marker' + (i + 1) + '.png"  onclick="movemarker000(\'' + dataT[i].LATITUDE + '\',\'' + dataT[i].LONGITUDE + '\',' + (i + 1) + ')"></ img></td>');
+            tr.append("<td>" + dataT[i].PLACE + "</td>");
+            tr.append("<td>" + dataT[i].TRIPDATAT_SPEED + "</td>");
+            tr.append("<td>" + dataT[i].ODOMETER + "</td>");
+            $('#tblhistory').append(tr);
+
+            var myLatlng = new google.maps.LatLng(dataT[i].LATITUDE, dataT[i].LONGITUDE);
+
+            lat_lng.push(myLatlng);
+
+            var buscolor = "";
+            var title = "";
+
+            var f = datalength - 1;
+         
+                buscolor = '/NumberMarkers/dot.png';
+                title = 'hyderabad'
+          
+            var marker = new google.maps.Marker({
+                position: myLatlng,
+                icon: buscolor,
+                map: map,
+                title: title,
+            });
+            latlngbounds.extend(marker.position);
+            markerss.push(marker);
+            marker.setMap(map);
+            //  bounds.extend(marker.position);
+        //    markersZ.push(marker);
+            //   latlngbounds.extend(marker.position);
+            google.maps.event.addListener(marker, 'click', (function (marker, i) {
+                //  alert("okk")
+                var stringContent = '<div style="color:black"><table>'
+             + '<tr><td><b>DRIVER:</b></td><td>' + dataT[i].DRIVER_NAME
+                                              + '<tr><td><b>User Time:</b></td><td><label id="lblcurrentspeed">' + dataT[i].TRIPDATA_TRIPDATE
+                                              + '</td><tr><td><b>SPEED(Km/Hr):</b></td><td>Date <label id="lblcurrentdate">'
+                                               + dataT[i].TRIPDATAT_SPEED
+                                               + '</td><tr><td><b>Odometer Reading(km):</b></td><td>Date <label id="lblcurrentdate">'
+                                               + dataT[i].ODOMETER
+                                                + '</td><tr><td><b>Time:</b></td><td>Postion <label id="">'
+                                               + dataT[i].LATITUDE + "" + dataT[i].LONGITUDE
+                                              + '</label></td></tr><tr><td><b>Postion:&nbsp;</b></td><td><label id="lblcurrentlocation">'
+                                              + dataT[i].PLACE + '</label></td></tr></table></div>';
+                return function () {
+                    infowindow.setContent(stringContent);
+                    infowindow.open(map, marker);
+                }
+            })(marker, i));
+        }
+
+   
+
+    }
+
+
+    function dispalyhistory()
+    {
+        $("#btnhistory").css('display', 'none');
+
+        
+
+        $("#btntrack").css('display', 'block');
+        $("#txtfrmdate").css('display', 'block');
+        $("#txttodate").css('display', 'block');
+        $("#ddlvehicles_history").css('display', 'block');
+    }
+
+
+
+
+
+
+
+
+</script>
+<script async defer
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC0souWqrnGUzqJbZ1CTO-CW5rw0QTYkuU&callback=initMap&libraries=places">
+</script>
+

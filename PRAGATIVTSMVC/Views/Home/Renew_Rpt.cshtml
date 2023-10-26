@@ -1,0 +1,257 @@
+﻿
+@{
+    ViewBag.Title = "Renew_Rpt";
+    Layout = "~/Views/Shared/Layout2.cshtml";
+}
+
+<h2>RENEWAL_DASHBOARD</h2>
+
+
+<style>
+    .font_css {
+        font-size: 12px;
+        font-family: "Times New Roman", Times, serif;
+        width: 100%;
+        color: black !important;
+    }
+
+    .switch {
+        position: relative;
+        display: inline-block;
+        width: 60px;
+        height: 34px;
+    }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+    .slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #ccc;
+        -webkit-transition: .4s;
+        transition: .4s;
+    }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            -webkit-transition: .4s;
+            transition: .4s;
+        }
+
+    input:checked + .slider {
+        background-color: #2196F3;
+    }
+
+    input:focus + .slider {
+        box-shadow: 0 0 1px #2196F3;
+    }
+
+    input:checked + .slider:before {
+        -webkit-transform: translateX(26px);
+        -ms-transform: translateX(26px);
+        transform: translateX(26px);
+    }
+
+    /* Rounded sliders */
+    .slider.round {
+        border-radius: 34px;
+    }
+
+        .slider.round:before {
+            border-radius: 50%;
+        }
+
+    .body {
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        font-family: 'Source Sans Pro','Helvetica Neue',Helvetica,Arial,sans-serif;
+        font-weight: 400;
+        overflow-x: hidden;
+        overflow-y: auto;
+    }
+
+    .circle {
+        border-radius: 50%;
+        behavior: url(PIE.htc);
+        /* remove if you don't care about IE8 */
+        width: 27px;
+        height: 27px;
+        padding: 5px;
+        background: #fff;
+        border: 2px solid #666;
+        color: #666;
+        text-align: center;
+        font: 32px Arial, sans-serif;
+    }
+
+    ul {
+        list-style-type: none;
+    }
+
+    .select2-selection__rendered {
+        border: 1px solid;
+        border-radius: 5px;
+        height: 35px;
+    }
+</style>
+
+<div id="mainContent">
+    <div class="row gap-20">
+        <div class="masonry-item w-100">
+            <div class="row gap-20">
+                <div class="col-md-3">
+                    <div class="layers bd bgc-white p-20">
+                        <div class="layer w-100 mB-10">
+                            <h6 class="lh-1" style="text-align:center;">TODAY RENEWALS</h6>
+                        </div>
+                        <div class="layer w-100">
+                            <div class="peers ai-sb fxw-nw">
+
+                                <div style="margin:auto;">
+                                    <div class="peer">
+                                        <span class="d-ib lh-0 va-m fw-600 bdrs-10em pX-15 pY-15 bgc-green-50 c-green-500" id="spn_today">0</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <div class="layers bd bgc-white p-20">
+                        <div class="layer w-100 mB-10">
+                            <h6 class="lh-1" style="text-align:center;">MONTHLY RENEWALS</h6>
+                        </div>
+                        <div class="layer w-100">
+                            <div class="peers ai-sb fxw-nw">
+
+                                <div style="margin:auto;">
+                                    <div class="peer"><span class="d-ib lh-0 va-m fw-600 bdrs-10em pX-15 pY-15 bgc-red-50 c-red-500" id="spn_monthly">0</span></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="layers bd bgc-white p-20">
+                        <div class="layer w-100 mB-10">
+                            <h6 class="lh-1" style="text-align:center;">YEARLY RENEWALS</h6>
+                        </div>
+                        <div class="layer w-100">
+                            <div class="peers ai-sb fxw-nw">
+
+                                <div style="margin:auto;">
+                                    <div class="peer"><span class="d-ib lh-0 va-m fw-600 bdrs-10em pX-15 pY-15 bgc-purple-50 c-purple-500" id="spn_yearly">0</span></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="row gap-20">
+        <div class="masonry-item w-100">
+            <div class="row gap-20">
+                <div class="col-md-3">
+                    <div class="layers bd bgc-white p-20">
+                        <div class="layer w-100 mB-10">
+                            <h6 class="lh-1" style="text-align:center;">NEW INSTALLATIONS(Today)</h6>
+                        </div>
+                        <div class="layer w-100">
+                            <div class="peers ai-sb fxw-nw">
+
+                                <div style="margin:auto;">
+                                    <div class="peer">
+                                        <span class="d-ib lh-0 va-m fw-600 bdrs-10em pX-15 pY-15 bgc-green-50 c-green-500" id="spn_istln">0</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="layers bd bgc-white p-20">
+                        <div class="layer w-100 mB-10">
+                            <h6 class="lh-1" style="text-align:center;">ACTIVE DEVICES(Today)</h6>
+                        </div>
+                        <div class="layer w-100">
+                            <div class="peers ai-sb fxw-nw">
+
+                                <div style="margin:auto;">
+                                    <div class="peer">
+                                        <span class="d-ib lh-0 va-m fw-600 bdrs-10em pX-15 pY-15 bgc-green-50 c-green-500" id="spn_activedev">0</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="layers bd bgc-white p-20">
+                        <div class="layer w-100 mB-10">
+                            <h6 class="lh-1" style="text-align:center;">PENDING RENEWALS(3MONTHS)</h6>
+                        </div>
+                        <div class="layer w-100">
+                            <div class="peers ai-sb fxw-nw">
+
+                                <div style="margin:auto;">
+                                    <div class="peer">
+                                        <span class="d-ib lh-0 va-m fw-600 bdrs-10em pX-15 pY-15 bgc-green-50 c-green-500" id="spn_duerenew">0</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function ()
+    {
+
+        Get_Renewal_data();
+
+    });
+
+    function Get_Renewal_data()
+    {
+        $.get("/api/Get_Renew_Dashboard/", function (data) {
+            
+
+            $("#spn_today").text(data[0].DAILY);
+            $("#spn_monthly").text(data[0].MONTHLY);
+            $("#spn_yearly").text(data[0].YEARLY);
+            $("#spn_activedev").text(data[0].ACTIVEDEVICES);
+            $("#spn_istln").text(data[0].TD_INSTALLATION);
+            $("#spn_duerenew").text(data[0].PENDING_RENEW);
+        });
+    }
+
+
+</script>
+
+
+
+
+
+

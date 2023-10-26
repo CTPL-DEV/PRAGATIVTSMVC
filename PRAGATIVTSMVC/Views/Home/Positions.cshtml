@@ -1,0 +1,102 @@
+﻿
+@{
+    ViewBag.Title = "Positions";
+    Layout = "~/Views/Shared/Layout2.cshtml";
+}
+<meta name="viewport" content="width=device-width" />
+
+<link href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700" rel="stylesheet" type="text/css" />
+<link href="~/assets/plugins/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+<link href="~/assets/style.css" rel="stylesheet">
+<link rel="stylesheet" href="~/assets/plugins/material/material.min.css">
+<link rel="stylesheet" href="~/assets/css/material_style.css">
+<script type="text/javascript" charset="utf8" src="//code.jquery.com/jquery-1.10.2.min.js"></script>
+<h2>Positions</h2>
+<div class="row" id="divrow">
+    <div class="col-md-2">
+        IMEI:<input type="number" id="txt_IMEI" class="form-control" pattern="^[0-9]*$" onchange="checklength()"  />
+    </div>
+    <div class="col-md-2">
+        <label>Start Date: </label> <input type="text" id="txtstartdate" placeholder="Select StartDate" class="form-control" />
+        </div>
+    <div class="col-md-2">
+        <label>End Date :</label> <input type="text" id="txtenddate" placeholder="Select EndDate" class="form-control" />
+    </div>
+         <input type="button" value="SUBMIT" style="margin-top:10px;" id="btn_submit" onclick="get_positions()" class="btn btn-tbl-delete" />
+     </div>
+    <div class="row" style="margin-left:20px;margin-top:20px;">
+    <textarea rows="30" cols="1000" style="margin-top:10px;margin-left:20px;" id="txt_area"></textarea>
+</div>
+
+    <script>
+        window.onload = function () {
+            $('#txtstartdate').bootstrapMaterialDatePicker
+                     ({
+                         format: 'YYYY-MM-DD',
+                         weekStart: 1,
+                         time: false,
+                         nowButton: true,
+                         clearButton: false,
+                         cancelText: 'Cancel',
+                         switchOnClick: false,
+                         twelvehour: false
+
+                     });
+            $('#txtenddate').bootstrapMaterialDatePicker
+                     ({
+                         format: 'YYYY-MM-DD',
+                         weekStart: 1,
+                         time: false,
+                         nowButton: true,
+                         clearButton: false,
+                         cancelText: 'Cancel',
+                         switchOnClick: false,
+                         twelvehour: false
+
+                     });
+        }
+
+        function checklength() {
+            var maxLength = $("#txt_IMEI").val().length;
+            if (maxLength != 15) {
+                alert('Please Enter 15 digit IMEI Number');
+                return false;
+            }
+        }
+
+        function get_positions() {
+            
+            var device_id;
+            var username = "admin";
+            var password = "admin";
+            var save_devices = { "uniqueId": $("#txt_IMEI").val(), "From": $("#txtstartdate").val(),"To":$("#txtenddate").val() };
+            $.ajax
+                ({
+                    type: "GET",
+                    url: "http://52.230.24.18:8082/api/devices",
+                    async: false,
+                    dataType: 'json',
+                    contentType: 'application/json',
+                    beforeSend: function (xhr) {
+                        xhr.setRequestHeader('Authorization', "Basic " + btoa(username + ":" + password));
+                    },
+                    data: JSON.stringify(save_devices),
+                     function (data) {
+                        
+
+                        var dataT = data['data'];
+                        var arr = [];
+                        if (dataT.length > 0) {
+                            for (var i = 0; i < dataT.length; i++) {
+                                document.getElementById("txt_area").innerText = $("#txt_area").val() + "<br/>" + dataT[i].newdata;
+                            }
+
+                        }
+                    }
+                });
+
+
+
+        }
+
+    </script>

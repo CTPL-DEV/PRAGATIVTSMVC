@@ -1,0 +1,183 @@
+﻿
+@{
+    ViewBag.Title = "passangers";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="container-fluid">
+    <div class="row page-titles">
+        <div class="col-md-5 col-8 align-self-center">
+            <h3 class="text-themecolor m-b-0 m-t-0">PASSENGER</h3>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/Home/frm_GridTrack_Distance">Home</a></li>
+                <li class="breadcrumb-item active">PASSENGER</li>
+            </ol>
+        </div>
+    </div>
+    <div class="row" id="divrow">
+        <div class="col-lg-6">
+              NAME :<input type="text" id="txtname" class="form-control" />
+              ADDRESS :<textarea class="form-control" id="txtaddress"></textarea>
+        </div>
+        <div class="col-lg-6">
+            MOBILE:<input type="text" class="form-control" id="txtmobilenumber" />
+        </div>
+        <div>
+            <input type="button" id="btnsave" style="margin-left:18px;margin-top:10px" onclick="save()" class="btn btn-success" value="Submit" />
+            <input type="button" id="btnupdate" style="margin-left:18px;margin-top:10px" onclick="update()" class="btn btn-success" value="Update" />
+        </div>
+    </div>
+    <div style="margin-top:10px">
+        <input type="button" class="btn btn-primary" id="btnadd" value="ADD" onclick="show()" />
+    </div>
+
+    <div>
+
+
+        <table id="tblpassanger" style="font-size:11px;margin-top:10px" class="display nowrap table table-hover table-striped table-bordered" cellspacing="0" width="100%">
+            <thead>
+                <tr>
+                    <th>SNO</th>
+                    <th>PASSENGER NAME</th>
+                    <th>PASSENGER ADDRESS</th>
+                    <th>PASSENGER MOBILENUMBER</th>
+                    <th>ACTION</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+</div>
+<script>
+    window.onload = function () {
+
+        $("#divrow").hide();
+        $("#btnupdate").hide();
+       
+      
+       
+        getall();
+    }
+
+    function show() {
+        $("#btnadd").hide();
+        $("#divrow").show();
+    }
+
+
+
+
+    function getall() {
+
+
+        $.post("/Home/_passangers", function (data) {
+            var dataT = data['data'];
+
+            for (var i = 0; i < dataT.length; i++) {
+
+                var tr = $('<tr/>');
+
+                tr.append("<td>" + (i + 1) + "</td>");
+                tr.append("<td>" + dataT[i].PASSANGER_NAME + "</td>");
+                tr.append("<td>" + dataT[i].PASSANGER_address + "</td>");
+                tr.append("<td>" + dataT[i].PASSANGER_mobileno + "</td>");
+                tr.append("<td><input type='button' value='EDIT' class='btn btn-primary' onclick='EDIT(" + dataT[i].PASSANGER_ID + ")'  /></td>");
+                $("#tblpassanger").append(tr);
+            }
+            $('#tblpassanger').DataTable({
+                dom: 'Bfrtip',
+                buttons: [
+                    //'copy', 'csv', 'excel', 'pdf', 'print'
+                    'excel', 'pdf', 'print'
+                ]
+            });
+        });
+    }
+
+
+
+    function save() {
+
+
+        if ($("#txtname").val() != '' && $("#txtaddress").val() != '' ) {
+       
+            $.post("/Home/passanger_insert", { "PASSENGER_NAME": $("#txtname").val(), "PASSENGER_address": $("#txtaddress").val(), "PASSENGER_mobileNo": $("#txtmobilenumber").val() }, function (data) {
+
+                if (data = true) {
+
+                    alert("successfully insert..");
+                    $("#divrow").hide();
+                    location.reload();
+                }
+            });
+        }
+        else {
+            if ($("#txtname").val() == '') {
+                alert("enter name..")
+                $("#txtname").focus();
+            }
+            else if ($("#txtaddress").val() == '') {
+                alert("enter address..")
+                $("#txtaddress").focus();
+            }
+           
+        }
+
+    }
+
+
+    function EDIT(ID) {
+       
+        localStorage.setItem("PASSANGERID", ID);
+        $.post("/Home/_passangers", function (data) {
+            var dataT = data['data'];
+            $("#btnsave").hide();
+            $("#btnupdate").show();
+            $("#btnadd").hide();
+            $("#divrow").show();
+            for (var i = 0; i < dataT.length; i++) {
+
+                if (dataT[i].PASSANGER_ID == ID) {
+                    $("#txtname").val(dataT[i].PASSANGER_NAME);
+                    $("#txtaddress").val(dataT[i].PASSANGER_address);
+                    $("#txtmobilenumber").val(dataT[i].PASSANGER_mobileno);
+                 
+
+                }
+            }
+        });
+    }
+
+    function update() {
+
+        var ID = localStorage.getItem("PASSANGERID");
+
+        if ($("#txtname").val() != '' && $("#txtaddress").val() != '' && $("#txtmobilenumber").val() != '') {
+
+            $.post("/Home/passanger_update", { "PASSENGER_NAME": $("#txtname").val(), "PASSENGER_address": $("#txtaddress").val(), "PASSENGER_mobileNo": $("#txtmobilenumber").val(),"PASSENGER_ID":ID }, function (data) {
+
+                if (data = true) {
+
+                    alert("successfully update..");
+                    $("#divrow").hide();
+                    location.reload();
+                }
+            });
+        }
+        else {
+            if ($("#txtname").val() == '') {
+                alert("enter name..")
+                $("#txtname").focus();
+            }
+            else if ($("#txtaddress").val() == '') {
+                alert("enter address..")
+                $("#txtaddress").focus();
+            }
+            else if ($("#txtmobilenumber").val() == '') {
+                alert("select mobilenumber ..")
+                $("#txtmobilenumber").focus();
+            }
+        }
+
+
+    }
+</script>

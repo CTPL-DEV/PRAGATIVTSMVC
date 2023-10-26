@@ -1,0 +1,180 @@
+﻿@{
+    ViewBag.Title = "DO_ACKNOWLEDGEMENT";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="container-fluid">
+    <div class="row page-titles">
+        <div class="col-md-5 col-8 align-self-center">
+            <h3 class="text-themecolor m-b-0 m-t-0">DO ACKNOWLEDGEMENT</h3>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/Home/frm_GridTrack_Distance">DO ACKNOWLEDGEMENT</a></li>
+                <li class="breadcrumb-item active">DO ACKNOWLEDGEMENT</li>
+            </ol>
+        </div>
+    </div>
+
+    <div class="row" id="DIVROW1">
+        <div class="col-lg-06" style="margin-left:14px;margin-bottom:10px">
+            <select class="form-control" id="ddlclients" onchange="DOSTATUS()"></select>
+        </div>
+        <div class="col-lg-06" style="margin-left:14px;margin-bottom:10px">
+            <input type="button" class="btn btn-primary" onclick="check_selected()" value="CONFIRM" />
+        </div>
+    </div>
+    <div>
+        <table id="tbldostatus" border="1" style="font-size: 11px; width:100%" class="display nowrap table table-hover table-striped table-bordered" cellspacing="0" width="100%">
+            <thead>
+                <tr>
+                    <th>SNO</th>
+                    <th>WORK ORDER</th>
+                    <th>CHECK</th>
+                    <th>ACTION</th>
+                </tr>
+            </thead>
+            <tbody id="tbldostatusbody"></tbody>
+        </table>
+    </div>
+
+
+</div>
+
+<script>
+    var CategID = localStorage.getItem("USERS_CATEG_ID")
+
+    if (CategID == 87) {
+
+    }
+    else {
+        $("#DIVROW1").hide();
+    }
+
+    window.onload = function () {
+        LoadClients();
+        DOSTATUS();
+    };
+
+    function LoadClients() {
+
+        $.post("/bajajib/Load_Clients", function (data) {
+            var dataT = data['data'];
+            $("#ddlclients").empty();
+            var opt = "<option value='0'>-Select-</option>";
+            for (var i = 0; i < dataT.length; i++) {
+                opt += "<option value='" + dataT[i].CATEG_ID + "'>" + dataT[i].CATEG_NAME + "</option>";
+            }
+            $("#ddlclients").text("");
+            $('#ddlclients').append(opt);
+        });
+    }
+
+    var DO_WORKORDER = [];
+    function DOSTATUS() {
+
+
+        if ($("#ddlclients").val() != '0') {
+            $.post("/bajajib/workordersbasedonclients_DOISNULL", { "CLIENTID": $("#ddlclients").val() }, function (data) {
+                //' + datat[i].TRIPID + ',\'' + datat[i].WORKORDERNO + '\',
+
+
+                if ($.fn.dataTable.isDataTable('#tbldostatus')) {
+                    $('#tbldostatus').DataTable().destroy();
+                }
+                $("#tbldostatusbody").empty();
+
+                //if ($.fn.dataTable.isDataTable('#tbldostatus')) {
+                //    $('#tbldostatus').DataTable().destroy();
+                //}
+
+                var datat = data['data'];
+
+                for (var i = 0; i < datat.length; i++) {
+
+                    DO_WORKORDER.push(datat[i].Workordervalue);
+                    tr = $('<tr/>');
+                    tr.append("<td>" + (i + 1) + "</td>");
+                    tr.append("<td>" + datat[i].Workordervalue + "</td>");
+                    tr.append('<td><input type="checkbox" id="chkdo' + i + '" /></td>');
+                    tr.append('<td><input type="button" class="btn btn-success" value="CONFIRM" onclick="UPDATEDO(' + i + ',\'' + datat[i].Workordervalue + '\',)" /></td>');
+                    $("#tbldostatus").append(tr);
+                }
+                $("#tbldostatus").DataTable({
+                    dom: 'Bfrtip',
+                    buttons: [
+                            'excel', 'pdf', 'print'
+                    ],
+                    'ordering': false,
+                    // "paging": false,
+                });
+            });
+        }
+    }
+
+
+    function UPDATEDO(ID, WORKNO) {
+
+        if ($("#chkdo" + ID).is(':checked') == true) {
+
+            $.post("/bajajib/dostatusupdate", { "WORKORDERNO": WORKNO }, function (data) {
+                var datat = data['data'];
+                if (datat == true) {
+
+                    alert("DO status update successfully..");
+                    DOSTATUS();
+
+                }
+                else {
+                    alert("error try again..");
+                }
+            });
+        }
+        else {
+            alert("Please check the workorder..");
+            $("#chkdo" + ID).focus();
+        }
+    }
+
+
+
+
+    function check_selected() {
+        //   var DO_length = DO_CHECK.length;
+        var DO_ORDER = DO_WORKORDER.length;
+        // alert(DO_ORDER);
+
+
+        for (var i = 0; i < DO_ORDER; i++) {
+
+            if ($("#chkdo" + i).is(':checked') == true) {
+
+               
+
+                $.post("/bajajib/dostatusupdate", { "WORKORDERNO": DO_WORKORDER[i] }, function (data) {
+                    var datat = data['data'];
+                    if (datat == true) {
+
+                     
+                    
+
+                    }
+                    else {
+                     
+                    }
+                });
+                if (i == (DO_ORDER - 1)) {
+                    alert("success");
+                    DOSTATUS();
+                }
+            }
+            else {
+                if (i == (DO_ORDER - 1))
+                {
+                    alert("success");
+                    DOSTATUS();
+                }
+                
+            }
+        }
+
+
+    }
+</script>

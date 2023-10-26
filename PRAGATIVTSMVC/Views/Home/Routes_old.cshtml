@@ -1,0 +1,404 @@
+﻿
+@{
+    ViewBag.Title = "Routes";
+    Layout = "~/Views/Shared/Layout2.cshtml";
+}
+<style>
+    .table td {
+        padding: 5px;
+        vertical-align: middle;
+    }
+      .table th {
+       font-weight:500;
+       font-size:13px!important;
+    }
+</style>
+
+@*<script src="https://maps.google.com/maps/api/js?key=AIzaSyBn9HHCb847UhUnVQDCJzdxPqrUq2B6tOw&libraries=places"></script>*@
+<script src="http://maps.google.com/?file=api&amp;v=2.x&amp;key=AIzaSyCLjzMFOYxLeMznGmJwsYJM6u3C5p5dX88"   type="text/javascript"></script> 
+<script src="~/assets/js/pages/map/google-maps-data.js"></script>
+<script src="~/assets/js/pages/map/vector-data.js"></script>
+<div class="container-fluid">
+    
+    
+    <div id="divrow" style="display:none;">
+        <div class="row">
+            <div class="col-lg-6">
+                Route Name:<input type="text" id="txtroutename" class="form-control" />
+                Start Latitude:<input type="text" id="txtStartLat" class="form-control" />
+                Start Longitude:<input type="text" id="txtStarLong" class="form-control" />
+                End Lattitude:<input type="text" id="txt_EndLattitude" class="form-control" />
+                End Longitude:<input type="text" id="txt_EndLongitude" class="form-control" />
+                Points:<input type="text" id="txt_points" class="form-control" />
+                Deviation(Kms):<input type="text" id="txt_deviation" class="form-control" />
+                Distance(Kms):<input type="text" id="txt_distance" class="form-control" />
+                Status: <input type="checkbox" id="chk_status" /><span>Active</span><br/>
+             
+
+                <input type="button" id="btn_Save" style="margin-top: 10px;" onclick="SaveRoutes();" class="btn btn-primary" value="Save" />
+                <input type="button" id="btn_Cancel" style="margin-top: 10px;" onclick="Cancel()" class="btn btn-primary" value="Cancel" />
+            </div>
+            <div class="col-lg-6">
+                From :<input type="text" id="txt_from" class="form-control" />
+                To:<input type="text" id="txt_to" class="form-control" />
+                Via:<input type="text" id="txt_via" class="form-control" />
+
+
+                <div id="mapDiv" style="width: 527px; height: 340px">
+                </div>
+            
+
+                <input type="button" id="btn_setMap"  class="btn btn-success" value="Ok" onclick="GetDirections()" />
+
+                <input type="button" id="btn_resetMap" value="Reset Map" onclick="initialize()"  class="btn btn-primary" />
+            </div>
+        </div>
+    </div>
+   
+    <div>
+        <input type="button" id="btnadd" class="btn btn-primary" value="ADD" onclick="show()" />
+    </div>
+
+
+
+    <table id="tblroutes" style="margin-top:30px;font-size:14px" class="table table-striped table-bordered" cellspacing="0" width="100%">
+        <thead>
+            <tr>
+                
+                <th>Route Name</th>
+                <th>Start Latitude</th>
+                <th>Start Longitude</th>
+                <th>End Latitude</th>
+                <th>End Longitude</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            @{
+                int i = 1;
+                foreach (var item in ViewBag.routes)
+                {
+                    <tr>
+                       
+                        <td>@item.ROUTES_NAME</td>
+                        <td>@item.ROUTES_STARTLAT</td>
+                        <td>@item.ROUTES_STARTLONG</td>
+                        <td>@item.ROUTES_ENDLAT</td>
+                        <td>@item.ROUTES_ENDLONG</td>
+                        <td>@item.STATUS</td>
+                       
+                    </tr>
+                    i++;
+                }
+
+            }
+        </tbody>
+    </table>
+</div>
+<script type="text/javascript">
+    $(document).ready(function () {
+        initialize();
+    })
+    function show() {
+        $("#divrow").show();
+    }
+    function Cancel() {
+        $("#divrow").hide();
+    }
+        var map;
+        var gdir;
+        var geocoder = null;
+        var addressMarker;
+
+        function initialize() {
+            
+          //  if (GBrowserIsCompatible()) {
+                ////                map = new GMap2(document.getElementById("mapDiv"));
+                ////                gdir = new GDirections(map);
+                ////                geocoder = new GClientGeocoder();
+                ////                map.setUIToDefault();
+                ////                GEvent.addListener(gdir, "load", odnGDirectionsLoad);
+                ////                GEvent.addListener(gdir, "error", handleErrors);
+
+                //  setDirections("Hyderabad", "bangalore", "", "en_US");
+
+
+                var map = new GMap2(document.getElementById("mapDiv"));
+                map.setCenter(new GLatLng(17.121124, 78.138071), 2);
+                map.setUIToDefault();
+           // }
+        }
+
+
+
+        function initializeOK() {
+           // if (GBrowserIsCompatible()) {
+            map =  new google.maps.LatLng(document.getElementById("mapDiv"));
+
+                //                map.setCenter(new GLatLng(17.121124, 78.138071), 2);
+                //                map.setUIToDefault();
+
+                gdir = new GDirections(map);
+                geocoder = new GClientGeocoder();
+                map.setUIToDefault();
+                GEvent.addListener(gdir, "load", onGDirectionsLoad);
+                GEvent.addListener(gdir, "error", handleErrors);
+
+                //  setDirections("Hyderabad", "bangalore", "", "en_US");
+           // }
+        }
+
+
+        function setDirections(fromAddress, toAddress, viaAddress, locale) {
+           // if (GBrowserIsCompatible()) {
+                map = new GMap2(document.getElementById("mapDiv"));
+                gdir = new GDirections(map);
+                map.setUIToDefault();
+                GEvent.addListener(gdir, "load", onGDirectionsLoad);
+                GEvent.addListener(gdir, "error", handleErrors);
+         //   }
+
+            var loadStr = "";
+            if (viaAddress != "") {
+                var viaSteps = viaAddress.split(';');
+                for (var n = 0; n < viaSteps.length; n++) {
+                    loadStr += ' to: ' + viaSteps[n];
+                }
+            }
+            loadStr += ' to: ' + toAddress;
+
+            gdir.load("from: " + fromAddress + loadStr,
+                { "locale": locale });
+        }
+
+
+        function handleErrors() {
+            if (gdir.getStatus().code == G_GEO_UNKNOWN_ADDRESS)
+                alert("No corresponding geographic location could be found for one of the specified addresses. This may be due to the fact that the address is relatively new, or it may be incorrect.\nError code: " + gdir.getStatus().code);
+            else if (gdir.getStatus().code == G_GEO_SERVER_ERROR)
+                alert("A geocoding or directions request could not be successfully processed, yet the exact reason for the failure is not known.\n Error code: " + gdir.getStatus().code);
+
+            else if (gdir.getStatus().code == G_GEO_MISSING_QUERY)
+                alert("The HTTP q parameter was either missing or had no value. For geocoder requests, this means that an empty address was specified as input. For directions requests, this means that no query was specified in the input.\n Error code: " + gdir.getStatus().code);
+
+            //   else if (gdir.getStatus().code == G_UNAVAILABLE_ADDRESS)  <--- Doc bug... this is either not defined, or Doc is wrong
+            //     alert("The geocode for the given address or the route for the given directions query cannot be returned due to legal or contractual reasons.\n Error code: " + gdir.getStatus().code);
+
+            else if (gdir.getStatus().code == G_GEO_BAD_KEY)
+                alert("The given key is either invalid or does not match the domain for which it was given. \n Error code: " + gdir.getStatus().code);
+
+            else if (gdir.getStatus().code == G_GEO_BAD_REQUEST)
+                alert("A directions request could not be successfully parsed.\n Error code: " + gdir.getStatus().code);
+
+            else alert("An unknown error occurred.");
+        }
+
+        function onGDirectionsLoad() {
+            var numRoutes = gdir.getNumRoutes();
+
+            var pLinePoints = Array();
+            var polyline = gdir.getPolyline();
+
+            var p = "";
+            for (var n = 0; n < polyline.getVertexCount(); n++) {
+                //pLinePoints.push(polyline.getVertex(n));
+                var strPoint = polyline.getVertex(n);
+                //             strPoint = strPoint.replace("(", "");
+                //             strPoint = strPoint.replace(")", "");
+                p += strPoint + " ,";
+            }
+
+            $find('txt_points').set_value(p);
+            //
+            //         for (var r = 0; r < numRoutes; r++) {
+            //             var route = gdir.getRoute(r);
+
+            //         }
+
+            //-----------------NKM----------------------
+            if (document.getElementById("txtStartLat").value == "" || document.getElementById("txtStarLong").value == "" || document.getElementById("txt_EndLattitude").value == "" || document.getElementById("txt_EndLongitude").value == "") {
+                setTimeout("GetPointsAtDistance(10000);", 1000);
+            }
+            else {
+                GetPointsAtDistance(10000);
+            }
+
+
+
+            //-----------------NKM----------------------
+        }
+
+        function GetDirections() {
+            if ((document.getElementById("txt_from").value == "")) {
+                alert("From is mandatory");
+                return;
+            }
+            if ((document.getElementById("txt_to").value == "")) {
+                alert("To is mandatory");
+                return;
+            }
+            var tempStr = document.getElementById("txt_via").value.replace(";", "_");
+            document.getElementById("txtroutename").value = document.getElementById("txt_from").value + "_" + tempStr + "_" + document.getElementById("txt_to").value;
+           // $find('txtroutename').set_value(document.getElementById("txt_from").value + "_" + tempStr + "_" + document.getElementById("txt_to").value);
+            GoToAddress(document.getElementById("txt_from").value, "txtStartLat", "txtStarLong");
+            GoToAddress(document.getElementById("txt_to").value, "txt_EndLattitude", "txt_EndLongitude");
+            setDirections(document.getElementById("txt_from").value, document.getElementById("txt_to").value, document.getElementById("txt_via").value, "en_US");
+
+        }
+
+        function GoToAddress(Address, ControlIdLat, ControlIdLng) {
+            if (geocoder == null) {
+                geocoder = new GClientGeocoder();
+            }
+            //  alert(Address);
+            if (Address != '') {
+                //geocoder = new GClientGeocoder();
+                if (geocoder) {
+                    geocoder.getLatLng(Address, function(point) {
+                        if (!point) {
+                            alert(Address + " not found");
+                        }
+                        else {
+                            $find(ControlIdLat).set_value(point.lat().toFixed(5));
+                            $find(ControlIdLng).set_value(point.lng().toFixed(5));
+                           //alert(point.lat().toFixed(5)+point.lng().toFixed(5));
+                        }
+                    });
+                }
+            }
+            else {
+                alert('Please enter address');
+            }
+        }
+
+
+
+        function IsNumeric() {
+            sText = document.getElementById("txt_deviation").value;
+            var ValidChars = "0123456789.";
+            var IsNumber = true;
+            var Char;
+
+
+            for (i = 0; i < sText.length && IsNumber == true; i++) {
+                Char = sText.charAt(i);
+                if (ValidChars.indexOf(Char) == -1) {
+                    IsNumber = false;
+                }
+            }
+            if (!IsNumber) {
+//                document.getElementById("ctl00_Cnt_Master_rtxt_RoutesDeviation").value = "";
+                alert("Please enter numeric value only.");
+            }
+            return IsNumber;
+        }
+
+
+
+
+
+        //---------------------NKM----------------------------
+        function GetPointsAtDistance(metres) {
+          var pp = gdir.getPolyline();
+            var next = metres;
+            var pointCtr = 1;
+            var routeInterval = null;
+            //var points = new Array(200);
+            if (metres <= 0) return points;
+            //points[0] = new Array(2);
+            //points[0][0] = new GLatLng(document.getElementById("ctl00_Cnt_Master_rtxt_RoutesStartLat").value, document.getElementById("ctl00_Cnt_Master_rtxt_RoutesStartLong").value);
+            //points[0][1] = 0;
+
+            routeInterval = document.getElementById("txtStartLat").value + "," + document.getElementById("txtStarLong").value + "," + 0 + ";"
+            var dist = 0;
+            var olddist = 0;
+            for (var i = 1; (i < pp.getVertexCount()); i++) {
+            olddist = dist;
+            dist += pp.getVertex(i).distanceFrom(pp.getVertex(i - 1));
+                while (dist > next) {
+                    var p1 = pp.getVertex(i - 1);
+                    var p2 = pp.getVertex(i);
+                    var m = (next - olddist) / (dist - olddist);
+                    //points[pointCtr] = new Array(2);
+                    //points[pointCtr][0] = new GLatLng(p1.lat() + (p2.lat() - p1.lat()) * m, p1.lng() + (p2.lng() - p1.lng()) * m);
+
+
+
+                    
+                    //points[pointCtr][1] = dist;
+                    var y = p1.lat() + (p2.lat() - p1.lat()) * m;
+                    var x = p1.lng() + (p2.lng() - p1.lng()) * m;
+                    routeInterval = routeInterval + y + "," + x + "," + dist + ";"
+                    //routeInterval = routeInterval + points[pointCtr][0].y + "," + points[pointCtr][0].x + "," + dist + ";"
+                    next += metres;
+                    pointCtr += 1;
+                }
+            }
+            //points[pointCtr] = new Array(2);
+            //points[pointCtr][0] = new GLatLng(document.getElementById("ctl00_Cnt_Master_rtxt_RoutesEndLat").value, document.getElementById("ctl00_Cnt_Master_rtxt_RoutesEndLong").value);
+            //points[pointCtr][1] = dist;
+            routeInterval = routeInterval + document.getElementById("txt_EndLattitude").value + "," + document.getElementById("txt_EndLongitude").value + "," + dist
+            $find('txt_distance').set_value(Math.round((dist / 1000) * 100) / 100);
+            //return points;
+            document.getElementById('txt_points').value = routeInterval;
+        }
+        function SetZIndex(control, args) {
+
+            // Set auto complete extender control's z-index to a high value
+
+            // so it will appear on top of, not under, the ModalPopUp extended panel.
+
+            control._completionListElement.style.zIndex = 99999999;
+
+        }
+        function SaveRoutes()
+        {
+            var obj = new obj();
+            obj.ROUTES_NAME = $("#txtroutename").val();
+            obj.ROUTES_STARTLAT = $("#txtStartLat").val();
+            obj.ROUTES_STARTLONG = $("#txtStarLong").val();
+            obj.ROUTES_ENDLAT = $("#txt_EndLattitude").val();
+            obj.ROUTES_ENDLONG = $("#txt_EndLongitude").val();
+            obj.ROUTES_POINTS = $("#txt_points").val();
+            if ($("#chk_status").is(":checked")) {
+                obj.ROUTES_STATUS = true;
+            }
+            else {
+                obj.ROUTES_STATUS = false;
+            }
+            obj.ROUTES_FROM = $("#txt_from").val();
+            obj.ROUTES_TO = $("#txt_to").val();
+            obj.ROUTES_VIA = $("#txt_via").val();
+            obj.ROUTES_DEVIATION_LIMIT = $("#txt_deviation").val();
+            obj.ROUTES_DISTANCE = $("#txt_distance").val();
+            
+            
+            $.ajax({
+                url: "/Home/SaveRoutes",
+                type: 'POST',
+                async: false,
+                processData: false,
+                cache: false,
+                data: JSON.stringify(obj),
+                contentType: "application/json",
+
+                success: function (data) {
+                    
+                    if (data.data == "true") {
+                        alert("Data Saved Successfully");
+                        location.reload();
+                    }
+                    else if (data.data == "false") {
+                        alert("Failed");
+                    }
+                    else {
+                        alert(data.data);
+                    }
+
+                },
+                error: function (err) {
+
+                }
+            });
+        }
+</script>

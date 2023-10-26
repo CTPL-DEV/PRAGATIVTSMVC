@@ -1,0 +1,241 @@
+﻿
+@{
+    ViewBag.Title = "DeviceStatus";
+    Layout = "~/Views/Shared/Layout2.cshtml";
+}
+
+<style>
+    .font_css {
+        font-size: 12px;
+        font-family: "Times New Roman", Times, serif;
+        width: 100%;
+        color: black !important;
+    }
+
+    .switch {
+        position: relative;
+        display: inline-block;
+        width: 60px;
+        height: 34px;
+    }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+    .slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #ccc;
+        -webkit-transition: .4s;
+        transition: .4s;
+    }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            -webkit-transition: .4s;
+            transition: .4s;
+        }
+
+    input:checked + .slider {
+        background-color: #2196F3;
+    }
+
+    input:focus + .slider {
+        box-shadow: 0 0 1px #2196F3;
+    }
+
+    input:checked + .slider:before {
+        -webkit-transform: translateX(26px);
+        -ms-transform: translateX(26px);
+        transform: translateX(26px);
+    }
+
+    /* Rounded sliders */
+    .slider.round {
+        border-radius: 34px;
+    }
+
+        .slider.round:before {
+            border-radius: 50%;
+        }
+
+    .body {
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        font-family: 'Source Sans Pro','Helvetica Neue',Helvetica,Arial,sans-serif;
+        font-weight: 400;
+        overflow-x: hidden;
+        overflow-y: auto;
+    }
+
+    .circle {
+        border-radius: 50%;
+        behavior: url(PIE.htc);
+        /* remove if you don't care about IE8 */
+        width: 27px;
+        height: 27px;
+        padding: 5px;
+        background: #fff;
+        border: 2px solid #666;
+        color: #666;
+        text-align: center;
+        font: 32px Arial, sans-serif;
+    }
+
+    ul {
+        list-style-type: none;
+    }
+
+    .select2-selection__rendered {
+        border: 1px solid;
+        border-radius: 5px;
+        height: 35px;
+    }
+</style>
+
+<div id="divicename" class="row" style="margin-top:10px">
+
+    Device Name : <select class="form-control" id="ddldevicename" style="width:250px">
+        <option value="0">-Select-</option>
+        @foreach (var item in ViewBag.deviceTypes)
+            {
+            <option value="@item.ID">@item.DEVICE_TYPENAME</option>
+        }
+    </select>
+
+
+    <input type="button" id="btn_submit" class="btn btn-primary" style="margin-left:20px;" value="SUBMIT" onclick="getdevicedata()" />
+
+</div>
+
+<div id="mainContent">
+    <div class="row gap-20">
+        <div class="masonry-item w-100">
+            <div class="row gap-20">
+                <div class="col-md-3">
+                    <div class="layers bd bgc-white p-20">
+                        <div class="layer w-100 mB-10">
+                            <h6 class="lh-1" style="text-align:center;">Total DEVICES</h6>
+                        </div>
+                        <div class="layer w-100">
+                            <div class="peers ai-sb fxw-nw">
+                                @*<div class="peer peer-greed"><span id="sparklinedash"></span></div>*@
+                                <div style="margin:auto;">
+                                    <div class="peer">
+                                        <span class="d-ib lh-0 va-m fw-600 bdrs-10em pX-15 pY-15 bgc-green-50 c-green-500" id="spntotal">0</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <div class="layers bd bgc-white p-20">
+                        <div class="layer w-100 mB-10">
+                            <h6 class="lh-1" style="text-align:center;">Moving</h6>
+                        </div>
+                        <div class="layer w-100">
+                            <div class="peers ai-sb fxw-nw">
+                                @*<div class="peer peer-greed"><span id="sparklinedash2"></span></div>*@
+                                <div style="margin:auto;">
+                                    <div class="peer"><span class="d-ib lh-0 va-m fw-600 bdrs-10em pX-15 pY-15 bgc-red-50 c-red-500" id="spnmoving">0</span></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="layers bd bgc-white p-20">
+                        <div class="layer w-100 mB-10">
+                            <h6 class="lh-1" style="text-align:center;">Stopped</h6>
+                        </div>
+                        <div class="layer w-100">
+                            <div class="peers ai-sb fxw-nw">
+                                @*<div class="peer peer-greed"><span id="sparklinedash3"></span></div>*@
+                                <div style="margin:auto;">
+                                    <div class="peer"><span class="d-ib lh-0 va-m fw-600 bdrs-10em pX-15 pY-15 bgc-purple-50 c-purple-500" id="spnstopped">0</span></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="layers bd bgc-white p-20">
+                        <div class="layer w-100 mB-10">
+                            <h6 class="lh-1" style="text-align:center;">Data Not Receiving</h6>
+                        </div>
+                        <div class="layer w-100">
+                            <div class="peers ai-sb fxw-nw">
+                                @*<div class="peer peer-greed"><span id="sparklinedash4"></span></div>*@
+                                <div style="margin:auto;">
+                                    <div class="peer"><span class="d-ib lh-0 va-m fw-600 bdrs-10em pX-15 pY-15 bgc-blue-50 c-blue-500" id="spnyellow">0</span></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+
+
+        var categType = localStorage.getItem("CATEG_TYPE_ID");
+
+
+    });
+
+
+
+    function getdevicedata() {
+        var V_DID = $("#ddldevicename").val();
+        $.post("/Home/Get_Databy_Devicetype", { "Device_Name": $('#ddldevicename option:selected').text() }, function (data) {
+            {
+                
+                var dataT = data['data'];
+                var stopped = 0, moving = 0, notmoving = 0,total=0;
+            for (var i = 0; i < dataT.length; i++) {
+
+                //if (dataT[i].VEHICLE_COLOR == "G" || "R" || "Y")
+                //{
+                  total++;
+                //}
+                  if (dataT[i].Vehicle_Color == "Y") {
+                      
+                      notmoving++;
+                  }
+                  if (dataT[i].Vehicle_Color == "G")
+                    {
+                      moving++;
+                    }
+                  if (dataT[i].Vehicle_Color == "R")
+                    {
+                      stopped++;
+                    }
+
+                }
+            $("#spnyellow").text(notmoving);
+            $("#spnmoving").text(moving);
+            $("#spnstopped").text(stopped);
+            $("#spntotal").text(total);
+            }
+        });
+    }
+</script>

@@ -1,0 +1,111 @@
+﻿
+@{
+    ViewBag.Title = "frm_States";
+    Layout = "~/Views/Shared/Layout2.cshtml";
+}
+
+<style>
+    .table td {
+        padding: 5px;
+        vertical-align: middle;
+        font-size:12px!important;
+    }
+       .table th {
+       font-weight:500;
+       font-size:13px!important;
+    }
+</style>
+<div class="row" id="divrow" style="display:none;">
+    <div class="col-lg-6">
+        Country:<select class="form-control" id="ddlcountry" disabled="disabled" style="width:50%">
+            <option value="0">-Select-</option>
+            @foreach (var item in ViewBag.countries)
+            {
+                <option value="@item.COUNTRY_ID">@item.COUNTRY_NAME</option>
+            }
+
+        </select>
+        
+        State Name: <input type="text" class="form-control" id="txt_statename" style="width:50%" />
+        <input type="button" id="btnsave" class="btn btn-primary" style="margin-top:15px;" onclick="Save('save')" value="Submit" />
+        <input type="button" id="btnupdate" class="btn btn-primary" style="margin-top:15px;" onclick="Save('update')" value="Update" />
+        <input type="button" value="BACK" id="btnback" onclick="Back()" style="margin-top:15px;" class="btn btn-danger" />
+    </div>
+  
+</div>
+<div class="row">
+    <input type="button" class="btn btn-primary" onclick="showrow()" style="width:153px;" value="ADD" />
+    <div class="card-head" style="text-align:center;">
+        <h4>States</h4>
+
+    </div>
+</div>
+<div class="card-body" id="div_table">
+    
+
+
+    <table id="tblstates" class="table table-striped table-bordered" cellspacing="0" width="100%" style="margin-top:10px">
+        <thead>
+            <tr>
+                <th class="center">S.no</th>
+
+                <th class="center">Country</th>
+
+                <th class="center">State</th>
+
+
+            </tr>
+        </thead>
+        <tbody>
+            @{
+                int i = 1;
+                foreach (var item in ViewBag.states)
+                {
+                    <tr>
+                        <td>@i</td>
+                        <td>@item.COUNTRY_NAME</td>
+                        <td>@item.STATE_NAME</td>
+
+                    </tr>
+                    i++;
+                }
+
+            }
+        </tbody>
+    </table>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $("#ddlcountry").val(1);
+        $("#tblstates").dataTable();
+    });
+    function showrow() {
+        $("#divrow").show();
+        $("#div_table").hide();
+    }
+    function Back() {
+        location.reload();
+        $("#div_table").show();
+    }
+    function Save()
+    {
+        var countryID = $("#ddlcountry").val();
+        $.post("/Home/addStates", { "Country_ID": countryID, "StateName": $("#txt_statename").val() }, function (data) {
+            //console.log(dataT);
+            
+            var dataT = data['data'];
+
+            if(dataT==true)
+            {
+                alert("State added Successfully");
+                location.reload();
+            }
+            else
+            {
+                alert("Failed to add State");
+            }
+
+        });
+    }
+</script>

@@ -1,0 +1,97 @@
+﻿@{
+    ViewBag.Title = "vehicles";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="container-fluid">
+    <div class="row page-titles">
+        <div class="col-md-5 col-8 align-self-center">
+            <h3 class="text-themecolor m-b-0 m-t-0">VEHICLES</h3>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/Home/frm_GridTrack_Distance">Home</a></li>
+                <li class="breadcrumb-item active">VEHICLES</li>
+            </ol>
+        </div>
+    </div>
+    <div class="row" id="divrow">
+        <div class="col-lg-6">
+            VEHICLE NUMBER : <input type="text" id="txtvehiclenumber"  class="form-control" placeholder="" />
+            VEHICLE MAX SPEED: <input type="text" id="txtvehiclemaxspeed"  class="form-control" placeholder="" />
+            VEHICLE ZONE: <input type="text" id="txtzone"  class="form-control" placeholder="" />
+
+            CATEGORY : <select  id="ddlcategories" class="form-control">
+                <option value="0">-Select Category-</option>
+                @foreach (var item in ViewBag.categories)
+                {
+                    if (item.CATEG_STATUS == 1)
+                    {
+                        <option value="@item.CATEG_ID">@item.CATEG_NAME</option>
+                    }
+                }
+            </select>
+        </div>
+        <div class="col-lg-6">
+            DEIVCE ID : <select  id="ddldevices" class="form-control">
+                <option value="0">-Select device-</option>
+                @foreach (var item in ViewBag.devices)
+                {
+                    if (item.DEVICE_STATUS == 1)
+                    {
+                        <option value="@item.DEVICE_ID">@item.SIM_SERIALNO (@item.DEVICE_NAME)</option>
+                    }
+                }
+            </select>
+           
+            VEHICLE MODELNAME : <input type="text" id="txtvehiclemodelname"  class="form-control" placeholder="" />
+            VEHICLE MILLAGE:<input type="text" id="txtvehiclemillage"  class="form-control" placeholder="" />
+        </div>
+        <input type="button" id="btnsave" class="btn btn-success" onclick="Save()" style="margin-left:92%;margin-top:10px" value="Submit" />
+        <input type="button" id="btnupdate" class="btn btn-success" onclick="Update()" style="margin-left:92%;margin-top:10px" value="Submit" />
+    </div>
+
+    <div>
+        <input type="button" class="btn btn-success" onclick="showrow()" style="width:153px;margin-bottom:8px" value="ADD VEHICLE" />
+        <table id="tblUser" class="table table-hover table-striped table-bordered" width="100%">
+            <tr>
+                <th>ID</th>
+                <th>VEHICLE NUMBER</th>
+                <th>CATEGORY NAME</th>
+                <th>VEHICLE ZONE</th>
+                <th>SIM SERIALNO</th>
+                <th>Actions</th>
+            </tr>
+            @{
+                int i = 1;
+
+                foreach (var item in ViewBag.vehicles)
+                {
+                    <tr>
+                        <td>@i</td>
+                        <td>@item.VEHICLE_REGNUMBER</td>
+                        <td>@item.VEHICLE_ZONE</td>
+                        <td>@item.SIM_SERIALNO</td>
+                        <td>@item.CATEG_NAME</td>
+
+                        @if (item.VEHICLE_STATUS == 1)
+                        {
+                            <td>
+                                <input type="button" value="IN ACTIVE" onclick="UPDATESTATUS(0,@item.VEHICLE_ID)" class="btn btn-danger" />
+                                <input type="button" value="EDIT" onclick="EDIT(@item.VEHICLE_ID)" class="btn btn-primary" />
+                            </td>
+                        }
+                        else
+                        {
+                            <td>
+                                <input type="button" value="ACTIVE" onclick="UPDATESTATUS(1,@item.VEHICLE_ID)" class="btn btn-success" />
+                                <input type="button" value="EDIT" onclick="EDIT(@item.VEHICLE_ID)" class="btn btn-primary" />
+                            </td>
+                        }
+
+                    </tr>
+                        i++;
+                }
+
+            }
+        </table>
+    </div>
+</div>
+<script src="~/CUSTOMSCRIPTS/vehicles.js"></script>

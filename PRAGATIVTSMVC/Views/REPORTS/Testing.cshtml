@@ -1,0 +1,78 @@
+﻿@{
+    ViewBag.Title = "Testing";
+    Layout = null;
+}
+
+<div id="divone">
+    Name:<input type="text" />
+    Email:<input type="text" />
+
+</div>
+
+<div id="divsecond" style="display:none">
+    Password:<input type="text" />
+    Mobilenumber:<input type="text" />
+</div>
+
+<div id="divthird" style="display:none">
+    Address:<input type="text" />
+    Pincode:<input type="text" />
+</div>
+
+<div id="divfourth" style="display:none">
+    Telephone:<input type="text" />
+    Aadhar:<input type="text" />
+</div>
+<input type="button" value="check" onclick="check()" />
+<input type="button" value="Back" onclick="Back()" />
+<script src="~/Scripts/jquery-1.10.2.min.js"></script>
+<script>
+    function check() {
+        if ($("#divone").css('display') == "block") {
+            $("#divsecond").css('display', 'block');
+            $("#divthird").css('display', 'none');
+            $("#divone").css('display', 'none');
+            $("#divfourth").css('display', 'none');
+        }
+        else if ($("#divsecond").css('display') == "block") {
+            $("#divthird").css('display', 'block');
+            $("#divsecond").css('display', 'none');
+            $("#divone").css('display', 'none');
+            $("#divfourth").css('display', 'none');
+        }
+        else if ($("#divthird").css('display') == "block") {
+            $("#divfourth").css('display', 'block');
+            $("#divthird").css('display', 'none');
+            $("#divsecond").css('display', 'none');
+            $("#divone").css('display', 'none');
+        }
+        else if ($("#divfourth").css('display') == "block") {
+
+        }
+    }
+
+    function Back() {
+        if ($("#divfourth").css('display') == "block") {
+
+            $("#divfourth").css('display', 'none');
+            $("#divthird").css('display', 'block');
+            $("#divsecond").css('display', 'none');
+            $("#divone").css('display', 'none');
+        }
+        else if ($("#divthird").css('display') == "block") {
+            $("#divfourth").css('display', 'none');
+            $("#divthird").css('display', 'none');
+            $("#divsecond").css('display', 'block');
+            $("#divone").css('display', 'none');
+        }
+        else if ($("#divsecond").css('display') == "block") {
+            $("#divfourth").css('display', 'none');
+            $("#divthird").css('display', 'none');
+            $("#divsecond").css('display', 'none');
+            $("#divone").css('display', 'block');
+        }
+        else if ($("#divone").css('display') == "block") {
+          
+        }
+    }
+</script>

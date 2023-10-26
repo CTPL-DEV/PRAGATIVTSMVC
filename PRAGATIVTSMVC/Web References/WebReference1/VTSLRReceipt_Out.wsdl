@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:p1="http://bajajauto.co.in/VTS/IB/LRReceipt" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy" name="VTSLRReceipt_Out" targetNamespace="http://bajajauto.co.in/VTS/IB/LRReceipt" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:documentation />
+  <wsp:UsingPolicy wsdl:required="true" />
+  <wsp:Policy wsu:Id="OP_VTSLRReceipt_Out" />
+  <wsdl:types>
+    <xsd:schema xmlns="http://bajajauto.co.in/VTS/IB/LRReceipt" targetNamespace="http://bajajauto.co.in/VTS/IB/LRReceipt" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+      <xsd:element name="VTSLRReceipt" type="p1:VTSLRReceipt" />
+      <xsd:complexType name="VTSLRReceipt">
+        <xsd:annotation>
+          <xsd:appinfo source="http://sap.com/xi/VersionID">6475e6af204311e79cbe000000179b8e</xsd:appinfo>
+        </xsd:annotation>
+        <xsd:sequence>
+          <xsd:element minOccurs="0" maxOccurs="unbounded" name="Records">
+            <xsd:annotation>
+              <xsd:appinfo source="http://sap.com/xi/TextID">8a288fb8b5f611e6b1a8ba8a6070166a</xsd:appinfo>
+            </xsd:annotation>
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="COSIGNMENT_ID" type="xsd:string">
+                  <xsd:annotation>
+                    <xsd:appinfo source="http://sap.com/xi/TextID">8a286526b5f611e69bacba8a6070166a</xsd:appinfo>
+                  </xsd:annotation>
+                </xsd:element>
+                <xsd:element minOccurs="0" name="LR_NUMBER" type="xsd:string">
+                  <xsd:annotation>
+                    <xsd:appinfo source="http://sap.com/xi/TextID">8a288fb5b5f611e6c9c8ba8a6070166a</xsd:appinfo>
+                  </xsd:annotation>
+                </xsd:element>
+                <xsd:element minOccurs="0" name="LR_DATE" type="xsd:string">
+                  <xsd:annotation>
+                    <xsd:appinfo source="http://sap.com/xi/TextID">8a288fb6b5f611e685edba8a6070166a</xsd:appinfo>
+                  </xsd:annotation>
+                </xsd:element>
+                <xsd:element minOccurs="0" name="TRUCK_NO" type="xsd:string">
+                  <xsd:annotation>
+                    <xsd:appinfo source="http://sap.com/xi/TextID">8a288fb7b5f611e6837cba8a6070166a</xsd:appinfo>
+                  </xsd:annotation>
+                </xsd:element>
+                <xsd:element minOccurs="0" name="TRANSPORTER_ID" type="xsd:string">
+                  <xsd:annotation>
+                    <xsd:appinfo source="http://sap.com/xi/TextID">43871a7ec75811e6ad2e9cb70dd4fce6</xsd:appinfo>
+                  </xsd:annotation>
+                </xsd:element>
+              </xsd:sequence>
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:sequence>
+      </xsd:complexType>
+    </xsd:schema>
+  </wsdl:types>
+  <wsdl:message name="VTSLRReceipt">
+    <wsdl:documentation />
+    <wsdl:part name="VTSLRReceipt" element="p1:VTSLRReceipt" />
+  </wsdl:message>
+  <wsdl:portType name="VTSLRReceipt_Out">
+    <wsdl:documentation />
+    <wsdl:operation name="VTSLRReceipt_Out">
+      <wsdl:documentation />
+      <wsp:Policy>
+        <wsp:PolicyReference URI="#OP_VTSLRReceipt_Out" />
+      </wsp:Policy>
+      <wsdl:input message="p1:VTSLRReceipt" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="VTSLRReceipt_OutBinding" type="p1:VTSLRReceipt_Out">
+    <binding transport="http://schemas.xmlsoap.org/soap/http" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+    <wsdl:operation name="VTSLRReceipt_Out">
+      <operation soapAction="http://sap.com/xi/WebService/soap1.1" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      <wsdl:input>
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </wsdl:input>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="VTSLRReceipt_OutService">
+    <wsdl:port name="HTTP_Port" binding="p1:VTSLRReceipt_OutBinding">
+      <address location="http://agni.bajajauto.co.in:9095/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_VTS&amp;receiverParty=&amp;receiverService=&amp;interface=VTSLRReceipt_Out&amp;interfaceNamespace=http%3A%2F%2Fbajajauto.co.in%2FVTS%2FIB%2FLRReceipt" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+    </wsdl:port>
+    <wsdl:port name="HTTPS_Port" binding="p1:VTSLRReceipt_OutBinding">
+      <address location="https://podev.bajajauto.co.in:50001/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_VTS&amp;receiverParty=&amp;receiverService=&amp;interface=VTSLRReceipt_Out&amp;interfaceNamespace=http%3A%2F%2Fbajajauto.co.in%2FVTS%2FIB%2FLRReceipt" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

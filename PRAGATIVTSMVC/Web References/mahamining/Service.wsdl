@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:tns="http://gps.mahamining.com/" xmlns:s="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tm="http://microsoft.com/wsdl/mime/textMatching/" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" targetNamespace="http://gps.mahamining.com/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:types>
+    <s:schema elementFormDefault="qualified" targetNamespace="http://gps.mahamining.com/">
+      <s:element name="InsertGPRSdata">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="Unit" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="Reason" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="CommandKey" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="Commandkeyvalue" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="Ignition" type="s:int" />
+            <s:element minOccurs="1" maxOccurs="1" name="PowerCut" type="s:int" />
+            <s:element minOccurs="1" maxOccurs="1" name="BoxOpen" type="s:int" />
+            <s:element minOccurs="0" maxOccurs="1" name="MSGKey" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="Odometer" type="s:long" />
+            <s:element minOccurs="1" maxOccurs="1" name="Speed" type="s:int" />
+            <s:element minOccurs="1" maxOccurs="1" name="SatVisible" type="s:int" />
+            <s:element minOccurs="0" maxOccurs="1" name="GPSfixed" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="Latitude" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="Longitude" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="Altitude" type="s:int" />
+            <s:element minOccurs="1" maxOccurs="1" name="Direction" type="s:int" />
+            <s:element minOccurs="0" maxOccurs="1" name="Time" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="DATE" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="GSMStrength" type="s:int" />
+            <s:element minOccurs="1" maxOccurs="1" name="DeviceCompanyId" type="s:int" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="InsertGPRSdataResponse">
+        <s:complexType />
+      </s:element>
+    </s:schema>
+  </wsdl:types>
+  <wsdl:message name="InsertGPRSdataSoapIn">
+    <wsdl:part name="parameters" element="tns:InsertGPRSdata" />
+  </wsdl:message>
+  <wsdl:message name="InsertGPRSdataSoapOut">
+    <wsdl:part name="parameters" element="tns:InsertGPRSdataResponse" />
+  </wsdl:message>
+  <wsdl:message name="InsertGPRSdataHttpGetIn">
+    <wsdl:part name="Unit" type="s:string" />
+    <wsdl:part name="Reason" type="s:string" />
+    <wsdl:part name="CommandKey" type="s:string" />
+    <wsdl:part name="Commandkeyvalue" type="s:string" />
+    <wsdl:part name="Ignition" type="s:string" />
+    <wsdl:part name="PowerCut" type="s:string" />
+    <wsdl:part name="BoxOpen" type="s:string" />
+    <wsdl:part name="MSGKey" type="s:string" />
+    <wsdl:part name="Odometer" type="s:string" />
+    <wsdl:part name="Speed" type="s:string" />
+    <wsdl:part name="SatVisible" type="s:string" />
+    <wsdl:part name="GPSfixed" type="s:string" />
+    <wsdl:part name="Latitude" type="s:string" />
+    <wsdl:part name="Longitude" type="s:string" />
+    <wsdl:part name="Altitude" type="s:string" />
+    <wsdl:part name="Direction" type="s:string" />
+    <wsdl:part name="Time" type="s:string" />
+    <wsdl:part name="DATE" type="s:string" />
+    <wsdl:part name="GSMStrength" type="s:string" />
+    <wsdl:part name="DeviceCompanyId" type="s:string" />
+  </wsdl:message>
+  <wsdl:message name="InsertGPRSdataHttpGetOut" />
+  <wsdl:message name="InsertGPRSdataHttpPostIn">
+    <wsdl:part name="Unit" type="s:string" />
+    <wsdl:part name="Reason" type="s:string" />
+    <wsdl:part name="CommandKey" type="s:string" />
+    <wsdl:part name="Commandkeyvalue" type="s:string" />
+    <wsdl:part name="Ignition" type="s:string" />
+    <wsdl:part name="PowerCut" type="s:string" />
+    <wsdl:part name="BoxOpen" type="s:string" />
+    <wsdl:part name="MSGKey" type="s:string" />
+    <wsdl:part name="Odometer" type="s:string" />
+    <wsdl:part name="Speed" type="s:string" />
+    <wsdl:part name="SatVisible" type="s:string" />
+    <wsdl:part name="GPSfixed" type="s:string" />
+    <wsdl:part name="Latitude" type="s:string" />
+    <wsdl:part name="Longitude" type="s:string" />
+    <wsdl:part name="Altitude" type="s:string" />
+    <wsdl:part name="Direction" type="s:string" />
+    <wsdl:part name="Time" type="s:string" />
+    <wsdl:part name="DATE" type="s:string" />
+    <wsdl:part name="GSMStrength" type="s:string" />
+    <wsdl:part name="DeviceCompanyId" type="s:string" />
+  </wsdl:message>
+  <wsdl:message name="InsertGPRSdataHttpPostOut" />
+  <wsdl:portType name="ServiceSoap">
+    <wsdl:operation name="InsertGPRSdata">
+      <wsdl:input message="tns:InsertGPRSdataSoapIn" />
+      <wsdl:output message="tns:InsertGPRSdataSoapOut" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:portType name="ServiceHttpGet">
+    <wsdl:operation name="InsertGPRSdata">
+      <wsdl:input message="tns:InsertGPRSdataHttpGetIn" />
+      <wsdl:output message="tns:InsertGPRSdataHttpGetOut" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:portType name="ServiceHttpPost">
+    <wsdl:operation name="InsertGPRSdata">
+      <wsdl:input message="tns:InsertGPRSdataHttpPostIn" />
+      <wsdl:output message="tns:InsertGPRSdataHttpPostOut" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="ServiceSoap" type="tns:ServiceSoap">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="InsertGPRSdata">
+      <soap:operation soapAction="http://gps.mahamining.com/InsertGPRSdata" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:binding name="ServiceSoap12" type="tns:ServiceSoap">
+    <soap12:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="InsertGPRSdata">
+      <soap12:operation soapAction="http://gps.mahamining.com/InsertGPRSdata" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:binding name="ServiceHttpGet" type="tns:ServiceHttpGet">
+    <http:binding verb="GET" />
+    <wsdl:operation name="InsertGPRSdata">
+      <http:operation location="/InsertGPRSdata" />
+      <wsdl:input>
+        <http:urlEncoded />
+      </wsdl:input>
+      <wsdl:output />
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:binding name="ServiceHttpPost" type="tns:ServiceHttpPost">
+    <http:binding verb="POST" />
+    <wsdl:operation name="InsertGPRSdata">
+      <http:operation location="/InsertGPRSdata" />
+      <wsdl:input>
+        <mime:content type="application/x-www-form-urlencoded" />
+      </wsdl:input>
+      <wsdl:output />
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="Service">
+    <wsdl:port name="ServiceSoap" binding="tns:ServiceSoap">
+      <soap:address location="http://gps.mahamining.com/Service.asmx" />
+    </wsdl:port>
+    <wsdl:port name="ServiceSoap12" binding="tns:ServiceSoap12">
+      <soap12:address location="http://gps.mahamining.com/Service.asmx" />
+    </wsdl:port>
+    <wsdl:port name="ServiceHttpGet" binding="tns:ServiceHttpGet">
+      <http:address location="http://gps.mahamining.com/Service.asmx" />
+    </wsdl:port>
+    <wsdl:port name="ServiceHttpPost" binding="tns:ServiceHttpPost">
+      <http:address location="http://gps.mahamining.com/Service.asmx" />
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

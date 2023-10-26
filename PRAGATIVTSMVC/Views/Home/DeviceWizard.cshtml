@@ -1,0 +1,1006 @@
+﻿
+@{
+    ViewBag.Title = "DeviceWizard";
+    Layout = "~/Views/Shared/Layout2.cshtml";
+}
+
+<h4>Device Installation</h4>
+<div class="row" id="divrow">
+    <input type="hidden" id="txtdeviceid" value="" />
+    <div class="col-lg-6">
+        @*Client Name:<select class="form-control" id="ddldevice" onchange="bindOrders()">
+            <option value="0">-Select-</option>
+            @foreach (var item in ViewBag.categ)
+            {
+                <option value="@item.CATEG_ID">@item.CATEG_NAME</option>
+            }
+
+        </select>*@
+        <div id="div_distributors">
+            Select Distributor:<select id="ddldistributor" class="form-control" onchange="LoadDealers()" style="width:400px">
+                <option value='0' selected>-Select Distributor-</option>
+            </select><br />
+        </div>
+        <div id="div_dealers">
+            Select Dealer:<select id="ddldealer" class="form-control" onchange="LoadCustomers()" style="width:400px;">
+                <option value='0' selected>-Select Dealer-</option>
+            </select><br />
+        </div>
+
+        Select Customers:<select id="ddlCustomers" class="form-control" onchange="bindOrders()" style="width:400px;">
+            <option value='0' selected>-Select Customer-</option>
+        </select> <br />
+        Select Order :<select class="form-control" id="ddlOrder" style="width:400px">
+            <option value="0">-Select-</option>
+
+        </select>
+
+        @*Device Name: <input type="text" class="form-control" id="txtdevicename" />*@
+        Device Name :<select class="form-control" id="ddldevicename" style="width:400px">
+            <option value="0">-Select-</option>
+            @foreach (var item in ViewBag.deviceTypes)
+            {
+                <option value="@item.ID">@item.DEVICE_TYPENAME</option>
+            }
+        </select><br />
+        Vehicle RegNumber:<input type="text" id="txt_vehicle" class="form-control" style="width:400px" />
+
+        VEHICLE TYPE:<select id="ddl_vehicletype" class="form-control" onchange="LoadImageModels()" style="width:400px">
+            <option value="0" selected>--Select--</option>
+            <option value="1">Auto</option>
+            <option value="2">Bus</option>
+            <option value="3">Cargo</option>
+            <option value="4">Car</option>
+            <option value="9">Schoolbus</option>
+            <option value="10">Truck</option>
+            <option value="12">Tractor</option>
+            <option value="17">Scooter</option>
+            <option value="18">Student</option>
+
+        </select>
+
+        VEHICLE IMAGE MODEL:<select id="ddlveh_imagemdl" class="form-control" style="width:400px;">
+            <option value="0" selected>-Select Vehicle Image Model-</option>
+        </select>
+
+
+        IMEI:<input type="number" id="txt_IMEI" class="form-control" pattern="^[0-9]*$" maxlength="15" onkeypress="javascript:return isNumber(event)" style="width:400px" />
+        <br />
+        @*IMEI: <select class="form-control" id="ddlIMEInumber" style="width:400px">
+            <option value="0" selected>-Select IMEI-</option>
+        </select>*@
+        @*<input type="file" id="import_file" value="" onchange="uploadIMEIfile()" class="form-control" />*@
+
+        @*SIM:<input type="number" id="txt_SIM" class="form-control" maxlength="13" pattern="^[0-9]*$" onkeypress="javascript:return isNumber(event)"  style="width:400px" />*@
+
+        Sim Number : <select class="form-control" id="ddlsimnumber" style="width:400px">
+            <option value="0" selected>-Select SIM-</option>
+        </select>@*<input type="file" id="import_SIMS" value="" onchange="uploadSIMS()" class="form-control" />*@<br />
+
+        <div style="width:20px">
+            Status  <input type="checkbox" class="form-control" id="chkstatus" checked="checked" />
+        </div>
+
+        <input type="button" id="btnsave" class="btn btn-primary" onclick="Save('save')" style="margin-top:10px;" value="Submit" />
+
+        <input type="button" value="BACK" style="margin-top:10px;" id="btnback" onclick="Back()" class="btn btn-tbl-delete" />
+    </div>
+
+
+</div>
+@*<div class="card card-box">
+        <div class="card-head">
+            <header>Devices</header>
+            <div class="tools">
+                <a class="fa fa-repeat btn-color box-refresh" href="javascript:;"></a>
+                <a class="t-collapse btn-color fa fa-chevron-down" href="javascript:;"></a>
+                <a class="t-close btn-color fa fa-times" href="javascript:;"></a>
+            </div>
+        </div>
+        <div class="card-body ">
+            <div>
+                <input type="button" id="btnadd" class="btn btn-success" onclick="showrow()" style="width:153px;margin-top:10px;display:none;" value="ADD" />
+            </div>
+            <div class="table-scrollable">
+                <table id="tbldevices" border="1" style="width: 100%" class="mdl-data-table">
+                    <thead>
+                        <tr>
+                            <th class="center">S.no</th>
+                            <th class="center">Device Name</th>
+                            <th class="center">Device ID</th>
+                            <th class="center">Client Name</th>
+                            <th class="center">Serial Number</th>
+                            <th class="center">Sim Number</th>
+                            <th class="center">Call Number1</th>
+                            <th class="center">Status</th>
+
+                        </tr>
+                    </thead>
+                    <tbody id="tbldevicebody"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>*@
+
+<script src="~/Scripts/jquery.min.js"></script>
+
+<script>
+
+$(document).ready(function (){
+    // $("#load").show();
+    var categtypeid = localStorage.getItem("CATEG_TYPE_ID");
+    if (categtypeid == "1" || categtypeid == "2" || categtypeid == "6" || categtypeid == "5")
+    {
+        $("#tbldevices>thead>tr").append("<th>Edit</th>");
+        $("#btnadd").show();
+        if(categtypeid==6)
+        {
+            LoadCustomers();
+        }
+        else {
+            LoadDistributors();
+        }
+
+    }
+   
+
+   // getallDevices();
+    $('#inputID').keypress(function () {
+        var maxLength = $(this).val().length;
+        if (maxLength != 15) {
+            alert('Please Enter 15 digit IMEI Number');
+            return false;
+        }
+    });
+
+});
+function checklength()
+{
+    var maxLength = $("#txt_IMEI").val().length;
+    if (maxLength != 15) {
+        alert('Please Enter 15 digit IMEI Number');
+        return false;
+    }
+}
+function checkSimlength()
+{
+    var maxLength = $("#txt_SIM").val().length;
+    if (maxLength != 10 && maxLength != 13) {
+        alert('Please Enter 10 or 13 digit Sim number');
+        return false;
+    }
+}
+function isNumber(evt) {
+    evt = (evt) ? evt : window.event;
+    var charCode = (evt.which) ? evt.which : evt.keyCode;
+    if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+        return false;
+    }
+    return true;
+}
+window.onload = function () {
+    
+        var categid = localStorage.getItem("CATEG_TYPE_ID");
+//$("#load").show();
+
+        //if (categid != "1" || categid != "2" || categid != "4")
+        //{
+        //    $("#btnadd").hide();
+
+        //}
+        $("#ddldevice").select3();
+
+       // $("#divrow").hide();
+
+        $("#btnupdate").hide();
+
+        // getall_devices();
+
+        //$("#txtmfcdate").datepicker({
+        //    dateFormat: 'mm-dd-yyyy',
+        //    changeMonth: true,
+        //    changeYear: true
+        //}).datepicker("setDate", "0");;
+        //$("#txtdateofsale").datepicker({
+        //    dateFormat: 'mm-dd-yyyy',
+        //    changeMonth: true,
+        //    changeYear: true
+        //}).datepicker("setDate", "0");;
+
+        $('#txtmfcdate').bootstrapMaterialDatePicker
+    ({
+        format: 'MM/DD/YYYY',
+        time: false,
+        switchOnClick: true,
+    });
+        $('#txtdateofsale').bootstrapMaterialDatePicker
+       ({
+           format: 'MM/DD/YYYY',
+           time: false,
+           switchOnClick: true,
+       });
+    $('#ddldevicename').select3();
+    }
+
+    function showrow() {
+        $("#divrow").show();
+
+    }
+
+    function Back() {
+        $("#divrow").hide();
+    }
+
+    function getallDevices() {
+        
+        $("#load").show();
+        var ID = localStorage.getItem("CATEG_TYPE_ID");
+        $.post("/Home/_frmdetails", function (data) {
+            //console.log(dataT);
+            
+            var dataT = data['data'];
+			var arr=[];
+            for (var i = 0; i < dataT.length; i++) {
+                if (ID == "1" || ID == "2" || ID == "4")
+                {
+
+                    arr.push([i + 1, dataT[i].DEVICE_NAME, dataT[i].DEVICE_ID, dataT[i].CLIENT_NAME, dataT[i].DEVICE_SERIALNUMBER, dataT[i].SIM_NUMBER, dataT[i].DEVICE_CALLNUMBER1, dataT[i].DEVICE_STATUS, '<a href="#" onclick="EDIT(' + dataT[i].DEVICE_ID + ')" class="btn btn-tbl-edit btn-xs"><i class="fa fa-pencil"></i></a>']);
+                }
+                else
+                {
+                    arr.push([i + 1, dataT[i].DEVICE_NAME, dataT[i].DEVICE_ID, dataT[i].CLIENT_NAME, dataT[i].DEVICE_SERIALNUMBER, dataT[i].SIM_NUMBER, dataT[i].DEVICE_CALLNUMBER1, dataT[i].DEVICE_STATUS])
+                }
+               // tr = $('<tr/>');
+
+                //tr.append("<td>" + (i + 1) + "</td>");
+                //tr.append("<td>" + dataT[i].DEVICE_NAME + "</td>");
+                //tr.append("<td>" + dataT[i].DEVICE_ID + "</td>");
+                //tr.append("<td>" + dataT[i].CLIENT_NAME + "</td>");
+                //tr.append("<td>" + dataT[i].DEVICE_SERIALNUMBER + "</td>");
+                //tr.append("<td>" + dataT[i].SIM_NUMBER + "</td>");
+                //tr.append("<td>" + dataT[i].DEVICE_CALLNUMBER1 + "</td>");
+                //tr.append("<td>" + dataT[i].DEVICE_STATUS + "</td>");
+                //tr.append("<td><a href='#' onclick='EDIT(" + dataT[i].DEVICE_ID + ")' class='btn btn-tbl-edit btn-xs'><i class='fa fa-pencil'></i></a></td>");
+                //$("#tbldevices").append(tr);
+            }
+            $('#tbldevices').DataTable({
+                dom: 'Bfrtip',
+                buttons: [
+                    //'copy', 'csv', 'excel', 'pdf', 'print'
+                    'excel', 'pdf', 'print'
+                ],
+				data:        arr,
+            deferRender:    true,
+           // scrollY:        200,
+            scrollCollapse: true,
+            scroller:       true,
+			processing: true,
+			columnDefs: [
+  { targets: 'no-sort', orderable: false }
+],
+        language: {
+            'loadingRecords': '&nbsp;',
+            'processing': 'Loading...'
+        }
+            });
+			$("#load").hide();
+        });
+
+    }
+    function getall_devices() {
+
+        //$('#preloader').show();
+        var i = 0;
+        serverSide: true;
+        var filteredData, simple_checkbox, numOfVisibleRows;
+        var MySearch = $('#tbldevices').DataTable({
+            dom: 'Bfrtip',
+            buttons: [
+                'excel', 'pdf', 'print'
+            ],
+            "paging": true,
+            "searching": true,
+           // "filtering": true,
+            autoFill: true,
+            //"ordering": true,
+            //sDom: "Bfrtip",
+            //sDom: '<"search-box"r><"H"lf>t<"F"ip>',
+            //colReorder: true,
+            //"rowHeight": '20px',
+            //"targets": 0,
+            //"paging": true,
+            //"sPaginationType": "full_numbers",
+            highlight: true,
+            fixedColumns: {
+                leftColumns: 4
+            },
+            keys: {
+                columns: ':not(:first-child)'
+            },
+            "scrollX": false,
+            "scrollY": 660,
+            "language": {
+
+                sProcessing: "please wait",
+                "lengthMenu": "No of Records Per Page :  _MENU_ ",
+                "zeroRecords": "Loading Data - Wait",
+                "infoEmpty": "Showing 0 to 0 of 0 entries",
+                "infoFiltered": "From _MAX_ Total Entries",
+                "infoEmpty": "No records available",
+            },
+            processing: true,
+            select: true,
+            // "lengthMenu": [[50, 100, 500, -1], [50, 100, 500, "All"]],
+            "lengthMenu": [[100, 500, 1000, -1], [100, 500, 1000, "All"]],
+            "sAjaxSource": "/Home/_frmdetails",
+            "bDeferRender": true,
+            "bInfo": true,
+            fixedHeader: true,
+            fixedHeader: {
+                header: false,
+                footer: true
+            },
+            "columns": [
+                {
+                    mRender: function (data, type, row) {
+
+
+                        return "<td><span style='display: inline-block;width: 150px;white-space: nowrap;overflow: hidden !important;text-overflow: ellipsis;'>" + row.DEVICE_NAME + "</span></td>"
+                    }
+                },
+                //{ "data": "DEVICE_NAME" },
+                { "data": "DEVICE_ID" },
+                { "data": "CLIENT_NAME" },
+                { "data": "DEVICE_SERIALNUMBER" },
+                { "data": "SIM_NUMBER" },
+                { "data": "DEVICE_CALLNUMBER1" },
+                 { "data": "DEVICE_STATUS" },
+
+                     {
+                         "mData": null,
+                         "bSortable": false,
+                         mRender: function (data, type, row) {
+
+                             return '<input type="button" class="btn btn-primary" onclick="EDIT(' + row.DEVICE_ID + ')" value="EDIT" />'
+
+                         }
+                     },
+            ],
+        })
+    }
+   // var d_ID;
+    //Load Distributors
+    function LoadDistributors() {
+        d_ID = $("#ddlcategory").val();
+        $.ajax({
+            url: '/Home/getDistributors',
+            type: "POST",
+            cache: false,
+            data: { "CategID": 1 },
+            dataType: "json",
+            success: function (data) {
+                var dataT = data['data'];
+                var opt = "<option value='0'>-Select Distributor-</option>";
+                for (var i = 0; i < dataT.length; i++) {
+                    opt += "<option value='" + dataT[i].CATEG_ID + "'>" + dataT[i].CATEG_NAME + "</option>";
+                }
+                $("#ddldistributor").text("");
+                $('#ddldistributor').append(opt);
+                $('#ddldistributor').select3();
+            }
+        });
+        //$.post("/Home/getDistributors", { "CategID": 1 }, function (data) {
+
+        //    var dataT = data['data'];
+        //    var opt = "<option value='0'>-Select Distributor-</option>";
+        //    for (var i = 0; i < dataT.length; i++) {
+        //        opt += "<option value='" + dataT[i].CATEG_ID + "'>" + dataT[i].CATEG_NAME + "</option>";
+        //    }
+        //    $("#ddldistributor").text("");
+        //    $('#ddldistributor').append(opt);
+        //    $('#ddldistributor').select3();
+        //});
+    }
+
+    //Load Dealers
+    function LoadDealers() {
+        d_ID = $("#ddldistributor").val();
+        $.ajax({
+            url: '/Home/getDealers',
+            type: "POST",
+            cache: false,
+            data: { "CategID": d_ID },
+            dataType: "json",
+            success: function (data) {
+                var dataT = data['data'];
+                var opt = "<option value='0' selected>-Select Dealer-</option>";
+                for (var i = 0; i < dataT.length; i++) {
+                    opt += "<option value='" + dataT[i].CATEG_ID + "'>" + dataT[i].CATEG_NAME + "</option>";
+                }
+                $("#ddldealer").text("");
+                $('#ddldealer').append(opt);
+                $('#ddldealer').select3();
+            }
+        });
+        //$.post("/Home/getDealers", { "CategID": d_ID }, function (data) {
+
+        //    var dataT = data['data'];
+        //    var opt = "<option value='0' selected>-Select Dealer-</option>";
+        //    for (var i = 0; i < dataT.length; i++) {
+        //        opt += "<option value='" + dataT[i].CATEG_ID + "'>" + dataT[i].CATEG_NAME + "</option>";
+        //    }
+        //    $("#ddldealer").text("");
+        //    $('#ddldealer').append(opt);
+        //    $('#ddldealer').select3();
+        //});
+
+     //   //Load Distrubutor Customers
+
+        $.ajax({
+            url: '/Home/getCustomers',
+            type: "POST",
+            cache: false,
+            data: { "CategID": d_ID },
+            dataType: "json",
+            success: function (data) {
+                var dataT = data['data'];
+                var opt = "<option value='0'>-Select Customer-</option>";
+                for (var i = 0; i < dataT.length; i++) {
+                    opt += "<option value='" + dataT[i].CATEG_ID + "'>" + dataT[i].CATEG_NAME + "</option>";
+                }
+                $("#ddlCustomers").text("");
+                $('#ddlCustomers').append(opt);
+                $('#ddlCustomers').select3();
+            }
+        });
+        //$.post("/Home/getCustomers", { "CategID": d_ID }, function (data) {
+
+        //        var dataT = data['data'];
+        //        var opt = "<option value='0'>-Select Customer-</option>";
+        //        for (var i = 0; i < dataT.length; i++) {
+        //            opt += "<option value='" + dataT[i].CATEG_ID + "'>" + dataT[i].CATEG_NAME + "</option>";
+        //        }
+        //        $("#ddlCustomers").text("");
+        //    $('#ddlCustomers').append(opt);
+        //    $('#ddlCustomers').select3();
+        //    });
+
+
+    }
+
+    //Load Customers
+
+    function LoadCustomers() {
+        
+
+        if ($("#ddldistributor").val() != 0 && $("#ddldealer").val() != 0)
+        {
+            d_ID = $("#ddldealer").val();
+        }
+        else if ($("#ddldistributor").val() != 0 && $("#ddldealer").val() == 0)
+        {
+            d_ID = $("#ddldistributor").val();
+        }
+        else
+        {
+            d_ID = localStorage.getItem("USERS_CATEG_ID");
+            $("#div_distributors").hide();
+            $("#div_dealers").hide();
+        }
+        $.ajax({
+            url: '/Home/getCustomers',
+            type: "POST",
+            cache: false,
+            data: { "CategID": d_ID },
+            dataType: "json",
+            success: function (data) {
+                var dataT = data['data'];
+                var opt = "<option value='0'>-Select Customer-</option>";
+                for (var i = 0; i < dataT.length; i++) {
+                    opt += "<option value='" + dataT[i].CATEG_ID + "'>" + dataT[i].CATEG_NAME + "</option>";
+                }
+                $("#ddlCustomers").text("");
+                $('#ddlCustomers').append(opt);
+                $('#ddlCustomers').select3();
+            }
+        });
+        //$.post("/Home/getCustomers", { "CategID": d_ID }, function (data) {
+
+        //    var dataT = data['data'];
+        //    var opt = "<option value='0'>-Select Customer-</option>";
+        //    for (var i = 0; i < dataT.length; i++) {
+        //        opt += "<option value='" + dataT[i].CATEG_ID + "'>" + dataT[i].CATEG_NAME + "</option>";
+        //    }
+        //    $("#ddlCustomers").text("");
+        //    $('#ddlCustomers').append(opt);
+            
+        //});
+    }
+
+   // //load orders
+
+    function bindOrders()
+    {
+      //  LoadIMEI();
+        LoadSIMS();
+
+        var ID = $("#ddlCustomers").val();
+        var parent_ID = localStorage.getItem("USERS_CATEG_ID");
+        var categ_name = $("#ddlCustomers Option:selected").text();
+        if (ID != '0') {
+            $.ajax({
+                url: '/Home/LoadOrders',
+                type: "POST",
+                cache: false,
+                data: { "CATEG_ID": ID, "categname": categ_name, "ParentID": parent_ID },
+                dataType: "json",
+                success: function (data) {
+                    
+                    var dataT = data['data'];
+                    var opt = "<option value='0'>-Select-</option>";
+                    for (var i = 0; i < dataT.length; i++) {
+                        opt += "<option value='" + dataT[i].ORDER_ID + "'>" + dataT[i].ORDER_NAME + "</option>";
+                    }
+                    $("#ddlOrder").text("");
+                    $('#ddlOrder').append(opt);
+                }
+            });
+            //$.post("/Home/LoadOrders", { "CATEG_ID": ID, "categname": categ_name, "ParentID": parent_ID }, function (data) {
+            //    var dataT = data['data'];
+            //    var opt = "<option value='0'>-Select-</option>";
+            //    for (var i = 0; i < dataT.length; i++) {
+            //        opt += "<option value='" + dataT[i].ORDER_ID + "'>" + dataT[i].ORDER_NAME + "</option>";
+            //    }
+            //    $("#ddlOrder").text("");
+            //    $('#ddlOrder').append(opt);
+            //});
+        }
+    }
+//Load IMEI Number
+    function LoadIMEI() {
+        var ID;
+        var categ_name;
+
+        if ($("#ddldistributor").val() != 0 && $("#ddldealer").val() != 0) {
+            ID = $("#ddldealer").val();
+            categ_name = $("#ddldealer option:selected").text();
+        }
+        else if ($("#ddldistributor").val() != 0 && $("#ddldealer").val() == 0) {
+            ID = $("#ddldistributor").val();
+            categ_name = $("#ddldistributor option:selected").text();
+        }
+        else {
+            ID = localStorage.getItem("USERS_CATEG_ID");
+
+            categ_name = localStorage.getItem("orgname");
+            $("#div_distributors").hide();
+            $("#div_dealers").hide();
+        }
+        //if ($("#ddldealer").val() == 0)
+        //{
+        //    ID = d_ID;
+        //    categ_name = $("#ddldistributor option:selected").text();
+        //}
+
+        if (ID != '0') {
+            $.post("/Home/LoadIMEINumbers", { "CATEG_ID": ID, "categname": categ_name }, function (data) {
+                var dataT = data['data'];
+                var opt = "<option value='0'>-Select IMEI-</option>";
+                for (var i = 0; i < dataT.length; i++) {
+                    opt += "<option value='" + dataT[i].DEVICEID + "'>" + dataT[i].IMEI + "</option>";
+                }
+                $("#ddlIMEInumber").text("");
+                $('#ddlIMEInumber').append(opt);
+            });
+        }
+    }
+    //Load SIMS
+    function LoadSIMS() {
+        
+        var ID;
+        var categ_name;
+
+        if ($("#ddldistributor").val() != 0 && $("#ddldealer").val() != 0) {
+            ID = $("#ddldealer").val();
+            categ_name = $("#ddldealer option:selected").text();
+        }
+        else if ($("#ddldistributor").val() != 0 && $("#ddldealer").val() == 0) {
+            ID = $("#ddldistributor").val();
+            categ_name = $("#ddldistributor option:selected").text();
+        }
+        else {
+            ID = localStorage.getItem("USERS_CATEG_ID");
+
+            categ_name = localStorage.getItem("orgname");
+            $("#div_distributors").hide();
+            $("#div_dealers").hide();
+        }
+
+        if (ID != '0') {
+            $.post("/Home/LoadSIMS", { "CATEG_ID": ID, "categname": categ_name }, function (data) {
+                var dataT = data['data'];
+                var opt = "<option value='0'>-Select SIMS</option>";
+                for (var i = 0; i < dataT.length; i++) {
+                    opt += "<option value='" + dataT[i].ID + "'>" + dataT[i].SIMS + "</option>";
+                }
+                $("#ddlsimnumber").text("");
+                $('#ddlsimnumber').append(opt);
+                $("#ddlsimnumber").select3();
+            });
+        }
+    }
+   
+    function EDIT(ID) {
+      //  alert(ID);
+
+
+        $.post("/Home/device_Edit_Command", { "ID": ID }, function (data) {
+            $("#btnsave").hide();
+            $("#divrow").show();
+            $("#btnupdate").show();
+
+            var dataT = data['data'];
+           // alert(dataT[0].DEVICE_SIM_ID);
+           // $("#ddldevice").select3().val(dataT[0].DEVICE_CATEGORY_ID).trigger('change');
+           // bindsim();
+            //setTimeout(function () {
+
+            //    $("#ddlsimnumber").val(dataT[0].DEVICE_SIM_ID);
+
+            //},500)
+            $("#txt_IMEI").val(dataT[0].DEVICE_SERIALNUMBER);
+            $("#txt_SIM").val(dataT[0].DEVICE_SERIALNUMBER);
+
+            $("#txtdeviceid").val(dataT[0].DEVICE_ID);
+            $("#txtdevicename").val(dataT[0].DEVICE_NAME);
+            $("#txtmfcdate").val(dataT[0].DEVICE_MFGDATE_ONE);
+            $("#txtserialnumber").val(dataT[0].DEVICE_SERIALNUMBER);
+            $("#ddlcountrty").val(dataT[0].DEVICE_COUNTRY_ID);
+
+
+            $("#txtdateofsale").val(dataT[0].DEVICE_DATEOFSALE_ONE);
+
+
+            $("#txtcallnumber1").val(dataT[0].DEVICE_CALLNUMBER1);
+            $("#txtcallnumber2").val(dataT[0].DEVICE_CALLNUMBER2);
+
+           // $("#txtcallnumber1").val(dataT[0].DEVICE_COUNTRY_ID);
+
+            $("#txtstopduration").val(dataT[0].DEVICE_STOPDURATION_ONE);
+            $("#txtdataduration").val(dataT[0].DEVICE_CALLNUMBER2);
+            $("#txtoverduration").val(dataT[0].DEVICE_OVERSPEEDDURATION_ONE);
+
+            if (dataT[0].DEVICE_STATUS == 'True') {
+
+                $("#chkstatus").attr('checked', true);
+            }
+
+        });
+        localStorage.setItem("DEVICE_ID",ID);
+    }
+
+
+
+
+    //function Save(id) {
+
+
+    //    var ID='0'
+    //    if (id == "save") {
+    //        btn = "BTN_SAVE";
+
+    //    }
+    //    else {
+    //         ID = localStorage.getItem("CATEG_ID");
+    //        btn = "BTN_UPDATE";
+
+    //    }
+    //    var  Status =false;
+    //    if ($("#chkstatus").is(':checked') == true) {
+    //        Status = true;
+    //    }
+
+
+    //    //btn_device_Save_Click(string btn, string DEVICEID, string DEVICECALLNO1, string DEVICECALLNO2,string DEVICESERIALNO,string DEVICESALEDATE,
+    //    //string DEVICEMFGDATE,string COUNTRYID,string SIMID,string DEVICEDATADURATION,string DEVICESPEEDDURATION,string DEVICESTOPDURATION,string STATUS,
+    // //   string CATEG_ID,string CATEG_NAME)
+    //    if ($("#ddlsimnumber").val() != 0 && $("#txtserialnumber").val() != "") {
+
+
+    //        $.post("/Home/btn_device_Save_Click", {
+    //            "btn": btn, "DEVICEID": $("#txtdeviceid").val(), "DEVICENAME": $("#txtdevicename").val(), "DEVICECALLNO1": $("#txtcallnumber1").val(),
+    //            "DEVICECALLNO2": $("#txtcallnumber2").val(), "DEVICESERIALNO": $("#txtserialnumber").val(),
+    //            "DEVICESALEDATE": $("#txtdateofsale").val(), "DEVICEMFGDATE": $("#txtmfcdate").val(), "COUNTRYID": $("#ddlcountrty").val(), "SIMID": $("#ddlsimnumber").val(),
+    //            "DEVICEDATADURATION": $("#txtdataduration").val(), "DEVICESPEEDDURATION": $("#txtoverduration").val(), "DEVICESTOPDURATION": $("#txtstopduration").val(), "STATUS": Status, "CATEG_ID": $("#ddldevice").val(), "CATEG_NAME": $("#ddldevice Option:selected").text()
+    //        }, function (data) {
+
+    //            var dataT = data['data']
+
+    //            if (dataT == 'true') {
+    //                alert("" + id + " successfully..");
+    //                // location.reload();
+    //                $("#divrow").hide();
+    //            }
+    //            else {
+    //                alert(dataT);
+    //            }
+    //        });
+    //    }
+    //    else
+    //    {
+    //        if($("#ddlsimnumber").val() == 0)
+    //        {
+    //            alert("Please Select SIM");
+    //        }
+    //        else if($("#txtserialnumber").val()=="")
+    //        {
+    //            alert("Please Enter Device IMEI Number");
+    //        }
+    //    }
+    //}
+    function Save(id) {
+
+        
+        var ID = '0'
+        if (id == "save") {
+            btn = "BTN_SAVE";
+
+        }
+        else {
+            ID = localStorage.getItem("DEVICE_ID");
+            btn = "BTN_UPDATE";
+
+        }
+        var Status = false;
+        if ($("#chkstatus").is(':checked') == true) {
+            Status = true;
+        }
+
+
+        //btn_device_Save_Click(string btn, string DEVICEID, string DEVICECALLNO1, string DEVICECALLNO2,string DEVICESERIALNO,string DEVICESALEDATE,
+        //string DEVICEMFGDATE,string COUNTRYID,string SIMID,string DEVICEDATADURATION,string DEVICESPEEDDURATION,string DEVICESTOPDURATION,string STATUS,
+        //   string CATEG_ID,string CATEG_NAME)
+        if ($("#txt_IMEI").val() != "" && $("#ddlsimnumber option:selected").text() != "" && $("#ddlveh_imagemdl option:selected").text()!="" && $("#txt_vehicle").val() != "" && $("#ddlCustomers").val() != 0 && $("#ddldevicename").val() != 0 && $("#ddl_vehicletype").val() != 0 && $("#ddlOrder").val() != 0) {
+
+            if (($("#txt_IMEI").val().length == 15 || $("#txt_IMEI").val().length == 12) && ($("#ddlsimnumber option:selected").text().length == 10 || $("#ddlsimnumber option:selected").text().length == 13))
+            {
+                alert('I am here');
+                $.post("/Home/Save_Device", {
+                    "btn": btn,
+                    "DEVICENAME": $("#ddldevicename Option:selected").text(),
+                    "DEVICESERIALNO": $("#txt_IMEI").val(),
+                    "DeviceID": ID,
+                    "VehicleNo": $("#txt_vehicle").val(),
+                    "VehicleType": $("#ddl_vehicletype").val(),
+                    "VehcleName": $("#ddl_vehicletype Option:selected").text(),
+                    "Vehimagemodel": $("#ddl_vehicletype option:selected").val(),
+                    "OrderId": $("#ddlOrder").val(),
+                    "SIMnumber": $("#ddlsimnumber option:selected").text(),
+                    "STATUS": Status, "CATEG_ID": $("#ddlCustomers").val(), "CATEG_NAME": $("#ddlCustomers Option:selected").text(), "DealerID": d_ID
+                }, function (data) {
+                    
+                    var dataT = data['data']
+
+                        if (dataT == 'true') {
+                            SaveDeviceInTraccar();
+
+
+                            if (confirm("Do you want to Exit or Generate Certificate?") == true) {
+                                alert("" + id + " successfully..");
+                                location.reload();
+                                $("#divrow").hide();
+                            } else {
+                                location.href = '/Home/Certificate?deviceId=' + ID;
+                            }
+
+                       
+                       
+                        
+
+                      
+                    }
+                    else {
+                        alert(dataT);
+                    }
+                });
+            }
+            else
+            {
+                if($("#txt_IMEI").val().length != 15)
+                {
+                    alert("Please Enter 15 digit IMEI Number");
+                }
+                else if($("#txt_SIM").val().length != 10 && $("#txt_SIM").val().length !=13)
+                {
+                    alert("Please Enter 10 or 13 digit Sim Number");
+                }
+            }
+
+        }
+        else {
+            if ($("#txt_IMEI").val() == "") {
+                alert("Please Enter IMEI");
+            }
+            else if ($("#txt_SIM").val() == "") {
+                alert("Please Enter Sim Number");
+            }
+            else if ($("#txt_vehicle").val() == "") {
+                alert("Please Enter Vehicle Reg Number");
+
+
+            }
+            else if ($("#ddlCustomers").val() == 0) {
+                alert("Please Select Customer");
+            }
+            else if ($("#ddldevicename").val() == 0) {
+                alert("Please Select Device Type");
+            }
+            else if ($("#ddl_vehicletype").val() == 0) {
+                alert("Please Select Vehicle Type");
+            }
+            else if ($("#ddlOrder").val() == 0) {
+                alert("Please Select an Order");
+            }
+            else if ($("#ddlveh_imagemdl").val() == 0) {
+                alert("Please Select VehicleImageModel")
+            }
+        }
+    }
+
+
+
+    function uploadIMEIfile()
+    {
+        
+        var formdata = new FormData();
+        var categID; var categ_name;
+        var files = $("#import_file").get(0).files;
+
+        if (files.length > 0 && $("#ddlCustomers").val() != 0) {
+
+            if ($("#ddldistributor").val() != 0 && $("#ddldealer").val() != 0) {
+                categID = $("#ddldealer").val();
+                categ_name = $("#ddldealer option:selected").text();
+            }
+            else if ($("#ddldistributor").val() != 0 && $("#ddldealer").val() == 0) {
+                categID = $("#ddldistributor").val();
+                categ_name = $("#ddldistributor option:selected").text();
+            }
+            else {
+                categID = localStorage.getItem("USERS_CATEG_ID");
+            }
+            formdata.append("UploadedExcel", files[0]);
+            //var categID = $("#ddlCustomers").val();
+
+            formdata.append("CATEG_ID", categID);
+            $.ajax({
+                url: "/ImportIMEINumbers.ashx",
+                type: 'POST',
+                async: false,
+                processData: false,
+                cache: false,
+                contentType: false,
+                data: formdata,
+                success: function (data) {
+                    
+                    var value = data;
+                    if (data) {
+
+                        alert(data);
+                    }
+                    else {
+                        alert("Failed to upload file");
+                    }
+                },
+                error: function (err) {
+
+                }
+
+            });
+        }
+        else {
+            if (files.length == 0) {
+                alert("Please Upload Excel File");
+            }
+            else if ($("#ddlCustomers").val() == 0) {
+                alert("Please Select Account");
+            }
+        }
+    }
+    function uploadSIMS()
+    {
+        var formdata = new FormData();
+        var files = $("#import_SIMS").get(0).files;
+        var categID; var categ_name;
+
+        if (files.length > 0 && $("#ddlCustomers").val() != 0) {
+            formdata.append("UploadedExcel", files[0]);
+            if ($("#ddldistributor").val() != 0 && $("#ddldealer").val() != 0) {
+                categID = $("#ddldealer").val();
+                categ_name = $("#ddldealer option:selected").text();
+            }
+            else if ($("#ddldistributor").val() != 0 && $("#ddldealer").val() == 0) {
+                categID = $("#ddldistributor").val();
+                categ_name = $("#ddldistributor option:selected").text();
+            }
+            else {
+                categID = localStorage.getItem("USERS_CATEG_ID");
+            }
+            //var categID = $("#ddlCustomers").val();
+
+            formdata.append("CATEG_ID", categID);
+            $.ajax({
+                url: "/ImportSIMS.ashx",
+                type: 'POST',
+                async: false,
+                processData: false,
+                cache: false,
+                contentType: false,
+                data: formdata,
+                success: function (data) {
+                    
+                    var value = data;
+                    if (data) {
+
+                        alert(data);
+                    }
+                    else {
+                        alert("Failed to upload file");
+                    }
+                },
+                error: function (err) {
+
+                }
+
+            });
+        }
+        else {
+            if (files.length == 0) {
+                alert("Please Upload Excel File");
+            }
+            else if ($("#ddlCustomers").val() == 0) {
+                alert("Please Select Account");
+            }
+        }
+    }
+    //Praveen
+    function LoadImageModels() {
+        d_ID1 = $("#ddl_vehicletype").val();
+        $.post("/Home/Get_Vehicle_images", { "Vehicle_model": d_ID1 }, function (data) {
+
+            var dataT = data['data'];
+            var opt = "<option value='0' selected>-Select VehImage-</option>";
+            for (var i = 0; i < dataT.length; i++) {
+                opt += "<option value='" + dataT[i].VEHMODELIMAGES_ID + "'>" + dataT[i].VEHMODEL_IMAGENAME + "</option>";
+            }
+            $("#ddlveh_imagemdl").text("");
+            $('#ddlveh_imagemdl').append(opt);
+        });
+    }
+
+    function SaveDeviceInTraccar() {
+        
+        var device_id;
+        var username = "admin";
+        var password = "admin";
+        var save_devices = { "name": $("#ddldevicename Option:selected").text(), "uniqueId": $("#txt_IMEI").val() };
+        $.ajax
+            ({
+                type: "POST",
+                url: "http://52.230.24.18:8082/api/devices",
+                async: false,
+                dataType: 'json',
+                contentType: 'application/json',
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader('Authorization', "Basic " + btoa(username + ":" + password));
+                },
+                data: JSON.stringify(save_devices),
+                success: function (data) {
+                    
+                    device_id = data.id;
+
+                }
+            });
+
+    }
+</script>

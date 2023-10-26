@@ -1,0 +1,666 @@
+﻿@{
+    ViewBag.Title = "frm_Categories";
+    Layout = "~/Views/Shared/Layout2.cshtml";
+}
+
+<style>
+    #rcorners2 {
+        /*border-radius: 35px;*/
+        border: 2px solid #73AD21;
+        padding: 20px;
+        /*width: 200px;*/
+        /*height: 150px;*/
+    }
+
+    #rcorner1 {
+        border: 2px solid #fb7061;
+        padding: 20px;
+    }
+
+    .select2 {
+        width: 100% !important;
+    }
+
+    .table td {
+        padding: 5px;
+        vertical-align: middle;
+        font-size: 12px !important;
+    }
+
+    .table th {
+        font-weight: 500;
+        font-size: 13px !important;
+    }
+</style>
+
+@*<div class="page-bar">
+                       <div class="page-title-breadcrumb">
+                           <div class=" pull-left">
+                               <div class="page-title"></div>
+                           </div>
+                           <ol class="breadcrumb page-breadcrumb pull-right">
+                               <li><i class="fa fa-home"></i>&nbsp;<a class="parent-item" href="index.html">Home</a>&nbsp;<i class="fa fa-angle-right"></i>
+                               </li>
+                               <li><a class="parent-item" href="#">Partners</a>&nbsp;<i class="fa fa-angle-right"></i>
+                               </li>
+
+                           </ol>
+                       </div>
+    </div>*@
+<div class="row" id="divrow">
+    <div class="col-md-3">
+        <input type="hidden" id="hid_categname" value="" />
+        <input type="hidden" id="hid_parentid" value="" />
+        <input type="hidden" id="hiddenquery" value="@ViewBag.Querystring" />
+
+        @if (ViewBag.Querystring == "CLIENTS")
+            {
+            <label>Partner Name:</label>
+                <select id="ddlpartner" class="form-control">
+                    <option value="0">-Select-</option>
+                    @foreach (var item1 in ViewBag.partners)
+                    {
+                        <option value="@item1.CATEG_ID">@item1.CATEG_NAME</option>
+                    }
+                </select>
+                <label>Client Name :</label><input type="text" id="txtClientname" class="form-control" placeholder="" />
+
+                @*<label>Select Category Type</label><select id = "ddlCategType" class="form-control">
+                                      <option value = "0" selected>-Select Type-</option>
+                                     @foreach (var item1 in ViewBag.categtype)
+                                     {
+                                         <option value="@item1.Value">@item1.Type</option>
+                                     }
+                    </select>*@
+        }
+
+
+        else
+        {
+            <label>Partner Name :</label><input type="text" id="txtpartnername" class="form-control"  placeholder="" />
+                @*<label>Select Category Type</label><select id="ddlCategParntType" class="form-control">
+                        <option value="0" selected>-Select Type-</option>
+                        <option value="2"> TranoPro Admin </option>
+                        <option value="5"> Distributor </option>
+                        <option value="6">Dealer</option>
+                        <option value="3"> Customer</option>
+                    </select>*@
+
+        }
+
+        <label>Select Category Type</label><select id="ddlCategType" class="form-control">
+            <option value="0" selected>-Select Type-</option>
+            @foreach (var item1 in ViewBag.categtype)
+            {
+                <option value="@item1.Value">@item1.Type</option>
+            }
+        </select>
+
+        @*<label>Select Package:</label>
+            <select id="ddlpackages" class="form-control">
+                <option value="0" selected>-Select-</option>
+                @foreach (var item1 in ViewBag.packages)
+                {
+                    <option value="@item1.PACKAGE_ID">@item1.PACKAGE_NAME</option>
+                }
+            </select>*@
+
+        @*Description : <input type="text" id="txtdescription" class="form-control" placeholder="" />*@
+
+
+        Mobile Number:<input type="text" id="txtmobilenumber" class="form-control" placeholder="" />
+
+
+
+
+        Database:<select id="ddldatabase" class="form-control" disabled="disabled">
+            <option value="0">-Select-</option>
+        </select>
+
+        <div style="width:20px">
+            Status  <input type="checkbox" checked="checked" class="form-control" id="txtstatus" />
+            <div style="margin-left: 165px; margin-top: -35px;width:20px ">
+                SendMail <input type="checkbox" class="form-control" id="txtsendmail" />
+            </div>
+
+        </div>
+
+        Upload Logo:<input type="file" class="form-control" id="upload_logo" />
+    </div>
+    <div class="col-md-3">
+        Email ID :<input type="text" id="txtemail" class="form-control" placeholder="" />
+        Web Site Name : <input type="text" id="txtwebsitename" value="www.tranopro.com" class="form-control" placeholder="" />
+
+        Contact Person : <input type="text" id="txtcontactperson" class="form-control" placeholder="" />
+
+        SalesRepresentative:<select id="ddlsales" class="form-control">
+            <option value="0">-Select-</option>
+            @foreach (var item1 in ViewBag.sales)
+            {
+                <option value="@item1.SALESREP_USER_ID">@item1.SALESREP_FULLNAME</option>
+            }
+        </select>
+        @if (ViewBag.Querystring == "CLIENTS")
+            {
+            <label>Noof Users :</label><input type="text" id="txtnoofusers" class="form-control" placeholder="" />
+        }
+
+        No Of Devices :<input type="text" id="txtnoofdevices" class="form-control" placeholder="" />
+
+        @*Telephone Number : <input type="text" id="txttelephonenuber" class="form-control" placeholder="" />
+
+            Fax Number : <input type="text" id="txtfaxnumber" class="form-control" placeholder="" />*@
+
+
+
+
+        @*Unit for Speed :<select class="form-control" id="ddlunitspeed">
+                <option value="Km/Hr">Km/Hr</option>
+                <option value="Mile/Hr">Mile/Hr</option>
+            </select>
+            Unit for Volume:<select class="form-control" id="ddlunitvolume">
+                <option value="Litre">Litre</option>
+                <option value="Gallon">Gallon</option>
+            </select>*@
+
+    </div>
+
+    <div class="col-md-3">
+        Address:<input type="text" id="txtaddress" class="form-control" placeholder="" />
+
+        Zip Code :<input type="text" id="txtzipcode" onchange="getAddress()" class="form-control" placeholder="" />
+
+        City Name:<select id="ddlcity" class="form-control">
+            <option value="0">-Select-</option>
+        </select>
+
+        State Name:<select id="ddlstate" class="form-control">
+            <option value="0">-Select-</option>
+        </select>
+
+        Country Name:<select id="ddlcountry" class="form-control">
+            <option value="0">-Select-</option>
+            @*@foreach (var item1 in ViewBag.countries)
+                {
+                    <option value="@item1.COUNTRY_ID">@item1.COUNTRY_NAME</option>
+                }*@
+        </select>
+
+
+
+    </div>
+
+    <input type="button" id="btnsave" class="btn btn-success" onclick="Save('save')" style="margin-left:84%;margin-top:10px" value="Submit" />
+    <input type="button" id="btnupdate" class="btn btn-success" onclick="Save('update')" style="margin-left:84%;margin-top:10px" value="Update" />
+    <input type="button" value="BACK" style="margin-left:92%;margin-top:-38px" id="btnback" onclick="Back()" class="btn btn-warning" />
+</div>
+<div class="row" style="margin-left:1px;">
+
+    <input type="button" class="btn btn-primary" onclick="showrow()" style="width:57px;" value="ADD" />
+    <div class="card-head" style="text-align:center;">
+        <h4>@ViewBag.Querystringhjjkk</h4>
+
+    </div>
+</div>
+
+<div class="card card-box">
+
+    <div class="card-body">
+        <table id="tblparners" class="table table-striped table-bordered" cellspacing="0" width="100%">
+            <thead>
+                <tr>
+                    <th class="center">ID</th>
+                    <th class="center">Partner (Distributor) Name</th>
+                    <th class="center">Client (Dealer) Name</th>
+                    <th class="center">Contact Person</th>
+                    <th class="center">Mobile Number</th>
+                    <th class="center">Username</th>
+                    <th class="center">Password</th>
+                    <th class="center">Status</th>
+                    <th class="center">Edit</th>
+                </tr>
+            </thead>
+            <tbody>
+                @{
+                    int i = 1;
+                    foreach (var item in ViewBag.partnersandclients)
+                    {
+                        <tr>
+                            <td>@i</td>
+                            <td>@item.PARENT_NAME</td>
+                            <td>@item.CATEG_NAME</td>
+                            <td>@item.CATEG_CONTACTPERSON</td>
+                            <td>@item.CATEG_MOBILENUMBER</td>
+                            <td>@item.username</td>
+                            <td>@item.password</td>
+                            @if (item.CATEG_STATUS == "Active")
+                            {
+                                <td>@item.CATEG_STATUS</td>
+                                <td>
+                                    @*<input type="button" value="IN ACTIVE" style="width:100px" onclick="UPDATESTATUS(0,@item.CATEG_CATETYPE_ID)" class="btn btn-danger" />*@
+                                    @*<input type="button" value="EDIT" onclick="EDIT(@item.CATEG_ID)" class="btn btn-primary" />*@
+                                    <a href='#' onclick="EDIT(@item.CATEG_ID)" class='btn btn-tbl-edit btn-xs'><i class='fa fa-pencil'></i></a>
+                                </td>
+                            }
+                            else
+                            {
+                                <td>@item.CATEG_STATUS</td>
+                                <td>
+                                    @*<input type="button" value="IN ACTIVE" style="width:100px" onclick="UPDATESTATUS(0,@item.CATEG_CATETYPE_ID)" class="btn btn-danger" />*@
+                                    @*<input type="button" value="EDIT" onclick="EDIT(@item.CATEG_ID)" class="btn btn-primary" />*@
+                                    <a href='#' onclick="EDIT(@item.CATEG_ID)" class='btn btn-tbl-edit btn-xs'><i class='fa fa-pencil'></i></a>
+                                </td>
+                            }
+                        </tr>
+                        i++;
+                    }
+
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+<script>
+
+$(document).ready(function(){
+    $('#tblparners').dataTable();
+    binddatabase();
+
+
+});
+    window.onload = function () {
+        $("#divrow").hide();
+        $("#btnupdate").hide();
+       // $("#ddlpartner").select3();
+        //$("#txtstatus").prop('checked', true);
+
+    }
+
+@*$('#tblparners').DataTable({
+        dom: 'Bfrtip',
+        buttons: [
+            //'copy', 'csv', 'excel', 'pdf', 'print'
+            'excel', 'pdf', 'print'
+        ]
+    });*@
+
+    //$('input').keypress(function (e) {
+    //    if (e.which === 32)
+    //        return false;
+    //});
+    //$('.form-control').on("input", function () {
+    //    $(this).val($(this).val().replace(/ /g, ""));
+    //});
+
+    function showrow() {
+        $("#divrow").show();
+    }
+    function getAddress() {
+
+        var pincode = $('#txtzipcode').val();
+
+        $.post("/Home/getAddressByPincode", { "Pincode": pincode }, function (data) {
+            var opt = "", opt1 = "", opt2 = "", opt3 = "";
+
+            var dataT = data['data'];
+            //bind Area Dropdown
+            var opt = "<option value='0'>-Select-</option>";
+            if (dataT.length > 0) {
+                for (var i = 0; i < dataT.length; i++) {
+                    opt += "<option value='" + dataT[i].area_id + "'>" + dataT[i].area_name + "</option>";
+                }
+                $("#ddlArea").text("");
+                $('#ddlArea').append(opt);
+
+                //bind Country dropdown
+
+                opt1 += "<option value='0'>-Select-</option>";
+                opt1 += "<option value='" + dataT[0].country_id + "' selected>" + dataT[0].country_name + "</option>";
+                $("#ddlcountry").text("");
+                $('#ddlcountry').append(opt1);
+
+                //bind States
+                opt2 += "<option value='0'>-Select-</option>";
+                opt2 += "<option value='" + dataT[0].state_id + "' selected>" + dataT[0].state_name + "</option>";
+                $("#ddlstate").text("");
+                $('#ddlstate').append(opt2);
+
+                //bind Cities
+                opt3 += "<option value='0'>-Select-</option>";
+                opt3 += "<option value='" + dataT[0].city_id + "' selected>" + dataT[0].city_name + "</option>";
+                $("#ddlcity").text("");
+                $('#ddlcity').append(opt3);
+
+
+            }
+            else {
+                alert("Invalid Pincode");
+            }
+        });
+    }
+
+    function bindsates() {
+        if ($("#ddlcountry").val() != '0') {
+            var ID = $("#ddlcountry").val();
+            $.post("/Home/getstate", { "CountryID": ID }, function (data) {
+
+                var dataT = data['data'];
+                var opt = "<option value='0'>-Select-</option>";
+                for (var i = 0; i < dataT.length; i++) {
+                    opt += "<option value='" + dataT[i].STATE_ID + "'>" + dataT[i].STATE_NAME + "</option>";
+                }
+                $("#ddlstate").text("");
+                $('#ddlstate').append(opt);
+            });
+        }
+    }
+    function bindcity() {
+        if ($("#ddlstate").val() != '0') {
+            var ID = $("#ddlstate").val();
+            $.post("/Home/getcity", { "StateID": ID }, function (data) {
+
+                var dataT = data['data'];
+                var opt = "<option value='0'>-Select-</option>";
+                for (var i = 0; i < dataT.length; i++) {
+                    opt += "<option value='" + dataT[i].CITY_CITYID + "'>" + dataT[i].CITY_NAME + "</option>";
+                }
+                $("#ddlcity").text("");
+                $('#ddlcity').append(opt);
+            });
+        }
+    }
+
+    //ddldatabase
+
+    function binddatabase() {
+        
+        $.post("/Home/getdbname", function (data) {
+
+            var dataT = data['data'];
+            var opt = "<option value='0'>-Select-</option>";
+            for (var i = 0; i < dataT.length; i++) {
+                opt += "<option value='" + dataT[i].Database_ID + "'>" + dataT[i].Database_Name + "</option>";
+            }
+            $("#ddldatabase").text("");
+            $('#ddldatabase').append(opt);
+            $('#ddldatabase').val(1);
+        });
+
+    }
+
+
+
+    function EDIT(ID) {
+
+        
+
+        $("#btnsave").hide();
+        $("#btnupdate").show();
+
+        localStorage.setItem("CATEG_ID", ID);
+        $("#divrow").show();
+        $("body").scrollTop(0);
+        $.post("/Home/editcategory", { "CATEG_ID": ID }, function (data) {
+            
+            var dataT = data['data']; var opt = "";
+            $("#ddlcountry").val(dataT[0].CATEG_COUNTRY_ID);
+            bindsates();
+            $("#txtpartnername").attr("readonly", true);
+            $("#hid_categname").val(dataT[0].CATEG_NAME);
+            $("#hid_parentid").val(dataT[0].CATEG_PARENT_ID);
+
+            if ($("#hiddenquery").val() == "CLIENTS") {
+                $("#txtClientname").val(dataT[0].CATEG_NAME);
+
+                opt += '<option value="0">-Select -</option>'
+
+                opt += '<option value=' + dataT[0].CATEG_PARENT_ID + ' selected>' + dataT[0].PARENT_NAME + '</option>'
+
+                $("#ddlpartner").text("");
+                $("#ddlpartner").append(opt);
+              //  $("#ddlpartner").select3().val(dataT[0].CATEG_PARENT_ID).trigger('change');
+            }
+            else {
+                $("#txtpartnername").val(dataT[0].CATEG_NAME);
+            }
+
+
+            $("#txttelephonenuber").val(dataT[0].CATEG_MOBILENUMBER);
+            $("#txtdescription").val(dataT[0].CATEG_DESC);
+            $("#txtfaxnumber").val(dataT[0].CATEG_FAX);
+            $("#txtcontactperson").val(dataT[0].CATEG_CONTACTPERSON);
+            $("#txtwebsitename").val(dataT[0].CATEG_WEBSITENAME);
+            $("#txtnoofusers").val(dataT[0].CATEG_NOOFUSERS);
+            $("#txtnoofdevices").val(dataT[0].CATG_NOOFDEVICES);
+            $("#txtemail").val(dataT[0].CATEG_EMAILID);
+            $("#txtmobilenumber").val(dataT[0].CATEG_MOBILENUMBER);
+            $("#txtaddress").val(dataT[0].CATEG_ADDRESS);
+          //  $("#ddlpackages").val(dataT[0].CATEG_PACKAGE_ID);
+            $("#ddlCategType").val(dataT[0].CATEG_CATETYPE_ID);
+
+            //setTimeout(function () {
+            //    $("#ddlstate").val(dataT[0].CATEG_STATE_ID);
+            //    bindcity();
+            //}, 1000);
+
+            //setTimeout(function () {
+            //    $("#ddlpartner").val(dataT[0].CATEG_PARENT_ID);
+
+            //}, 1000);
+
+
+
+            //setTimeout(function () {
+
+            //    $("#ddlcity").val(dataT[0].CATEG_CITY_ID);
+
+            //}, 1000);
+
+
+
+
+            $("#txtzipcode").val(dataT[0].CATEG_ZIPCODE);
+            setTimeout(function () {
+
+                getAddress();
+
+            }, 1000);
+
+            $("#ddlunitspeed").val(dataT[0].CATEG_UOMSPEED);
+            $("#ddlunitvolume").val(dataT[0].CATEG_UOMVOLUME);
+            var dbname = dataT[0].CATEG_DBNAME;
+
+            var value = dbname.split(";");
+
+            var database = value[1].split("=");
+
+            if (dataT[0].CATEG_STATUS == "True") {
+                $("#txtstatus").prop('checked', true);
+            }
+
+         //   $("#ddldatabase option:contains(" + database[1] + ")").attr('selected', 'selected');
+
+            //$("#ddldatabase").text(database[1]);
+
+        });
+    }
+
+    function Back() {
+        $("#divrow").hide();
+    }
+
+    function Save(id) {
+
+        
+        var categType = 0;;
+        var btn = "";
+        var nousers = "";
+        var ID = 0;
+        var PARENTID = 0;
+        if (id == "save") {
+            btn = "BTN_SAVE";
+            nousers = "";
+        }
+        else {
+            var ID = localStorage.getItem("CATEG_ID");
+            btn = "BTN_UPDATE";
+
+        }
+        var NO_USER = 0;
+        if ($("#hiddenquery").val() == "CLIENTS") {
+
+            if ($("#txtnoofusers").val() != '') {
+                NO_USER = 0;
+            }
+            else {
+
+
+                NO_USER = 1;
+            }
+            PARENTID = $("#ddlpartner").val();
+            var CATEG_NAME = $("#txtClientname").val()
+            nousers = $("#txtnoofusers").val();
+            categType = $("#ddlCategType").val();
+        }
+        else {
+            var CATEG_NAME = $("#txtpartnername").val()
+            PARENTID = 0;
+            categType = $("#ddlCategType").val();
+        }
+
+
+        var Checksendmail = false;
+        var Status = false;
+        if ($("#txtsendmail").is(':checked') == true) {
+            Checksendmail = true;
+        }
+        if ($("#txtstatus").is(':checked') == true) {
+            Status = true;
+        }
+        //
+        var formData = new FormData();
+        var file = document.getElementById("upload_logo").files[0];
+        //var trano = "trano.com";
+        formData.append("imageFile", file);
+
+        if ($("#txtpartnername").val() != '' && $("#txtcontactperson").val() != '' && $("#txtmobilenumber").val() != '' && $("#txtemail").val() != '' && $("#txtaddress").val() != ''
+              && $("#txtwebsitename").val() != '' && $("#ddlcountry").val() != 0 && $("#ddlstate").val() != 0 && $("#ddlcity").val() != 0 && $("#ddldatabase").val() != 0 && NO_USER == 0) {
+            //$.post("/Home/Save_Click", {
+            //    "Checksendmail": Checksendmail, "CATEG_NAME": CATEG_NAME, "CATEG_ID": ID, "noofusers": nousers, "CATEG_DESC": $("#txtdescription").val(), "btn": btn, "CATEG_CONTACTPERSON": $("#txtcontactperson").val(),
+            //    "CATEG_MOBILENUMBER": $("#txtmobilenumber").val(), "CATEG_TELEPHONE": $("#txttelephonenuber").val(), "CATEG_FAX": $("#txtfaxnumber").val(),
+            //    "CATEG_WEBSITENAME": $("#txtwebsitename").val(), "CATEG_EMAILID": $("#txtemail").val(), "CATEG_ADDRESS": $("#txtaddress").val(), "CATEG_COUNTRY_ID": $("#ddlcountry").val(),
+            //    "CATEG_STATE_ID": $("#ddlstate").val(), "CATEG_CITY_ID": $("#ddlcity").val(), "CATEG_ZIPCODE": $("#txtzipcode").val(), "CATEG_STATUS": Status, "CATEG_UOMSPEED": $("#ddlunitspeed").val(), "CATEG_UOMVOLUME": $("#ddlunitvolume").val(),
+            //    "CATG_NOOFDEVICES": $("#txtnoofdevices").val(), "CATEG_REFER_ID": $("#ddlsales").val(), "Rcmb_Database": $("#ddldatabase option:selected").text(), "CATEG_PARENT_ID": PARENTID, "ParentNAME": $("#ddlpartner Option:selected").text(), "PACKAGE_ID": $("#ddlpackages").val(), "logo": file
+            //}, function (data) {
+            //    var dataT = data['data']
+
+            //    if (dataT == 'true') {
+            //        alert("" + id + " successfully..");
+            //        location.reload();
+            //    }
+            //    else {
+            //        alert(dataT);
+            //    }
+            //});
+           // if ($("#txtemail").val().indexOf(trano) >= 0) {}
+            formData.append("Checksendmail", Checksendmail);
+            formData.append("CATEG_NAME", CATEG_NAME);
+            formData.append("CATEG_ID", ID);
+            formData.append("noofusers", nousers);
+            formData.append("btn", btn);
+            formData.append("CATEG_DESC", $("#txtdescription").val());
+            formData.append("CATEG_CONTACTPERSON", $("#txtcontactperson").val());
+            formData.append("CATEG_MOBILENUMBER", $("#txtmobilenumber").val());
+            formData.append("CATEG_TELEPHONE", $("#txttelephonenuber").val());
+            formData.append("CATEG_FAX", $("#txtfaxnumber").val());
+            formData.append("CATEG_WEBSITENAME", $("#txtwebsitename").val());
+            formData.append("CATEG_EMAILID", $("#txtemail").val());
+            formData.append("CATEG_ADDRESS", $("#txtaddress").val());
+            formData.append("CATEG_COUNTRY_ID", $("#ddlcountry").val());
+            formData.append("CATEG_STATE_ID", $("#ddlstate").val());
+            formData.append("CATEG_CITY_ID", $("#ddlcity").val());
+            formData.append("CATEG_ZIPCODE", $("#txtzipcode").val());
+            formData.append("CATEG_STATUS", Status);
+            formData.append("CATEG_UOMSPEED", $("#ddlunitspeed").val());
+            formData.append("CATEG_UOMVOLUME", $("#ddlunitvolume").val());
+            formData.append("CATG_NOOFDEVICES", $("#txtnoofdevices").val());
+            formData.append("CATEG_REFER_ID", $("#ddlsales").val());
+            formData.append("Rcmb_Database", $("#ddldatabase option:selected").text());
+            formData.append("CATEG_PARENT_ID", PARENTID);
+            formData.append("ParentNAME", $("#ddlpartner Option:selected").text());
+          //  formData.append("PACKAGE_ID", $("#ddlpackages").val());
+            formData.append("CATEG_CATETYPE_ID", categType);
+
+            formData.append("org_categname", $("#hid_categname").val());
+            $.ajax({
+                url: "/Home/Save_category",
+                type: 'POST',
+                cache: false,
+                contentType: false,
+                processData: false,
+                data: formData,
+                success: function (data) {
+                    var dataT = data['data']
+                    if (dataT == "true")
+                    {
+                        alert("Saved Successfully");
+                        location.reload();
+                    }
+                    else {
+                        alert(dataT);
+                    }
+
+                }
+            });
+        }
+        else {
+            if ($("#txtpartnername").val() == '') {
+                alert("enter partner name..");
+                $("#txtpartnername").focus();
+            }
+            else if ($("#txtcontactperson").val() == "") {
+                alert("enter contactperson name..");
+                $("#txtcontactperson").focus();
+            }
+            else if ($("#txtmobilenumber").val() == "") {
+                alert("enter mobilenumber..");
+                $("#txtmobilenumber").focus();
+            }
+            else if ($("#txtemail").val() == "") {
+                alert("enter email..");
+                $("#txtemail").focus();
+            }
+            else if ($("#txtaddress").val() == "") {
+                alert("enter address..");
+                $("#txtaddress").focus();
+            }
+            else if ($("#ddlcountry").val() == 0) {
+                alert("select  country..");
+                $("#ddlcountry").focus();
+            }
+            else if ($("#ddlstate").val() == 0) {
+                alert("select  state..");
+                $("#ddlstate").focus();
+            }
+            else if ($("#txtwebsitename").val() == 0) {
+                alert("Please Enter Website");
+                $("#txtwebsitename").focus();
+            }
+            else if ($("#ddlcity").val() == 0) {
+                alert("select  city..");
+                $("#ddlcity").focus();
+            }
+            else if ($("#ddldatabase").val() == 0) {
+                alert("Please Select Database");
+                $("#ddldatabase").focus();
+            }
+            else if (NO_USER == 1) {
+                alert("enter noof users");
+                $("#txtnoofusers").focus();
+            }
+        }
+    }
+
+</script>

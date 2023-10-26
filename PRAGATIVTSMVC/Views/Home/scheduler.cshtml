@@ -1,0 +1,1186 @@
+﻿@{
+    ViewBag.Title = "scheduler";
+    Layout = "~/Views/Shared/Layout2.cshtml";
+}
+
+<div id="load"></div>
+<link href="~/Content/multi-select/css/multi-select.css" rel="stylesheet" />
+<script src="~/Content/multi-select/js/bundle.min.js"></script>
+<style>
+    /*.select2 {
+        width: 100% !important;
+    }*/
+
+  
+.select2-selection {
+        height: 34px !important;
+        font-size: 13px;
+        font-family: 'Open Sans', sans-serif;
+        border-radius: 0 !important;
+        border: solid 1px #c4c4c4 !important;
+        padding-left: 4px;
+    }
+
+    .select2-selection--multiple {
+        height: 154px !important;
+        width: 491px !important;
+        /*margin-left:40px;*/
+        margin-left: 376px;
+        margin-top: -39px;
+    }
+
+    .select2-selection__choice {
+        height: 40px;
+        line-height: 40px;
+        padding-right: 16px !important;
+        padding-left: 16px !important;
+        background-color: #CAF1FF !important;
+        color: #333 !important;
+        border: none !important;
+        border-radius: 3px !important;
+    }
+
+    .select2-selection__choice__remove {
+        float: right;
+        margin-right: 0;
+        margin-left: 2px;
+    }
+
+    .select2-search--inline .select2-search__field {
+        line-height: 40px;
+        color: #333;
+        width: 100% !important;
+    }
+
+    .select2-container:hover,
+    .select2-container:focus,
+    .select2-container:active,
+    .select2-selection:hover,
+    .select2-selection:focus,
+    .select2-selection:active {
+        outline-color: transparent;
+        outline-style: none;
+    }
+
+    .select2-results__options li {
+        display: block;
+    }
+
+    .select2-selection__rendered {
+        transform: translateY(2px);
+    }
+
+    .select2-selection__arrow {
+        display: none;
+    }
+
+    .select2-results__option--highlighted {
+        background-color: #CAF1FF !important;
+        color: #333 !important;
+    }
+
+    .select2-dropdown {
+        border-radius: 0 !important;
+        box-shadow: 0px 3px 6px 0 rgba(0,0,0,0.15) !important;
+        border: none !important;
+        margin-top: 4px !important;
+        width: 366px !important;
+    }
+
+    .select2-results__option {
+        font-family: 'Open Sans', sans-serif;
+        font-size: 13px;
+        line-height: 24px !important;
+        vertical-align: middle !important;
+        padding-left: 8px !important;
+        left:500px;
+    }
+
+        .select2-results__option[aria-selected="true"] {
+            background-color: #eee !important;
+        }
+
+    .select2-search__field {
+        font-family: 'Open Sans', sans-serif;
+        color: #333;
+        font-size: 13px;
+        padding-left: 8px !important;
+        border-color: #c4c4c4 !important;
+    }
+
+    .select2-selection__placeholder {
+        color: #c4c4c4 !important;
+    }
+
+    .select2-container select2-container--default select2-container--open{
+        left:500px;
+    }
+
+
+</style>
+
+<div class="container-fluid">
+    <div class="row page-titles">
+        <div class="col-md-5 col-8 align-self-center">
+            <h3 class="text-themecolor m-b-0 m-t-0">SCHEDULER</h3>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/Home/frm_GridTrack_Distance">Home</a></li>
+                <li class="breadcrumb-item active">SCHEDULER</li>
+            </ol>
+
+        </div>
+        <div style="margin-left:50%">
+            <input style="display:none" type="button" value="Back" id="btnback" onclick="location.reload()" class="btn btn-danger" />
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-4 mb-3">
+            <label for="validationCustom02">Select Vehicle</label>
+            <select id="txtvehiclenumber" class="form-control" >
+                <option value="0">-Select-</option>
+                @foreach (var item in ViewBag.buses00)
+                {
+                    <option value="@item.VehicleRegNo">@item.VehicleRegNo </option>
+                }
+            </select>
+        </div>
+        <div class="col-md-4 mb-3">
+            <label for="validationCustom02">Select Route</label>
+            <select class="form-control"  id="ddlroute" disabled="disabled">
+                <option value="0">-Select-</option>
+                @foreach (var item in ViewBag.routes00)
+                {
+                    <option value="@item.ROUTES_ID">@item.ROUTES_NAME (@item.ROUTES_CODE)</option>
+                }
+            </select>
+        </div>
+        <div class="col-md-4 mb-3" hidden="hidden">
+            <label for="validationCustom02">Shift Time</label>
+            <select class="form-control" id="ddlshifttime" >
+                <option value="0">-Select-</option>
+            </select>
+        </div>
+    </div>
+    <div class="row" hidden="hidden">
+        <div class="col-md-4 mb-3">
+            <label for="validationCustom02">Start Date</label>
+            <input type="text" class="form-control" id="txtstartdate" />
+        </div>
+        <div class="col-md-4 mb-3">
+            <label for="validationCustom02">End Date</label>
+            <input type="text" class="form-control" id="txtenddate" />
+        </div>
+        <div class="col-md-4 mb-3">
+            <label for="validationCustom02">Shift Type</label>
+            <select class="form-control" id="ddlshifttype" >
+                <option value="Pick">Pick</option>
+                <option value="Drop">Drop</option>
+            </select>
+        </div>
+           
+       
+    </div>
+    <div>
+        <input type="button" id="btnsave" style="margin-left:18px;margin-top:10px" onclick="save()" class="btn btn-success" value="Submit" />
+        <input type="button" id="btnupdate" style="margin-left:18px;margin-top:10px" onclick="save()" class="btn btn-success" value="Update" />
+    </div>
+    <div class="row" id="divrow1" style="display:none;margin-top:10px" hidden="hidden">
+        <div class="col-lg-12">
+            <label>Stations and Passangers</label> <div style='overflow:auto; height:600px;margin-top:10px' id="tappanel">
+            </div>
+        </div>
+    </div>
+
+    <input type="text" hidden id="hiddentime" />
+
+    <div style="margin-top:10px" hidden="hidden">
+        <input type="button" class="btn btn-primary" id="btnadd1" data-toggle="modal" data-target="#myModal01" style="float:right" value="RE GENERATE TRIP" onclick="" />
+    </div>
+    <div style="margin-top:10px">
+        <input type="button" class="btn btn-primary" id="btnadd" value="ADD" onclick="show()" />
+    </div>
+
+
+    <div id="myModal" class="modal fade" role="dialog" hidden="hidden">
+        <div class="modal-dialog">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    @*<button type="button" class="close" data-dismiss="modal">&times;</button>*@
+                    <h4 class="modal-title">DO YOU WANT TO REVERSE ANY TRIP</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="box">
+                        <div id="btnreverse">
+
+                        </div>
+                    </div>
+
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+
+    <div id="myModal01" class="modal fade" role="dialog" hidden="hidden">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">RE GENERATE TRIP</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="box">
+                        <div class="col-lg-12">
+                            <div>
+                                Vehicle <select class="form-control" style="width:50% !important" id="ddlregeneratevehicles">
+                                    <option value="0">-select-</option>
+                                </select>
+                            </div>
+                            <div style="margin-top:10px">
+                                Date <input type="text" style="width:30%" id="txtregeneratedate" class="form-control" />
+                                <input type="text" style="width:30%" id="txtregeneratedatetime" class="form-control" />
+                            </div>
+                        </div>
+
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        <input type="button" value="GENERATE TRIP" onclick="regeneratetrip()" class="btn btn-success" />
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+
+        @*<label>Label example</label>*@
+        <div>
+
+
+            <table id="tblscheduler" style="font-size:14px;margin-top:10px" class="display nowrap table table-hover table-striped table-bordered" cellspacing="0" width="100%">
+                <thead>
+                    <tr>
+                        <th>SNO</th>
+                        <th>VEHICLE NUMBER</th>
+                        <th>ROUTE NAME</th>
+                        <th>ROUTE CODE</th>
+                        @*<th>END DATE</th>*@
+                        <th>SHIFT TIME</th>
+                        <th>SHIFT TYPE</th>
+                        <th>STATUS</th>
+                        <th>ACTION</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </div>
+<input type="text" hidden id="hiddenpassengers" />
+
+<script src="~/Content/multi-select/js/multi-select.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/js/bootstrap-datepicker.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/css/bootstrap-datepicker3.css" />
+<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.1/css/select2.min.css" rel="stylesheet" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.1/js/select2.min.js"></script>
+
+<style>
+    .select2-container select2-container--default select2-container--open{
+        left:500px;
+    }
+</style>
+
+<style>
+    body {
+        font-family: "Roboto", sans-serif;
+    }
+
+    .select-wrapper {
+        margin: auto;
+        max-width: 600px;
+        width: calc(100% - 40px);
+    }
+
+    .select-pure__select {
+        align-items: center;
+        background: #f9f9f8;
+        border-radius: 4px;
+        border: 1px solid rgba(0, 0, 0, 0.15);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
+        box-sizing: border-box;
+        color: #363b3e;
+        cursor: pointer;
+        display: flex;
+        font-size: 16px;
+        font-weight: 500;
+        justify-content: left;
+        min-height: 44px;
+        padding: 5px 10px;
+        position: relative;
+        transition: 0.2s;
+        width: 100%;
+    }
+
+    .select-pure__options {
+        border-radius: 4px;
+        border: 1px solid rgba(0, 0, 0, 0.15);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
+        box-sizing: border-box;
+        color: #363b3e;
+        display: none;
+        left: 0;
+        max-height: 221px;
+        overflow-y: scroll;
+        position: absolute;
+        top: 50px;
+        width: 100%;
+        z-index: 5;
+    }
+
+    .select-pure__select--opened .select-pure__options {
+        display: block;
+    }
+
+    .select-pure__option {
+        background: #fff;
+        border-bottom: 1px solid #e4e4e4;
+        box-sizing: border-box;
+        height: 44px;
+        line-height: 25px;
+        padding: 10px;
+    }
+
+    .select-pure__option--selected {
+        color: #e4e4e4;
+        cursor: initial;
+        pointer-events: none;
+    }
+
+    .select-pure__option--hidden {
+        display: none;
+    }
+
+    .select-pure__selected-label {
+        align-items: 'center';
+        background: #5e6264;
+        border-radius: 4px;
+        color: #fff;
+        cursor: initial;
+        display: inline-flex;
+        justify-content: 'center';
+        margin: 5px 10px 5px 0;
+        padding: 3px 7px;
+    }
+
+        .select-pure__selected-label:last-of-type {
+            margin-right: 0;
+        }
+
+        .select-pure__selected-label i {
+            cursor: pointer;
+            display: inline-block;
+            margin-left: 7px;
+        }
+
+        .select-pure__selected-label img {
+            cursor: pointer;
+            display: inline-block;
+            height: 18px;
+            margin-left: 7px;
+            width: 14px;
+        }
+
+        .select-pure__selected-label i:hover {
+            color: #e4e4e4;
+        }
+
+    .select-pure__autocomplete {
+        background: #f9f9f8;
+        border-bottom: 1px solid #e4e4e4;
+        border-left: none;
+        border-right: none;
+        border-top: none;
+        box-sizing: border-box;
+        font-size: 16px;
+        outline: none;
+        padding: 10px;
+        width: 100%;
+    }
+
+    .select-pure__placeholder--hidden {
+        display: none;
+    }
+</style>
+
+<script>
+
+    window.onload = function () {
+        getall();
+
+
+
+        $("#load").hide();
+
+        bindshifttimings();
+        $("#divend").hide();
+        $("#divclose").hide();
+        $("#txtvehiclenumber").select2();
+        $("#ddlregeneratevehicles").select2();
+        regeneratevehicles();
+        $("#ddlroute").select2();
+
+        //selectdata2();
+       // bindvehicles();
+        $("#divrow").hide();
+        $("#btnupdate").hide();
+
+
+        $('#txtstartdate').bootstrapMaterialDatePicker
+			({
+			    format: 'MM/DD/YYYY HH:mm', minDate: new Date()
+			});
+        var dt = new Date();
+
+        var time = dt.getHours() + ":" + dt.getMinutes();
+        var date001 = dt.getMonth() + 1 + "/" + dt.getDate() + "/" + dt.getFullYear() + " " + time;
+
+        var datege = dt.getMonth() + 1 + "/" + dt.getDate() + "/" + dt.getFullYear()
+        $('#txtstartdate').val(date001);
+        $('#txtregeneratedate').val(datege);
+
+
+
+
+
+
+        $('#txtregeneratedatetime').val("00:00");
+        $('#txtenddate').bootstrapMaterialDatePicker
+           ({
+               format: 'MM/DD/YYYY HH:mm', minDate: new Date()
+           });
+
+
+        $('#txtregeneratedate').bootstrapMaterialDatePicker
+			({
+			    time:false,
+			    format: 'MM/DD/YYYY',
+			    triggerEvent: 'dblclick',
+			    switchOnClick: true,
+			});
+
+        $('#txtregeneratedatetime').bootstrapMaterialDatePicker
+           ({
+               date:false,
+               time: true,
+               format: 'HH:mm',
+               triggerEvent: 'dblclick',
+               switchOnClick: true,
+           });
+    }
+    var multi = new SelectPure(".multi-select", {
+        options: [
+          {
+              label: "New York",
+              value: "NY",
+          },
+          {
+              label: "Washington",
+              value: "WA",
+          },
+          {
+              label: "California",
+              value: "CA",
+          },
+          {
+              label: "New Jersey",
+              value: "NJ",
+          },
+          {
+              label: "North Carolina",
+              value: "NC",
+          },
+        ],
+        multiple: true,
+        icon: "fa fa-times",
+        placeholder: "-Please select-",
+        onChange: value => { console.log(value); },
+        classNames: {
+            select: "select-pure__select",
+            dropdownShown: "select-pure__select--opened",
+            multiselect: "select-pure__select--multiple",
+            label: "select-pure__label",
+            placeholder: "select-pure__placeholder",
+            dropdown: "select-pure__options",
+            option: "select-pure__option",
+            autocompleteInput: "select-pure__autocomplete",
+            selectedLabel: "select-pure__selected-label",
+            selectedOption: "select-pure__option--selected",
+            placeholderHidden: "select-pure__placeholder--hidden",
+            optionHidden: "select-pure__option--hidden",
+        }
+    });
+    function show() {
+        RowId = 0;
+        $("#btnadd").hide();
+        $("#divrow").show();
+
+
+        $("#btnadd1").hide();
+
+        $("#btnback").css('display', 'block');
+    }
+
+
+    //regenerate trip
+
+
+
+    function regeneratetrip()
+    {
+
+        if ($("#ddlregeneratevehicles").val() != '0' && $('#txtregeneratedate').val() != '') {
+            $.post("/Home/REGENRERATETRIP", { "VNO": $("#ddlregeneratevehicles").val(), "DATE": $('#txtregeneratedate').val() + " " + $('#txtregeneratedatetime').val() }, function (data) {
+
+                var dataT = data['data'];
+
+                if (dataT == 'true') {
+                    alert("trip successfully generated..");
+                    $('#myModal01').modal('hide');
+                    location.reload();
+                }
+            });
+        }
+        else {
+            if($("#ddlregeneratevehicles").val() == 0)
+            {
+                alert("select vehicle number..");
+            }
+            else if ($('#txtregeneratedate').val() == '') {
+                alert("select date");
+            }
+        }
+
+    }
+
+
+    function regeneratevehicles() {
+        $.post("/Home/bindvehiclesbycategid", function (data) {
+            var dataT = data['data'];
+            var opt = "";
+            $("#ddlregeneratevehicles").empty();
+            opt += '<option value="0">-Select -</option>'
+            for (var i = 0; i < dataT.length; i++) {
+                opt += '<option value=' + dataT[i].VEHICLES_REGNUMBER + '>' + dataT[i].VEHICLES_REGNUMBER + '</option>'
+            }
+            $("#ddlregeneratevehicles").append(opt);
+
+        });
+    }
+
+    function tripexist() {
+        if ($("#txtvehiclenumber").val() != 0 && $("#ddlroute").val() != 0 && $("#ddlshifttime").val() != 0) {
+            if ($("#ddlshifttype").val() == "Drop") {
+                $('#myModal').modal('show');
+                if ($("#txtvehiclenumber").val() != '0') {
+                    $.post("/Home/trips_vno", { "VNO": $("#txtvehiclenumber").val() }, function (data) {
+                        var dataT = data['data'];
+                        var tap = "";
+                        //btnreverse
+                        $("#btnreverse").empty();
+                        for (var i = 0; i < dataT.length; i++) {
+
+                            tap += '<input type="button" style="margin-right:10px" value="' + dataT[i].SHIFT_TIME + '", onclick="bindreverse(' + dataT[i].SCHEDULER_ID + ',\'' + dataT[i].SHIFT_TIME + '\')"></input>'
+
+                        }
+                        $("#btnreverse").append(tap);
+                    });
+                }
+            }
+        }
+    }
+
+    //trips_route_shift
+
+    function shifttimeonchange() {
+        if ($("#txtvehiclenumber").val() != 0 && $("#ddlroute").val() != 0 && $("#ddlshifttime").val() != 0) {
+            if ($("#ddlshifttype").val() == "Pick") {
+
+                if ($("#txtvehiclenumber").val() != '0') {
+                    $.post("/Home/trips_route_shift", { "SCHEDULER_ROUTEID": $("#ddlroute").val(), "SHIFT_TIME": $("#ddlshifttime").val() }, function (data) {
+                        var dataT = data['data'];
+                        var tap = "";
+                        if (dataT.length > 0) {
+                            $('#myModal').modal('show');
+                        }
+                        //btnreverse
+                        $("#btnreverse").empty();
+                        for (var i = 0; i < dataT.length; i++) {
+
+                            tap += '<input type="button" style="margin-right:10px" value="' + dataT[i].SHIFT_TIME + '", onclick="bindnoreverse(' + dataT[i].SCHEDULER_ID + ',\'' + dataT[i].SHIFT_TIME + '\')"></input>'
+
+                        }
+                        $("#btnreverse").append(tap);
+                    });
+                }
+            }
+        }
+    }
+
+
+    function openendate() {
+
+        if ($("#ckkendtrip").is(':checked') == true) {
+
+            var date = new Date();
+
+            var currentHours = ("0" + date.getHours()).slice(-2);
+            var currentminutes = ("0" + date.getMinutes()).slice(-2);
+            var time = currentHours + ":" + currentminutes;
+            var dd = date.getDate();
+            var mm = date.getMonth() + 1;
+            var yyyy = date.getFullYear();
+            var fulldate = yyyy + "-" + mm + "-" + dd;
+
+            $("#txtenddate").val(fulldate + " " + time);
+            $("#divend").show();
+
+        }
+        else {
+            $("#divend").hide();
+        }
+    }
+    function bindnoreverse(id, time) {
+        var Routid = $("#ddlroute").val();
+        $('#myModal').modal('hide');
+        BindStationsReverse();
+        $.post("/Home/get_schedulerdetails_id", { "SCHEDULERDETAILS_SCHEDULERID": id, "SHIFT_TIME": time }, function (data) {
+            var dataT = data['data'];
+
+            window.setTimeout(function () {
+                for (var i = 0; i < dataT.length; i++) {
+
+                    //dataT[i].SCHEDULERDETAILS_Time
+                    $("#ddltimings" + i).val(dataT[i].SCHEDULERDETAILS_Time);
+
+                    $("#hiddenpassengers").val([dataT[i].SCHEDULERDETAILS_PassendersIDs]);
+                    var fruitvegbasket = [];
+                    fruitvegbasket.push(dataT[i].SCHEDULERDETAILS_PassendersIDs);
+                    var arr1 = [];
+                    arr1.push([$("#hiddenpassengers").val()])
+                    var idd = dataT[i].SCHEDULERDETAILS_PassendersIDs
+                    var spans = idd.split(',');
+                    var Values = new Array();
+                    if (spans.length > 1) {
+                        for (j = 0; j < spans.length; j++) {
+                            Values.push(spans[j]);
+                        }
+                    }
+                    else {
+                        Values.push(spans[0]);
+                    }
+                    $("#ddlpassangers" + i).val(Values).trigger('change');
+
+
+
+                }
+            }, 1000)
+        });
+    }
+
+
+    function bindreverse(id, time) {
+
+        var Routid = $("#ddlroute").val();
+        $('#myModal').modal('hide');
+        BindStationsReverse();
+        $.post("/Home/get_schedulerdetails_id_reverse", { "SCHEDULERDETAILS_SCHEDULERID": id, "SHIFT_TIME": time }, function (data) {
+            var dataT = data['data'];
+            $("#hiddentime").val($("#ddlshifttime").val());
+            window.setTimeout(function () {
+                for (var i = 0; i < dataT.length; i++) {
+
+                    //dataT[i].SCHEDULERDETAILS_Time
+                    var time = "";
+                    if (i >= 1) {
+
+                        var diff = Math.abs(new Date('2011/10/09 ' + dataT[i].SCHEDULERDETAILS_Time + '') - new Date('2011/10/09 ' + dataT[i - 1].SCHEDULERDETAILS_Time + ''));
+
+                        var minutes = Math.floor((diff / 1000) / 60);
+
+                        //  alert(minutes);
+                        var minsToAdd = minutes;
+                        var time = $("#hiddentime").val();
+                        var newTime = new Date(new Date("1970/01/01 " + time).getTime() + minsToAdd * 60000).toLocaleTimeString('en-UK', { hour: '2-digit', minute: '2-digit', hour12: false });
+                        //  alert("newtime" + newTime);
+
+                        $("#hiddentime").val(newTime)
+
+                        $("#ddltimings" + i).val(newTime);
+
+
+                    }
+                    else {
+
+                        time = $("#ddlshifttime").val();
+                        $("#ddltimings" + i).val(time);
+                    }
+
+
+                    $("#hiddenpassengers").val([dataT[i].SCHEDULERDETAILS_PassendersIDs]);
+                    var fruitvegbasket = [];
+                    fruitvegbasket.push(dataT[i].SCHEDULERDETAILS_PassendersIDs);
+                    var arr1 = [];
+                    arr1.push([$("#hiddenpassengers").val()])
+                    var idd = dataT[i].SCHEDULERDETAILS_PassendersIDs
+                    var spans = idd.split(',');
+                    var Values = new Array();
+                    if (spans.length > 1) {
+                        for (j = 0; j < spans.length; j++) {
+                            Values.push(spans[j]);
+                        }
+                    }
+                    else {
+                        Values.push(spans[0]);
+                    }
+                    $("#ddlpassangers" + i).val(Values).trigger('change');
+
+
+
+                }
+            }, 1000)
+        });
+    }
+
+    function selectdata2() {
+        $('.timings').bootstrapMaterialDatePicker
+        ({
+            date: false,
+            shortTime: false,
+            format: 'HH:mm',
+            triggerEvent: 'dblclick',
+            switchOnClick: true,
+
+        });
+        $(".js-example-basic-multiple").select2({
+            placeholder: "Select passangers"
+        }).on('change', function (e) {
+            if ($(this).val() && $(this).val().length) {
+                $(this).next('.select2-container')
+            .find('li.select2-search--inline input.select2-search__field').attr('placeholder', 'Select items');
+            }
+        });
+        bindpassangers();
+    }
+    function bindvehicles() {
+        $.post("/Home/bindvehiclesbycategid", function (data) {
+            var dataT = data['data'];
+            var opt = "";
+           // console.log(dataT);
+            $("#txtvehiclenumber").empty();
+            opt += '<option value="0">-Select -</option>'
+            for (var i = 0; i < dataT.length; i++) {
+                opt += "<option value='" + dataT[i].VEHICLES_DEVICE_ID + "'>" + dataT[i].VEHICLES_REGNUMBER + "</option>"
+            }
+            $("#txtvehiclenumber").append(opt);
+        });
+    }
+    //
+    function bindpassangers() {
+        //$.post("/Home/_passangers", function (data) {
+        //    var dataT = data['data'];
+        //    var opt = "";
+        //    $(".js-example-basic-multiple").empty();
+        //    //   opt += '<option value="0">-Select-</option>'
+        //    for (var i = 0; i < dataT.length; i++) {
+
+        //        opt += '<option value=' + dataT[i].PASSANGER_ID + '>' + dataT[i].PASSANGER_NAME + '</option>'
+
+        //    }
+        //    $(".js-example-basic-multiple").append(opt);
+        //});
+        $.post("/Home/get_students", function (data) {
+            var dataT = data['data'];
+            var opt = "";
+            $(".js-example-basic-multiple").empty();
+            //   opt += '<option value="0">-Select-</option>'
+            for (var i = 0; i < dataT.length; i++) {
+
+                opt += '<option value=' + dataT[i].ID + '>' + dataT[i].STUDENT_NAME + '</option>'
+
+            }
+            $(".js-example-basic-multiple").append(opt);
+        });
+    }
+
+    var arrr01 = [];
+
+    function BindStationsReverse() {
+        arrr01 = [];
+        $.post("/Home/_stationsbyroutereverse", { "ROUTES_ID": $("#ddlroute").val() }, function (data) {
+            $("#divrow1").css('display', 'block');
+            var dataT = data['data'];
+            var tap = "";
+            var tap1 = "";
+            for (var i = 0; i < dataT.length; i++) {
+                arrr01.push(dataT[i].STATION_ID);
+                $("#tappanel").empty();
+                var name = $("#txtgeolocations").val();
+                tap += '<div style="border:solid #17a2b8;border-radius: 6px;margin-bottom:3px"><div class="row"><div class="col-md-3"><input type="text" id="txtstation' + i + '" value="' + dataT[i].STATION_ID + '" style="display:none;" /></div>' +
+                    '<div class="col-md-3"><input type="text" id"txtstationname' + i + '" value="' + dataT[i].STATION_PLACE + '"  style="background-color:white;margin-bottom: 1px;width:500px"  class="form-control" /></div>' +
+                    '<div class="col-md-3">Time <input type="text" style="width:159px" class="timings form-control" id="ddltimings' + i + '" /></div></div>';
+                tap += '<div class="row"><select id="ddlpassangers' + i + '" style="width:490px" class="js-example-basic-multiple" name="states[]" multiple="multiple"></select></div></div>'
+                $("#tappanel").append(tap);
+            }
+            selectdata2();
+        });
+    }
+
+    function BindStations() {
+        if ($("#ddlroute").val() != '0') {
+
+
+
+            $.post("/Home/_stationsbyroute", { "ROUTES_ID": $("#ddlroute").val() }, function (data) {
+                $("#divrow1").css('display', 'block');
+                var dataT = data['data'];
+                var tap = "";
+                var tap1 = "";
+                arrr01 = [];
+                for (var i = 0; i < dataT.length; i++) {
+
+                    //   alert(dataT[i].STATION_PLACE);
+                    // alert(dataT[i].STATION_Lat + "" + dataT[i].STATION_Long);
+
+                    //<input placeholder="enter time" type="text" id="txtnumber' + i + '" min="0" value="">
+
+                    arrr01.push(dataT[i].STATION_ID);
+                    $("#tappanel").empty();
+                    var name = $("#txtgeolocations").val();
+                    tap += '<div style="border:solid #17a2b8;border-radius: 6px;margin-bottom:3px"><div class="row"><div class="col-md-4"><input type="text" id="txtstation' + i + '" value="' + dataT[i].STATION_ID + '" style="display:none;" /></div>' +
+                    '<div class="col-md-4">Stoppage<input type="text" id"txtstationname' + i + '" value="' + dataT[i].STATION_PLACE + '"  style="background-color:white;margin-bottom: 1px;width:500px"  class="form-control" /></div>' +
+                    '<div class="col-md-4">Time <input type="text" style="width:159px" class="timings form-control" id="ddltimings' + i + '" /></div></div>';
+                    tap += '<div class="row" style="margin-top:50px;"><select id="ddlpassangers' + i + '" style="width:490px" class="js-example-basic-multiple" name="states[]" multiple="multiple"></select></div></div>'
+                    $("#tappanel").append(tap);
+                }
+                selectdata2();
+            });
+        }
+    }
+
+
+    function bindshifttimings() {
+        $("#load").show();
+        $.post("/Home/_Shifttimings", function (data) {
+            var dataT = data['data'];
+
+            $("#load").hide();
+            var opt = "";
+            $("#ddlshifttime").empty();
+            opt += '<option value="0">-Select -</option>'
+            for (var i = 0; i < dataT.length; i++) {
+
+                opt += '<option value=' + dataT[i].SHIFTVALUES_Val + '>' + dataT[i].SHIFTVALUES_Val + '</option>'
+
+            }
+            $("#ddlshifttime").append(opt);
+        });
+    }
+
+
+
+    function getall() {
+        $("#load").show();
+        debugger;
+        $.post("/Home/_scheduler", function (data) {
+            var dataT = data['data'];
+            $("#load").hide();
+            for (var i = 0; i < dataT.length; i++) {
+
+                var tr = $('<tr/>');
+
+                tr.append("<td>" + (i + 1) + "</td>");
+                tr.append("<td>" + dataT[i].SCHEDULER_VEHICLENO + "</td>");
+                tr.append("<td>" + dataT[i].ROUTES_NAME + "</td>");
+                tr.append("<td>" + dataT[i].ROUTES_CODE + "</td>");
+            //    tr.append("<td>" + dataT[i].SCHEDULER_ENDDATE + "</td>");
+                tr.append("<td>" + dataT[i].SHIFT_TIME + "</td>");
+                tr.append("<td>" + dataT[i].SHIFT_TYPE + "</td>");
+                if (dataT[i].SCHEDULER_STATUS == true) {
+                    tr.append("<td style='color:green'>Active</td>");
+                    tr.append('<td><input type="button" value="EDIT" class="btn btn-primary" onclick="EDIT(' + dataT[i].SCHEDULER_ID + ',\'' + dataT[i].SHIFT_TIME + '\',' + dataT[i].SCHEDULER_Categid + ',' + dataT[i].LOGINCATEGID + ')"  /></td>');
+                }
+                else {
+                    tr.append("<td style='color:red'>De active</td>");
+                    //onclick="EDIT(' + dataT[i].SCHEDULER_ID + ',\'' + dataT[i].SHIFT_TIME + '\')"
+                    tr.append('<td><input type="button" value="EDIT" class="btn btn-primary"  /></td>');
+                }
+                $("#tblscheduler").append(tr);
+            }
+            $('#tblscheduler').DataTable({
+                dom: 'Bfrtip',
+                buttons: [
+                    //'copy', 'csv', 'excel', 'pdf', 'print'
+                    'excel', 'pdf', 'print'
+                ]
+            });
+
+        });
+    }
+
+
+
+
+
+    function save() {
+        
+        $("#load").show();
+        var j = 1;
+        //var valid = false;
+
+        //for (k = 0; k < arrr01.length; k++) {
+        //    if ($("#ddltimings" + k).val() != '') {
+        //        if ($("#ddltimings" + (k - 1)).val() > $("#ddltimings" + k).val()) {
+        //            if (arrr01.length  == (k+1))
+        //            {
+        //                valid = true;
+        //            }
+
+        //        }
+        //        else {
+        //            alert("time should be grater than the above time..");
+        //           // $("#ddltimings" + k).focus();
+        //        }
+        //    }
+        //    else {
+        //        valid = false;
+        //        alert("select time..");
+        //     //   $("#ddltimings" + k).focus();
+        //    }
+        //}
+
+
+        //if (valid == true) {
+
+
+
+        if ($("#txtvehiclenumber").val() != '0' && $("#ddlroute").val() != '0' && $("#txtstartdate").val() != '' && $("#ddlshifttime").val() != '') {
+
+            //$.post("/Home/_sheduler_insert", { "VNO": $("#txtvehiclenumber").val(), "ROUTES_ID": $("#ddlroute").val(), "SCHEDULER_STARTDATE": $("#txtstartdate").val(), "SCHEDULER_ENDDATE": $("#txtenddate").val(), "SHIFT_TIME": $("#ddlshifttime Option:selected").text(), "SHIFT_TYPE": $("#ddlshifttype").val(), "VEHICLE_REGNUMBER": $("#txtvehiclenumber option:selected").text() }, function (data) {
+            $.post("/Home/_sheduler_insertBus", { "ID": RowId, "VNO": $("#txtvehiclenumber").val(), "ROUTES_ID": $("#ddlroute").val(), "VEHICLE_REGNUMBER": $("#txtvehiclenumber option:selected").text() }, function (data) {
+            $("#load").hide();
+                //if (data = true) {
+                //    alert("successfully insert..");
+                alert("Successfully Updated..");
+                $("#divrow").hide();
+                location.reload();
+
+            });
+        }
+        else {
+            $("#load").hide();
+            if ($("#txtvehiclenumber").val() == '0') {
+                alert("enter vehicle number..")
+                $("#txtvehiclenumber").focus();
+            }
+            else if ($("#ddlroute").val() == '0') {
+                alert("select route ..")
+                $("#ddlroute").focus();
+            }
+         
+        }
+        //    }
+    }
+
+    var arr003 = [];
+    var RowId;
+    function EDIT(ID, SHIFT_TIME, CATEGID, LOGINCATEGID) {
+        RowId = ID;
+        $("#btnback").css('display', 'block');
+        $("#btnadd").hide();
+        $("#btnadd1").hide();
+        debugger;
+        if (CATEGID == LOGINCATEGID) {
+
+            localStorage.setItem("SCHEDULERID", ID);
+            $.post("/Home/_schedulerbyid", { "ID": ID }, function (data) {
+                $("body").scrollTop(0);
+                var dataT = data['data'];
+                $("#btnsave").hide();
+                $("#btnupdate").show();
+                $('#ddlshifttime').prop('disabled', true);
+                $("#btnadd").hide();
+                $("#divrow").show();
+                $("#divclose").show();
+                $("#txtvehiclenumber").val(dataT[0].SCHEDULER_VEHICLENO).trigger('change');
+                $("#txtstartdate").val(dataT[0].SCHEDULER_STARTDATE);
+                $("#txtenddate").val(dataT[0].SCHEDULER_ENDDATE);
+                $("#ddlroute").val(dataT[0].SCHEDULER_ROUTEID).trigger('change');
+                $("#ddlshifttime").val(dataT[0].SHIFT_TIME);
+                $("#ddlshifttype").val(dataT[0].SHIFT_TYPE);
+
+
+                //BindStations();
+                //setTimeout(function () {
+
+                //    $.post("/Home/get_schedulerdetails_id", { "SCHEDULERDETAILS_SCHEDULERID": ID, "SHIFT_TIME": SHIFT_TIME }, function (data) {
+                //        var dataT = data['data'];
+
+                //        for (var i = 0; i < dataT.length; i++) {
+
+
+
+                //            $("#hiddenpassengers").val([dataT[i].SCHEDULERDETAILS_PassendersIDs]);
+                //            var fruitvegbasket = [];
+                //            fruitvegbasket.push(dataT[i].SCHEDULERDETAILS_PassendersIDs);
+                //            var arr1 = [];
+                //            arr1.push([$("#hiddenpassengers").val()])
+
+                //            var idd = dataT[i].SCHEDULERDETAILS_PassendersIDs
+                //            var spans = idd.split(',');
+                //            //   alert(spans.length);
+                //            var Values = new Array();
+                //            if (spans.length > 1) {
+                //                for (j = 0; j < spans.length; j++) {
+                //                    Values.push(spans[j]);
+                //                    // Values.push(spans[1]);
+                //                }
+                //            }
+                //            else {
+                //                Values.push(spans[0]);
+                //            }
+                //            //Values.push("2");
+                //            //Values.push("3");
+                //            $("#ddlpassangers" + i).val(Values).trigger('change');
+                //            ///  alert(dataT[i].SCHEDULERDETAILS_Time);
+
+                //            // $("#ddlpickup" + i).val(dataT[i].SCHEDULERDETAILS_Type);
+
+
+                //            //    $('#ddlpassangers'+i).select2('val', ["1", "2", "3"]);
+
+
+
+                //            $("#ddltimings" + i).val(dataT[i].SCHEDULERDETAILS_Time);
+                //            //   $("#ddltimings"+i).val("07:45");
+                //        }
+
+                //    });
+
+                //}, 2000);
+
+
+            });
+        }
+        else {
+            alert("this record can be edit for assigned login only..");
+        }
+    }
+
+
+
+
+
+    function update() {
+        $("#load").show();
+
+        var ID = localStorage.getItem("SCHEDULERID");
+
+        if ($("#ckkendtrip").is(':checked') == true) {
+            //  alert("okkkk")
+            $("#load").show();
+            $.post("/Home/CLOSED_TRIP", { "SCHEDULER_ID": ID, "SCHEDULER_ENDDATE": $("#txtenddate").val() }, function () {
+                $("#load").hide();
+                if (data = true) {
+                    alert("trip closed successfully..");
+                    location.reload();
+                }
+            });
+
+
+        } else {
+            var j = 1;
+
+            if ($("#txtvehiclenumber").val() != '0' && $("#ddlroute").val() != '0' && $("#txtstartdate").val() != '' && $("#ddlshifttime").val() != '') {
+                $.post("/Home/_sheduler_update", { "VNO": $("#txtvehiclenumber").val(), "ROUTES_ID": $("#ddlroute").val(), "SCHEDULER_STARTDATE": $("#txtstartdate").val(), "SCHEDULER_ENDDATE": $("#txtenddate").val(), "SHIFT_TIME": $("#ddlshifttime Option:selected").text(), "SCHEDULER_ID": ID, "SHIFT_TYPE": $("#ddlshifttype").val() }, function (data) {
+                    $("#load").hide();
+                    if (data = true) {
+
+                        //alert("successfully update..");
+                        //$("#divrow").hide();
+                        //location.reload();
+
+                       // console.log(arrr01);
+                        if (arrr01.length > 0) {
+                            $("#load").show();
+                            for (var i = 0; i < arrr01.length; i++) {
+                                //alert("station_ID" + $("#txtstation" + i).val());
+                                //alert("timing" + $("#ddltimings" + i).val());
+                                //alert("passanger" + $("#ddlpassangers" + i).val());
+                                //  var passengers = $("#ddlpassangers" + i).val();
+
+
+
+                                localStorage.setItem("Passangers", $("#ddlpassangers" + i).val());
+                                //insert_sheduler_details(string SCHEDULERDETAILS_STATIONID, string SCHEDULERDETAILS_Type, string SCHEDULERDETAILS_Time, string SCHEDULERDETAILS_PassengerIDs)
+
+
+
+                                $.post("/Home/insert_sheduler_details", { "SCHEDULERDETAILS_STATIONID": $("#txtstation" + i).val(), "SCHEDULERDETAILS_Type": '', "SCHEDULERDETAILS_Time": $("#ddltimings" + i).val(), "SCHEDULERDETAILS_PassengerIDs": localStorage.getItem("Passangers") }, function () {
+
+                                    if (arrr01.length == j) {
+                                        if (data = true) {
+
+                                            alert("successfully updated..");
+                                            $("#divrow").hide();
+                                            location.reload();
+                                        }
+                                    }
+                                    j++;
+
+                                })
+                            }
+                            $("#load").hide();
+
+                        }
+
+
+                    }
+                });
+            }
+            else {
+                $("#load").hide();
+                if ($("#txtvehiclenumber").val() == '0') {
+                    alert("enter vehicle number..")
+                    $("#txtvehiclenumber").focus();
+                }
+                else if ($("#ddlroute").val() == '0') {
+                    alert("select route ..")
+                    $("#ddlroute").focus();
+                }
+                else if ($("#txtstartdate").val() == '') {
+                    alert("select start date..")
+                    $("#txtstartdate").focus();
+                }
+                    //else if ($("#txtenddate").val() == '') {
+                    //    alert("select end date..")
+                    //    $("#txtenddate").focus();
+                    //}
+                else if ($("#ddlshifttime").val() == '0') {
+                    alert("select shift ..")
+                    $("#ddlshifttime").focus();
+                }
+            }
+        }
+
+    }
+</script>

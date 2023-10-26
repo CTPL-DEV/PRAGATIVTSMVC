@@ -1,0 +1,77 @@
+﻿@{
+    ViewBag.Title = "Pages";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="container-fluid">
+    <div class="row page-titles">
+        <div class="col-md-5 col-8 align-self-center">
+            <h3 class="text-themecolor m-b-0 m-t-0">PAGES</h3>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/Home/frm_GridTrack_Distance">Home</a></li>
+                <li class="breadcrumb-item active">PAGES</li>
+            </ol>
+        </div>
+    </div>
+    <div class="row" id="divrow">
+        <div class="col-lg-4">
+            PAGE NAME: <input type="text" id="txtpagename"  class="form-control" />
+
+        </div>
+        <div class="col-lg-6">
+            <div class="col-lg-8">
+                PAGE UNDER: <select class="form-control" id="ddlpageunder" >
+                    <option value="0">-Select-</option>
+                    @foreach (var item in ViewBag.panels)
+                    {
+                        <option value="@item.PANEL_NAME">@item.PANEL_NAME</option>
+                    }
+                </select>
+            </div>
+        </div>
+        <input type="button" id="btnsave" class="btn btn-success" onclick="Save()" style="margin-left:92%;margin-top:10px" value="Submit" />
+        <input type="button" id="btnupdate" class="btn btn-success" onclick="Update()" style="margin-left:92%;margin-top:10px" value="Update" />
+    </div>
+
+    <div>
+        <input type="button" class="btn btn-success" onclick="showrow()" style="width:153px;margin-bottom:8px" value="ADD Page" />
+        <table id="tblUser" class="table table-hover table-striped table-bordered" style="width:100%">
+            <tr>
+                <th>ID</th>
+                <th>PAGE NAME</th>
+                <th>PAGE_UNDER</th>
+                <th>Actions</th>
+            </tr>
+            @{
+                int i = 1;
+                foreach (var item in ViewBag.getallpages)
+                {
+                    <tr>
+                        <td>@i</td>
+                        <td>@item.PAGE_NAME</td>
+                        <td>@item.PAGE_UNDER</td>
+                        @if (item.PAGE_STATUS == 1)
+                        {
+                            <td>
+                                <input type="button" value="EDIT" onclick="EDIT(@item.PAGE_ID)" class="btn btn-primary" />
+                                <input type="button" value="IN ACTIVE" onclick="UPDATESTATUS(0,@item.PAGE_ID)" class="btn btn-danger" />
+                                
+                            </td>
+                        }
+                        else
+                        {
+                            <td>
+                                <input type="button" value="EDIT" onclick="EDIT(@item.PAGE_ID)" class="btn btn-primary" />
+                                <input type="button" value="ACTIVE" onclick="UPDATESTATUS(1,@item.PAGE_ID)" class="btn btn-success" />
+                                
+                            </td>
+                        }
+
+                    </tr>
+                        i++;
+
+                }
+            }
+        </table>
+    </div>
+</div>
+<script src="~/CUSTOMSCRIPTS/page.js"></script>

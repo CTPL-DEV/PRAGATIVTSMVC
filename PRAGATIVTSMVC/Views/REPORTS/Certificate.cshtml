@@ -1,0 +1,434 @@
+﻿@{
+    ViewBag.Title = "Certificate";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    table {
+        empty-cells: show;
+        border: 1px solid #000;
+    }
+
+        table td,
+        table th {
+            min-width: 2em;
+            min-height: 2em;
+            border: 1px solid #000;
+        }
+</style>
+<style type="text/css">
+    .auto-style1 {
+        width: 99%;
+        height: 126px;
+    }
+
+    .auto-style2 {
+        height: 19px;
+    }
+
+    .auto-style3 {
+    }
+
+    .auto-style4 {
+        width: 572px;
+    }
+
+    .auto-style5 {
+        width: 572px;
+        height: 23px;
+    }
+
+    .auto-style6 {
+        height: 23px;
+    }
+
+    .auto-style7 {
+        width: 566px;
+    }
+
+    .auto-style8 {
+        width: 100%;
+    }
+
+    .auto-style9 {
+    }
+
+    .auto-style10 {
+        width: 348px;
+    }
+
+    .auto-style11 {
+        width: 343px;
+    }
+</style>
+
+<div class="container-fluid">
+    <div class="row page-titles">
+        <div class="col-md-5 col-8 align-self-center">
+            <h3 class="text-themecolor m-b-0 m-t-0">Certificate</h3>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/Home/frm_GridTrack_Distance">Home</a></li>
+                <li class="breadcrumb-item active">Certificate</li>
+            </ol>
+        </div>
+    </div>
+    <input type="hidden" id="hiddenvalue" value="Certificate" />
+    <div id="downcertificate" style="margin-bottom:10px;display:none">
+        <input type="button" style="color: #fff; background-color: #0069d9; border-color: #2e6da4; " onclick="FORM17()" value="FORM 17(Trade certificate)" />
+        <input type="button" style="color: #fff; background-color: #1e7e34; border-color: #2e6da4; " onclick="AIS140()" value="AIS 140 Certificate"/>
+        @*<input type="button" style="color: #fff; background-color: #c69500; border-color: #2e6da4; " onclick="TRADE()" value="Trade certificate" />*@
+        <input type="button" style="color: #fff; background-color: #337ab7; border-color: #117a8b; " onclick="DEALER()" value="Dealer Certificate" />
+        @*<a href="/Certificated/MASS - Trade Certificate.pdf" style="color:black" download="Trade certificate"><u>FORM 17(Trade certificate)</u></a>*@
+        @*&nbsp; <a href="/Certificated/MaharashtraApproval Letter.pdf" style="color:black" download="Trade certificate"><u>Trade certificate</u></a> &nbsp;
+        &nbsp;<a href="/Certificated/TradeCertificate.jpg" style="color:black" download="Dealercertificate"><u>Dealer certificate</u></a>*@
+        &nbsp; @*<a href="/Certificated/ais140report.pdf" style="color:black" download="Ais140certificate"><u>AIS 140 Certificate(APPROVE)</u></a>*@
+    </div>
+    <div class="row">
+        <div class="col-lg-2">
+            <select class="form-control" id="ddlvehicles" ></select>
+        </div>
+        <div class="col-lg-6">
+
+            <input type="button" style="color: #fff; background-color: #269abc; border-color: #2e6da4; " value="GENERATE CERTIFICATE" onclick="CHECK_VERIFY()" />
+            <input type="button" style="color: #fff; background-color: #269abc; border-color: #2e6da4; " value="PREVIOUS GENERATED VEHICLES STATUS" onclick="window.location.href='@Url.Action("download_generated_vehicles", "REPORTS")'" />
+        </div>
+    </div>
+    <input type="button" style="float:right;display:none" id="btnprint"  class="btn btn-primary" onclick="printData()" value="Print" />
+    <div class="row" id="divrow" style="margin-left:6px;width:100%">
+        <div id="dvSuccess"  class="alert alert-success alert-dismissible">
+            <button type="button" class="close" onclick="closestatus()" >&times;</button>
+            <label id="lbl_status"></label>
+        </div>
+        <div id="printarea" style="display:none">
+            <div style="text-align:center">
+              
+                <h3>MASS ENTERPRISES </h3>
+                <h4>Online Vehicle Tracking Certificate</h4>
+                <h4>AIS-140 </h4>
+                <h4>Certificate No : <span id="spncertificate"></span></h4>
+                <div style="text-align:left;">
+                  
+                    <img style="margin-top:-141px;width:22%" src="~/IMAGES/MASSEntereprices.jpg" />
+                </div>
+                <div style="text-align:right;" id="divone">
+                    <img style="background-color:black;width:123px;margin-top:-180px" src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=VehicleNo=IMEINo= Status=" />
+                </div>
+                <div style="text-align:right;display:none" id="divsecond">
+                </div>
+            </div>
+            <div>
+                <table class="auto-style8 display nowrap  table-hover table-striped table-bordered" border="1" cellspacing="0" style="width:100%;margin-top:10px">
+                    <tr>
+                        <td colspan="3"><b>VEHICLE DETAILS</b></td>
+                    </tr>
+                    <tr>
+                        @*<span >Registration Number : 4564564564564</span>*@
+                        <td class="auto-style11">Registration Number :  <span id="txtvno" style="color: rgb(103, 117, 124); font-family: Poppins, sans-serif; font-size: medium; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 400; letter-spacing: normal; orphans: 2; text-align: start; text-indent: 0px; text-transform: none; white-space: normal; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; background-color: rgb(242, 244, 248); text-decoration-style: initial; text-decoration-color: initial; display: inline !important; float: none;"></span></td>
+                        <td class="auto-style10">Registration Year : <span id="txtregdate" style="color: rgb(103, 117, 124); font-family: Poppins, sans-serif; font-size: medium; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 400; letter-spacing: normal; orphans: 2; text-align: start; text-indent: 0px; text-transform: none; white-space: normal; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; background-color: rgb(242, 244, 248); text-decoration-style: initial; text-decoration-color: initial; display: inline !important; float: none;"></span></td>
+
+                    </tr>
+                    <tr>
+                        <td class="auto-style11">Chassis NO : <span id="txtchassisno" style="color: rgb(103, 117, 124); font-family: Poppins, sans-serif; font-size: medium; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 400; letter-spacing: normal; orphans: 2; text-align: start; text-indent: 0px; text-transform: none; white-space: normal; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; background-color: rgb(242, 244, 248); text-decoration-style: initial; text-decoration-color: initial; display: inline !important; float: none;"></span> </td>
+                        <td class="auto-style10">Engine No : <span id="txtengineno" style="color: rgb(103, 117, 124); font-family: Poppins, sans-serif; font-size: medium; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 400; letter-spacing: normal; orphans: 2; text-align: start; text-indent: 0px; text-transform: none; white-space: normal; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; background-color: rgb(242, 244, 248); text-decoration-style: initial; text-decoration-color: initial; display: inline !important; float: none;"></span></td>
+                    </tr>
+                    <tr>
+
+                        <td class="auto-style11">Vehicle Make : <span id="txtvehiclemake" style="color: rgb(103, 117, 124); font-family: Poppins, sans-serif; font-size: medium; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 400; letter-spacing: normal; orphans: 2; text-align: start; text-indent: 0px; text-transform: none; white-space: normal; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; background-color: rgb(242, 244, 248); text-decoration-style: initial; text-decoration-color: initial; display: inline !important; float: none;"></span> </td>
+                        <td class="auto-style10">Vehicle Model : <span id="txtvehiclemodel" style="color: rgb(103, 117, 124); font-family: Poppins, sans-serif; font-size: medium; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 400; letter-spacing: normal; orphans: 2; text-align: start; text-indent: 0px; text-transform: none; white-space: normal; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; background-color: rgb(242, 244, 248); text-decoration-style: initial; text-decoration-color: initial; display: inline !important; float: none;"></span> </td>
+                    </tr>
+                    <tr>
+                        <td class="auto-style9" colspan="3"><span style="color: rgb(103, 117, 124); font-family: Poppins, sans-serif; font-size: medium; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 400; letter-spacing: normal; orphans: 2; text-align: start; text-indent: 0px; text-transform: none; white-space: normal; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; background-color: rgb(242, 244, 248); text-decoration-style: initial; text-decoration-color: initial; display: inline !important; float: none;">Vehicle Category : TRUCK</span></td>
+                    </tr>
+                </table>
+                <br />
+            </div>
+
+            <div>
+                <table class="auto-style1 display nowrap  table-hover table-striped table-bordered" border="1" cellspacing="0" style="width:100%">
+                    <tr>
+                        <td class="auto-style4"><b>VEHICLE OWNER DETAILSLS</b></td>
+                        <td><b>VAHAN DETAILS</b></td>
+                    </tr>
+                    <tr>
+                        <td class="auto-style4">Comapny name/Owner Name :<span id="spncompanyname"></span></td>
+                        <td>Unique Vts Code :WETRACK800</td>
+                    </tr>
+                    <tr>
+                        <td class="auto-style4">Owner Address :<span id="spnaddress"></span></td>
+                        <td>
+                            Vts Serial no : <span id="spnvtsserialno"></span>
+
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td class="auto-style4">Phone No : </td>
+                    </tr>
+                    <tr>
+                        <td class="auto-style4">Email Id : </td>
+                        <td>Fitment Centre Name :Mark Electronics Pvt Ltd</td>
+                    </tr>
+                    <tr>
+                        <td class="auto-style5">Pan :</td>
+                        <td class="auto-style6">Device Manufacture Month/Year : <span id="spnmfym"></span></td>
+                    </tr>
+                </table>
+                <br />
+            </div>
+            <div>
+                <table class="auto-style1 display nowrap  table-hover table-striped table-bordered" border="1" cellspacing="0" style="width:100%;height:42px;margin-bottom:14px">
+                    <tr>
+                        <td class="auto-style4"> Dealer Name : MASS ENTERPRISES</td>
+                        <td>Dealer Address : MAHARASTHRA</td>
+                    </tr>
+                </table>
+            </div>
+            <div>
+                <table class="auto-style1 display nowrap  table-hover table-striped table-bordered" border="1" cellspacing="0" style="width:100%">
+                    <tr>
+                        <td colspan="2"><b>VTS DETAILS</b></td>
+                    </tr>
+                    <tr>
+                        <td class="auto-style4">VTS Serial No : <span id="spnvtsserialno1"></span></td>
+                        <td>Software Version : 1.5.5 SV</td>
+                    </tr>
+                    <tr>
+                        <td class="auto-style4">VTS Model No : Wetrack800</td>
+                        <td>ICICID Number : </td>
+                    </tr>
+                   
+                    <tr>
+                        <td class="auto-style4">VTS Model No : Wetrack800</td>
+                        <td>ICICID Number : </td>
+                    </tr>
+                    <tr>
+                        <td class="auto-style4">TAC No:</td>
+                        <td>Device Activation/Certification Date : <span id="spncurntdate"></span></td>
+                    </tr>
+                    <tr>
+                        <td class="auto-style4">IMEI Number : <span id="spnimei"></span></td>
+                        <td>Certificate Valid Upto: <span id="spnvalid"></span> </td>
+                    </tr>
+                    <tr>
+                        <td class="auto-style4">VTS Test Report :CT0GN0205</td>
+                        <td>Certified By :International Centre For Automative Technology(CAT)</td>
+                    </tr>
+                    <tr>
+                        <td class="auto-style4">SIM Provider 1 :BSNL&nbsp; </td>
+                        <td>SIM Provider 2 :IDEA&nbsp; </td>
+                    </tr>
+                </table>
+                <br />
+            </div>
+
+            <table class="auto-style1  display nowrap  table-hover table-striped table-bordered" border="1" cellspacing="0" style="width:100%">
+                <tr>
+                    <td class="auto-style7">
+                        <b>Installed By</b>:<br />
+                        MASS ENTERPRISES,<br />
+                        AURANGABAD<br />
+                    </td>
+                    <td><b>Certificate Issued By</b> :  Ramki Technologies Pvt ltd</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+
+    window.onload = function () {
+
+        $("#dvSuccess").hide();
+        Vehicles();
+    }
+
+    function closestatus() {
+        //$("#lbl_status").text("");
+        //$("#lbl_status").hide();
+        $("#dvSuccess").hide();
+    }
+
+    function printData() {
+
+
+
+
+        var divToPrint = document.getElementById('printarea');
+
+        var newWin = window.open('', 'Print-Window');
+
+        newWin.document.open();
+
+        newWin.document.write('<html><body onload="window.print()">' + printarea.innerHTML + '</body></html>');
+
+        newWin.document.close();
+
+        // setTimeout(function () { newWin.close(); }, 10);
+
+    }
+
+    function FORM17() {
+       
+        window.open('/Certificated/MASS - Trade Certificate.pdf', '_blank');
+    }
+    function AIS140() {
+        window.open('/Certificated/ais140report.pdf', '_blank');
+    }
+
+    function TRADE() {
+        window.open('/Certificated/MaharashtraApproval Letter.pdf', '_blank');
+      
+    }
+    function DEALER() {
+        window.open('/Certificated/dealer_mark.pdf', '_blank');
+    }
+
+    function CHECK_VERIFY() {
+      
+        $("#lbl_status").html("");
+        if ($("#ddlvehicles").val() != '0') {
+            $.post("/REPORTS/_VERIFY_REQUEST", { "VNO": $("#ddlvehicles").val() }, function (data) {
+              
+                
+                var dataT = data['data'];
+
+                if (dataT == "TRUE") {
+                    $("#dvSuccess").hide();
+                    getdetails();
+                    
+                    $("#btnprint").css('display', 'block');
+                    $("#printarea").css('display', 'block');
+                    $("#downcertificate").css('display', 'block');
+                }
+                else if (dataT == "REQ") {
+                    $("#printarea").css('display', 'none');
+                    $("#downcertificate").css('display', 'none');
+                    //
+                //    $("#dvSuccess").css('display', 'block');
+                    //
+                    $("#dvSuccess").show();
+                    $("#lbl_status").text("");
+                   
+                        $("#lbl_status").html("We have received your request to provide certificates for RTA approval.  You would shortly receive update on the certificate. <br /> Kindly note that Rs.500 per year per vehicle would be charged in the invoice for this request, as we have to pay to GOVT for getting TRADE CERTIFICATE. <br/> For further queries kindly send an email to below ID's provided: <br /> saikiran@ramkigroup.com<br />   gskreddy@ramkigroup.com");
+                   
+                    
+
+
+                   // $("#lbl_status").html("we have received your request. processing of your certificates will cost you  RS 500 per vehicle.<br />For further queries kindly send an email to below mailids<br /> saikiran@ramkigroup.com<br />   gskreddy@ramkigroup.com");
+                   
+                }
+                else {
+                    $("#printarea").css('display', 'none');
+                    $("#downcertificate").css('display', 'none');
+                    alert(dataT);
+                }
+
+            });
+        }
+    }
+
+
+    function getdetails() {
+        if ($("#ddlvehicles").val() != '0') {
+            $.post("/REPORTS/_certificate", { "VNO": $("#ddlvehicles").val() }, function (data) {
+                var dataT = data['data'];
+                //console.log(data);
+                $("#txtvno").text(dataT[0].Vehicle_regnumer);
+                var date = new Date();
+
+                var dd = date.getDate();
+                var mm = date.getMonth() + 1;
+                var yy = date.getFullYear();
+                var yy1 = date.getFullYear() + 1;
+                var fdate = mm + "/" + dd + "/" + yy;
+                var fdate1 = mm + "/" + dd + "/" + yy1;
+
+
+                $("#spnmfym").text(mm + "/" + yy);
+                $("#spnvalid").text(fdate1);
+
+                $("#txtregdate").text(dataT[0].vehicles_yom);
+                $("#spnimei").text(dataT[0].imei)
+                $("#spncurntdate").text(fdate);
+                $("#spncertificate").text(dataT[0].certifcateno);
+                $("#spncompanyname").text(dataT[0].categ_name);
+                $("#spnaddress").text(dataT[0].categ_address);
+
+                $("#txtchassisno").text(dataT[0].chassisno);
+                $("#txtengineno").text(dataT[0].engineno);
+                $("#txtvehiclemake").text(dataT[0].vehiclemake);
+                $("#txtvehiclemodel").text(dataT[0].vehiclemodel);
+
+                $("#spnvtsserialno").text(dataT[0].sno);
+                $("#spnvtsserialno1").text(dataT[0].sno);
+
+                $("#divone").css({ display: "none" });
+                $("#divsecond").css({ display: "block" });
+                $("#divsecond").empty();
+                //      Vehicle Owner Name / Unique VTS Code & VTS Serial No.
+                // WETRACK800
+
+                var companyname = dataT[0].categ_name.replace(/\s/g, "%20");
+
+                var Vmake = dataT[0].vehiclemake.replace(/\s/g, "%20");
+
+                var Vmodel = dataT[0].vehiclemodel.replace(/\s/g, "%20");
+
+
+                var name = 'Vehicle%20No%20'
+                    + dataT[0].Vehicle_regnumer +
+                    '%20Imei%20No%20'
+                    + dataT[0].imei
+                    + '%20Chassis%20No%20='
+                    + dataT[0].chassisno
+                    + '%20Serial%20NO%20='
+                    + dataT[0].sno
+                    + '%20Company%20Name%20='
+                    + companyname
+                      + '%20Unique%20VTS%20Code%20=WETRACK800'
+                    + '%20Engine%20No%20='
+                    + dataT[0].engineno
+                    + '%20VehicleMake%20='
+                    + Vmake
+                    + '%20Vehicle%20Model%20=' + Vmodel
+
+                var src1 = "https://api.qrserver.com/v1/create-qr-code/?size=150x150&data="
+                $("#divsecond").append('<img style="background-color:black;width:123px;margin-top:-180px" src=' + src1 + name + ' />')
+
+            });
+        }
+    }
+
+
+    function Vehicles() {
+        //UserID
+        // alert("yes");
+
+
+        $.post("/REPORTS/frmVehicles", { "UserID": '' }, function (data) {
+
+            //
+
+            var dataT = data['data'];
+
+
+            $("#ddlvehicles").empty();
+            $("#ddlvehicles").empty();
+
+            var count = dataT.length;
+            if (count > 0) {
+                //  alert("ojk")
+
+                var opt = "<option value='0'>-Select -</option>";
+                for (var i = 0; i < dataT.length; i++) {
+                    opt += "<option value='" + dataT[i].DEVICE_NAME + "'>" + dataT[i].DEVICE_NAME + "</option>";
+                }
+                $("#ddlvehicles").text("");
+                $('#ddlvehicles').append(opt);
+                $('#ddlvehicles').select2();
+            }
+        });
+    }
+
+</script>

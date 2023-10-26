@@ -1,0 +1,59 @@
+﻿
+@{
+    ViewBag.Title = "AllUsers";
+    Layout = "~/Views/Shared/_NewLayout.cshtml";
+}
+<div>
+    <table id="tblusers" class="mdl-data-table ml-table-bordered mdl-js-data-table" cellspacing="0" width="100%" style="margin-top:10px">
+        <thead>
+            <tr>
+                <th class="center">S.no</th>
+
+                <th class="center">Name</th>
+
+                <th class="center">Username</th>
+
+                <th class="center">Password</th>
+
+                <th class="center">Mobiel Nunber</th>
+                <th class="center">Email</th>
+            </tr>
+        </thead>
+        <tbody>
+            @{
+                int i = 1;
+                foreach (var item in ViewBag.users)
+                {
+                    <tr>
+                        <td>@i</td>
+                        <td>@item.CATEG_NAME</td>
+                        <td>@item.USERS_USERNAME</td>
+                        <td>@item.USERS_PASSWORD</td>
+                    <td>@item.Mobilenumber</td>
+                    <td>@item.Email</td>
+                </tr>
+                    i++;
+                }
+
+            }
+        </tbody>
+    </table>
+</div>
+<script>
+    $(document).ready(function () {
+        $('#tblusers').DataTable({
+
+            columnDefs: [
+  { targets: 'no-sort', orderable: false },
+      {
+          targets: -1,
+          className: 'dt-right'
+      }
+            ],
+            language: {
+                'loadingRecords': '&nbsp;',
+                'processing': 'Loading...'
+            }
+        });
+    });
+</script>

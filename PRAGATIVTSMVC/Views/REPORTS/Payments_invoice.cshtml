@@ -1,0 +1,187 @@
+﻿@{
+    ViewBag.Title = "Payments_invoice";
+    Layout = null;
+}
+<style>
+    tab {
+        overflow: hidden;
+        border: 1px solid #ccc;
+        background-color: #f1f1f1;
+    }
+    /* Style the buttons that are used to open the tab content */
+    .tab button {
+        background-color: inherit;
+        float: left;
+        border: none;
+        outline: none;
+        cursor: pointer;
+        padding: 14px 16px;
+        transition: 0.3s;
+    }
+
+        /* Change background color of buttons on hover */
+        .tab button:hover {
+            background-color: #ddd;
+        }
+
+        /* Create an active/current tablink class */
+        .tab button.active {
+            background-color: #ccc;
+        }
+
+    /* Style the tab content */
+    .tabcontent {
+        display: none;
+        padding: 6px 12px;
+        border: 1px solid #ccc;
+        border-top: none;
+    }
+</style>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<link rel="stylesheet" href="https://cdn.datatables.net/buttons/1.5.1/css/buttons.dataTables.min.css">
+<link rel="stylesheet" href="https://cdn.datatables.net/1.10.16/css/jquery.dataTables.min.css">
+<div class="w3-container w3-teal" style="background-color: #009688; margin-top: -20px; ">
+    <h1 style="color:white">INVOICE AND PAYMENTS</h1><a href="/Home/Logout" style="margin-top:-44px;float:right;color:white">Logout.</a>
+</div>
+
+<div class="container-fluid">
+    <ul class="nav nav-tabs">
+        <li class="active"><a data-toggle="tab" href="#home">INVOICES</a></li>
+        <li><a data-toggle="tab" href="#menu1">CERIFICATES</a></li>
+
+    </ul>
+
+    <div class="tab-content">
+        <div id="home" class="tab-pane fade in active">
+          
+        </div>
+        <div id="menu1" class="tab-pane fade">
+            <table id="tblcertificates" border="0" style="font-size: 11px; width:100%" class="display nowrap table table-hover table-striped table-bordered" cellspacing="0" width="100%">
+                <thead>
+                    <tr>
+                        <th>SNO</th>
+                        <th>VEHICLE NUMBER</th>
+                        <th>REQUESTED DATE</th>
+                        <th>VALID UPTO</th>
+                        <th>STATUS</th>
+                        <th>TRANSPORTER NAME</th>
+                        <th>TRANSPORTER PAYMENT</th>
+                        <th>DEALER PAYMENT</th>
+                        <th>ACTIONS</th>
+                    </tr>
+                </thead>
+                <tbody id="ttblcertificatesbody"></tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script src="~/Scripts/jquery-1.10.2.min.js"></script>
+
+
+<script>
+    window.onload = function () {
+        getdata_PENDING();
+    }
+
+    function getdata_PENDING() {
+     
+        $.post("/REPORTS/_GETALL_CERTIFICATE", function (data) {
+
+            var dataT = data['data'];
+
+            $("#tblcertificatesbody").empty();
+            var n = 0;
+            for (var j = 0; j < dataT.length; j++) {
+
+                    tr = $('<tr/>');
+                    tr.append("<td>" + (n + 1) + "</td>");
+                    tr.append("<td>" + dataT[j].VNO + "</td>");
+                    tr.append("<td>" + dataT[j].REQUESTEDDATE + "</td>");
+                    tr.append("<td>" + dataT[j].VALIDUPTO + "</td>");
+                    if (dataT[j].FLAGSTATUS == '1') {
+                        tr.append("<td>APPROVED</td>");
+                    }
+                    else {
+                        tr.append("<td>PENDING</td>");
+                    }
+                    
+                    tr.append("<td>" + dataT[j].TRANSPORTERNAME + "</td>");
+
+                    if (dataT[j].TRANSPORTERPAYMENT == '1') {
+                        tr.append("<td>PAID</td>");
+                    }
+                    else {
+                        tr.append("<td><input type='checkbox' id='chktrans" + j + "' /></td>");
+                    }
+                    if (dataT[j].DEALERPAYMENT == '1') {
+                        tr.append("<td>PAID</td>");
+                    }
+                    else {
+                        tr.append("<td><input type='checkbox' id='chkdealerpay" + j + "' /></td>");
+                    }
+                    if (dataT[j].TRANSPORTERPAYMENT == '1' && dataT[j].DEALERPAYMENT == '1')
+                    {
+
+                    }
+                    else {
+                        tr.append('<td><input type="button" onclick="PAYMENT_COMPLETE(\'' + dataT[j].ID + '\',\'' + j + '\')" value="Payment Complete" /></td>');
+                    }
+                   
+                    $("#tblcertificates").append(tr);
+                    n++;
+              
+
+            }
+        })
+    }
+
+    function PAYMENT_COMPLETE(ID, i) {
+        
+        var TRANSPAY = 0;
+        var DEALERPAY = 0;
+
+        if ($("#chktrans"+i+"").is(':checked') == true)
+        {
+            TRANSPAY=1
+        }
+       
+        if ($("#chkdealerpay" + i + "").is(':checked') == true) {
+            DEALERPAY = 1;
+        }
+        
+        if(TRANSPAY == 1 || DEALERPAY == 1)
+        {
+            //string TPAY,string DEAPAY,string ID
+            $.post("/REPORTS/CERTIFICATE_PAYMENT", { "TPAY": TRANSPAY, "DEAPAY": DEALERPAY, "ID": ID }, function (data) {
+                var dataT = data['data'];
+                if (dataT = true) {
+                    alert("Approved successfully");
+                    location.reload();
+                }
+                else {
+                    alert("try again");
+                }
+
+            })
+        }
+        else {
+            alert("please select checkbox..");
+        }
+     
+      
+    }
+
+
+
+
+
+
+
+
+
+
+  
+</script>

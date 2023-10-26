@@ -1,0 +1,277 @@
+﻿@{
+    ViewBag.Title = "frm_Archive_ViewTripData";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="load"></div>
+<div class="container-fluid">
+    <div class="row page-titles">
+        <div class="col-md-5 col-8 align-self-center">
+            <h3 class="text-themecolor m-b-0 m-t-0">Track Report</h3>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/Home/frm_GridTrack_Distance">Home</a></li>
+                <li class="breadcrumb-item active">Track Report</li>
+            </ol>
+        </div>
+    </div>
+
+    <div class="row" id="divrow">
+        <div class="col-lg-3">
+            Vehicles : <select class="form-control" id="ddlvehicles">
+                <option value="0">-Select-</option>
+                @foreach (var item in ViewBag.vehicles)
+                {
+                    <option value="@item.DEVICE_ID">@item.DEVICE_NAME</option>
+                }
+            </select>
+        </div>
+        <div class="col-lg-3">
+            Start Date<input type="text" id="txtstartdate" class="form-control" />
+        </div>
+        <div class="col-lg-3">
+            End Date<input type="text" id="txtenddate" class="form-control" />
+        </div>
+
+        <div class="col-lg-3">
+            <input type="button" style="margin-top:27px" onclick="Search()" value="View Report" />
+        </div>
+        <div class="col-lg-3">
+            Interval :<select id="ddlinterval" class="form-control">
+                <option value="-1">Select Interval</option>
+                <option value="0">Default Interval</option>
+                <option value="60">1 Hour</option>
+                <option value="120">2 Hour</option>
+                <option value="180">3 Hour</option>
+                <option value="240">4 Hour</option>
+                <option value="720">12 Hour</option>
+                <option value="1440">1 Day</option>
+                <option value="10080">1 Week</option>
+            </select>
+        </div>
+    </div>
+    <div>
+        <table id="tbltrackreport" style="font-size:14px" class="display nowrap table table-hover table-striped table-bordered" cellspacing="0" width="100%">
+            <thead>
+                <tr>
+                    @*<th>SNO</th>*@
+                    <th>VEHICLE NUMBER</th>
+                    <th>DATE</th>
+                    <th>TIME</th>
+                    <th>CURRENT ODOMETER</th>
+                    <th>SPEED</th>
+                    <th>NEAREST LANDMARKS)</th>
+                    <th>DISTANCE COVERED(KMS)</th>
+                    <th>DRIVER NAME</th>
+                    <th>DEGREES(C)</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+</div>
+<script>
+
+    window.onload = function () {
+
+        $('#txtstartdate').bootstrapMaterialDatePicker
+          ({
+              shortTime: true,
+              format: 'MM/DD/YYYY hh:mm A ',
+              switchOnClick: true,
+              twelvehour: true
+          });
+
+
+        $('#txtenddate').bootstrapMaterialDatePicker
+          ({
+              shortTime: true,
+              format: 'MM/DD/YYYY hh:mm A ',
+              switchOnClick: true,
+              twelvehour: true
+          });
+        $("#ddlvehicles").select2();
+        curentdateandtime();
+    }
+
+
+    function curentdateandtime() {
+        var date = new Date();
+        var dd = date.getDate();
+        var mm = date.getMonth() + 1;
+        var yy = date.getFullYear();
+        var hours = date.getHours();
+        var minutes = date.getMinutes();
+        var ampm = hours >= 12 ? 'PM' : 'AM';
+        hours = hours % 12;
+        hours = hours ? hours : 12; // the hour '0' should be '12'
+        minutes = minutes < 10 ? '0' + minutes : minutes;
+
+        var strTime = hours + ':' + minutes + ' ' + ampm;
+
+        var fdt = mm + "/" + dd + "/" + yy + " " + hours + ":" + minutes + " " + ampm;
+        $('#txtenddate').val(fdt);
+        if (dd == "1" || dd == "01") {
+
+        }
+        else {
+            dd = (dd - 1);
+        }
+        var sdt = mm + "/" + dd + "/" + yy + " " + hours + ":" + minutes + " " + ampm;
+        $('#txtstartdate').val(sdt);
+    }
+
+
+
+
+    function Searchold() {
+
+        if ($("#ddlvehicles").val() != '0') {
+            $("#load").show();
+            $.post("/Home/_frm_archive_report", {
+                "VNO": $("#ddlvehicles").val(), "FRMDATE": $('#txtstartdate').val(), "TODATE": $('#txtenddate').val(), "Interval": $("#ddlinterval").val()
+            }, function (data) {
+
+                $("#load").hide();
+                var dataT = data['data'];
+                if ($.fn.dataTable.isDataTable('#tbltrackreport')) {
+                    $('#tbltrackreport').DataTable().destroy();
+                }
+                $('#tbltrackreport tbody').remove();
+                for (var i = 0; i < dataT.length; i++) {
+
+                    tr = $('<tr/>');
+                    tr.append("<td>" + (i + 1) + "</td>");
+                    tr.append("<td>" + dataT[i].VEHICLE_NO + "</td>");
+                    tr.append("<td>" + dataT[i].TRIPDATA_TRIPDATE + "</td>");
+
+                    tr.append("<td>" + dataT[i].TIME + "</td>");
+                    tr.append("<td>" + dataT[i].ODOMETER + "</td>");
+                    tr.append("<td>" + dataT[i].TRIPDATAT_SPEED + "</td>");
+                    tr.append("<td>" + dataT[i].PLACE + "</td>");
+                    tr.append("<td>" + dataT[i].DISTANCE + "</td>");
+                    tr.append("<td>" + dataT[i].DRIVER_NAME + "</td>");
+                    tr.append("<td>" + dataT[i].DEGREES + "</td>");
+                    $("#tbltrackreport").append(tr);
+                }
+
+                $('#tbltrackreport').DataTable({
+                    dom: 'Bfrtip',
+                    buttons: [
+                        //'copy', 'csv', 'excel', 'pdf', 'print'
+                        'excel', 'pdf', 'print',
+
+                    ]
+                });
+            });
+        }
+        else {
+            alert("select vehicle number..");
+        }
+    }
+
+
+
+
+
+
+
+
+
+    function Search() {
+
+        $('#load').show();
+     //   var i = 0;
+        serverSide: true;
+        var filteredData, simple_checkbox, numOfVisibleRows;
+        var MySearch = $('#tbltrackreport').DataTable({
+            dom: 'Bfrtip',
+            buttons: [
+                 'excel', 'pdf', 'print'
+            ],
+            "paging": false,
+            "searching": true,
+           // "filtering": true,
+            autoFill: true,
+            //"ordering": true,
+            //sDom: "Bfrtip",
+            //sDom: '<"search-box"r><"H"lf>t<"F"ip>',
+            //colReorder: true,
+            //"rowHeight": '20px',
+            //"targets": 0,
+            //"paging": true,
+            //"sPaginationType": "full_numbers",
+            highlight: true,
+            fixedColumns: {
+                leftColumns: 4
+            },
+            keys: {
+                columns: ':not(:first-child)'
+            },
+            "scrollX": false,
+            "scrollY": 660,
+            "language": {
+                sProcessing: " please wait",
+                "lengthMenu": "No of Records Per Page :  _MENU_ ",
+                "zeroRecords": "Loading Data - Wait",
+                "infoEmpty": "Showing 0 to 0 of 0 entries",
+                "infoFiltered": "From _MAX_ Total Entries",
+                "infoEmpty": "No records available",
+            },
+            processing: true,
+            select: true,
+            // "lengthMenu": [[50, 100, 500, -1], [50, 100, 500, "All"]],
+            "lengthMenu": [[100, 500, 1000, -1], [100, 500, 1000, "All"]],
+            "sAjaxSource": "/Home/_frm_archive_report",
+            "fnServerParams": function (aoData) {
+             
+                aoData.push({ "name": "VNO", "value": $("#ddlvehicles").val() },
+                    { "name": "FRMDATE", "value": $('#txtstartdate').val() },
+                    { "name": "TODATE", "value": $('#txtenddate').val() },
+                    { "name": "Interval", "value": $("#ddlinterval").val() });
+             
+            },
+            "bDeferRender": true,
+            "bInfo": true,
+            fixedHeader: true,
+            fixedHeader: {
+                header: false,
+                footer: true
+            },
+            "columns": [
+                //{
+                //    mRender: function (data, type, row) {
+                //        return "<td><span style='display: inline-block;width: 150px;white-space: nowrap;overflow: hidden !important;text-overflow: ellipsis;'>" + row.DEVICE_NAME + "</span></td>"
+                //    }
+                //},
+               // { "data": "DEVICE_NAME" },
+                { "data": "VEHICLE_NO" },
+                { "data": "TRIPDATA_TRIPDATE" },
+                { "data": "TIME" },
+                { "data": "ODOMETER" },
+                { "data": "TRIPDATAT_SPEED" },
+                 { "data": "PLACE" },
+                 { "data": "DISTANCE" },
+                 { "data": "DRIVER_NAME" },
+                 { "data": "DEGREES" },
+
+                     //{
+                     //    "mData": null,
+                     //    "bSortable": false,
+                     //    mRender: function (data, type, row) {
+
+                     //        return '<input type="button" class="btn btn-primary" onclick="EDIT(' + row.DEVICE_ID + ')" value="EDIT" />'
+
+                     //    }
+                     //},
+            ],
+            
+        })
+        $('#load').hide();
+    }
+
+
+
+
+
+
+
+</script>

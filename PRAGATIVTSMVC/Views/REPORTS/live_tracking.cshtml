@@ -1,0 +1,357 @@
+﻿@{
+    ViewBag.Title = "Livetracking";
+    Layout = null;
+}
+
+
+<style>
+    #load {
+        width: 100%;
+        height: 100%;
+        position: fixed;
+        z-index: 9999;
+        background: url("/IMAGES/loading.gif") no-repeat center center rgba(0,0,0,0.25);
+    }
+</style>
+<div>
+    @if (ViewBag.apikey != null)
+    {
+
+
+    }
+    <input type="hidden" id="hdnapikey" value=@ViewBag.apikey />
+
+</div>
+
+
+<div id="load">
+
+
+
+</div>
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Live Tracking</title>
+    <meta name="viewport" content="initial-scale=1.0">
+    <meta charset="utf-8">
+    <style>
+        /* Always set the map height explicitly to define the size of the div
+        * element that contains the map. */
+        #map_canvas {
+            height: 100%;
+        }
+        /* Optional: Makes the sample page fill the window. */
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+    </style>
+</head>
+
+
+<body>
+    <div id="map_canvas"></div>
+    <script src="/Scripts/jquery-1.10.2.min.js"></script>
+    <script>
+
+        window.onload = function () {
+
+            $("#load").hide();
+            gettrack();
+
+
+
+        }
+        var iconBase = 'https://maps.google.com/mapfiles/kml/shapes/';
+        var icons = {
+            Truck: {
+                icon: iconBase + 'parking_lot_maps.png'
+            },
+            Plant: {
+                icon: iconBase + 'library_maps.png'
+            },
+            Port: {
+                icon: iconBase + 'info-i_maps.png'
+            },
+            Vehi: {
+                icon: '/Content/icons/placeholder_yellow.png'
+            },
+            Bus: {
+                icon: '/Content/icons/bus.png'
+            },
+            From: {
+                icon: '/Content/icons/placeholder_nu.png'
+            },
+            To: {
+                icon: '/Content/icons/maps-and-flags.png'
+            },
+            Stopped: {
+                icon: '/Content/icons/truck_r.png'
+            },
+            VehicleMoving: {
+                icon: '/Content/icons/green_truck.png'
+            },
+            Datanotreceiving: {
+                icon: '/Content/icons/truck_y.png'
+            },
+            Dirctions: {
+                icon: '/Truck/truck_green_0.png'
+            },
+        };
+
+
+        function gettrack() {
+
+            $.post("/REPORTS/VEHICLECHANGE_URL", { apikey: $("#hdnapikey").val() }, function (data) {
+
+                var dataT = data['data'];
+
+                if (dataT[0] != null && dataT[0] != "null") {
+
+                    initialize(data);
+
+                }
+                else {
+                    alert("Data not avilable..");
+                    // initMap();
+
+                }
+            });
+        }
+
+
+        var map = undefined;
+        var marker = undefined;
+        var position = [17.443988, 78.462185];
+        //   var position = [];
+
+
+        function initialize(data) {
+
+            var dataT = data['data'];
+
+
+
+            var latlng = new google.maps.LatLng(dataT[0].LATITUDE, dataT[0].LONGITUDE);
+            var myOptions = {
+                zoom: 15,
+                center: latlng,
+                gestureHandling: 'greedy',
+                mapTypeId: google.maps.MapTypeId.ROADMAP,
+                disableDefaultUI: true
+            };
+
+            var infoWindow = new google.maps.InfoWindow();
+
+            var latlngbounds = new google.maps.LatLngBounds();
+
+            map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
+
+            if (dataT[0].COLOR == 'G') {
+                if (dataT[0].TRIPDATA_DIRECTION != null || dataT[0].TRIPDATA_DIRECTION != "null" || dataT[0].TRIPDATA_DIRECTION != "") {
+
+                    var value0 = dataT[0].TRIPDATA_DIRECTION;
+
+                    if (value0 <= 270) {
+                        value0 = parseInt(value0) + parseInt(90);
+                    }
+                    else if (value0 >= 360) {
+                        value0 = 359;
+                    }
+                    else {
+                        value0 = parseInt(value0) - parseInt(270);
+                    }
+
+
+                    buscolor = '/Truck/truck_green_' + value0 + '.png'
+
+
+                }
+            }
+            else if (dataT[0].COLOR == 'R') {
+                buscolor = icons["Stopped"].icon
+            }
+            else if (dataT[0].COLOR == 'Y') {
+                buscolor = icons["Datanotreceiving"].icon
+            }
+
+
+
+
+
+
+            marker = new google.maps.Marker({
+                position: (latlng),
+                map: map,
+                icon: buscolor,
+                title: "Your current location!",
+                gestureHandling: 'greedy',
+            });
+
+            (function (marker, data) {
+                google.maps.event.addListener(marker, "click", function (e) {
+                    //if (i == 0) {
+
+                    //}
+                    //else {
+
+
+
+
+                    var stringContent = '<div style="background:#4a3b3b"><table border="1" style="font-size: 11px; width:100%;color:#ffffffad" class="" cellspacing="0" width="100%">'
+                        + '<tr><td><b>Vehicle Number:</b></td><td>' + dataT[0].VEHICLENUMBER
+                        + '<tr><td><b>Speed:</b></td><td><label id="lblcurrentspeed">' + dataT[0].SPEED
+                        + '</td><tr><td><b>Time:</b></td><td> <label id="lblcurrentdate">'
+                        + dataT[0].TRIPDATA_TRIPDATE
+                        + '</label></td><tr><td><b>Odometer Reading(km):</b></td><td> <label id="lblcurrentodometer">'
+                        + dataT[0].ODOMETER
+                        + '</label></td><tr><td><b>Temperature:</b></td><td> <label id="lblcurrentodometer">'
+                        + dataT[0].temp
+                        + '</label></td></tr><tr><td><b>Location:&nbsp;</b></td><td><label id="lblcurrentlocation">'
+                        + dataT[0].PLACE + '</label></td></tr></table></div>';
+
+
+
+
+                    var infowindow = new google.maps.InfoWindow({
+                        content: stringContent,
+                        maxWidth: 350
+                    });
+                    infowindow.open(map, marker);
+                    //  }
+
+
+                });
+            })(marker, data);
+        }
+
+
+
+
+
+        var numDeltas = 100;
+        var delay = 10; //milliseconds
+        var i = 0;
+        var deltaLat;
+        var deltaLng;
+
+
+
+
+        window.setInterval(function () {
+
+            $.post("/REPORTS/VEHICLECHANGE_URL", { apikey: $("#hdnapikey").val() }, function (data) {
+
+                var dataT = data['data'];
+
+                if (dataT[0] != null && dataT[0] != "null") {
+
+                    var result = [dataT[0].LATITUDE, dataT[0].LONGITUDE];
+
+                    console.log("Called : " + [dataT[0].LATITUDE, dataT[0].LONGITUDE])
+
+                    //    alert(dataT[0].LATITUDE+","+dataT[0].LONGITUDE);
+                    $("#lblcurrentdate").text("");
+                    $("#lblcurrentdate").text(dataT[0].TRIPDATA_TRIPDATE);
+
+                    $("#lblcurrentspeed").text("");
+                    $("#lblcurrentspeed").text(dataT[0].SPEED);
+                    var value0 = dataT[0].TRIPDATA_DIRECTION;
+
+                    if (value0 <= 210) {
+                        value0 = parseInt(value0) + parseInt(90);
+                    }
+                    else if (value0 >= 360) {
+                        value0 = 359;
+                    }
+                    else {
+                        value0 = parseInt(value0) - parseInt(270);
+                    }
+
+                    //   rangeChange(dataT[0].SPEED);
+                    if (dataT[0].COLOR == "G") {
+                        transition(result, value0, dataT[0].SPEED);
+                    }
+
+
+
+                }
+                else {
+                    alert("Data not avilable..");
+                    // initMap();
+
+                }
+            });
+        }, 2000)
+
+
+        function transition(result, value0, speed) {
+
+            $("#load").hide();
+            i = 0;
+            deltaLat = (result[0] - position[0]) / numDeltas;
+            deltaLng = (result[1] - position[1]) / numDeltas;
+            moveMarker(value0, speed);
+        }
+
+        function moveMarker(value0, speed) {
+            position[0] += deltaLat;
+            position[1] += deltaLng;
+            var latlng = new google.maps.LatLng(position[0], position[1]);
+            
+
+            if (speed > 0) {
+                buscolor = '/Truck/truck_green_' + value0 + '.png'
+                //speed
+            }
+            else {
+                buscolor = '/Truck/truck_r.png'
+            }
+            if (value0 != 'undefined' && value0 != 'null' && value0 != null) {
+
+                marker.setIcon(buscolor);
+            }
+
+            marker.setPosition(latlng);
+            map.setCenter(latlng);
+            if (i != numDeltas) {
+                i++;
+                setTimeout(moveMarker, delay);
+            }
+        }
+
+
+
+        function rangeChange(id) {
+
+
+            $("#metervalue").text("Speed " + id);
+            var rangeMeter = document.querySelector("#range");
+            var rangeShow = document.querySelector("#show");
+            var rangeClock = document.querySelector(".meter-clock");
+
+            var rotateClock = id;
+
+            rangeClock.style.transform =
+                "rotate(" + (90 + rotateClock * 180 / 100) + "deg)";
+            var value = rotateClock + "%";
+            //  rangeMeter.addEventListener("input", value);
+
+
+        }
+
+    </script>
+
+    <script src="https://maps.google.com/maps/api/js?key=AIzaSyC3OmkNz1myczFChw7fIXTB3Ye3OKj9j-Y&libraries=places"></script>
+
+
+
+</body>
+</html>
+
+
+
+

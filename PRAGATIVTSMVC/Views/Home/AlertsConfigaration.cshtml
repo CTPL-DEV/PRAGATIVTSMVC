@@ -1,0 +1,282 @@
+﻿
+@{
+    ViewBag.Title = "AlertsConfigaration";
+    Layout = "~/Views/Shared/Layout2.cshtml";
+}
+
+<style>
+    -webkit-scrollbar {
+        width: 0px;
+        background: transparent;
+    }
+
+    .box {
+        border-radius: 4px;
+        padding: 10px;
+    }
+
+    .table td {
+        padding: 5px;
+        vertical-align: middle;
+        font-size: 12px !important;
+    }
+
+    .table th {
+        font-weight: 500;
+        font-size: 13px !important;
+    }
+</style>
+
+<div id="divrow">
+    <h4>Alerts Configuration</h4>
+    @*<div class="row">
+            Select Vehicle:<select id="ddlVehicle" class="form-control" style="width:200px;margin-left:35px;">
+                <option value="0">-Select-</option>
+                @foreach (var item in ViewBag.Vehicles)
+                {
+                    <option value="@item.VEHICLES_REGNUMBER">@item.VEHICLES_REGNUMBER</option>
+                }
+
+            </select>
+        </div>*@
+    <input type="hidden" id="hid_config" value="" />
+
+    <div class="row" style="CENTER" id="divrow">
+        <div class="col-lg-6">
+            <div id="div_events">
+                Select Event:<select id="ddlEvents" class="form-control"  style="width:400px">
+                    <option value='0' selected>-Select Event-</option>
+                </select>
+            </div>
+       
+
+        </div>
+    </div>
+    <div class="row" id="div_add" style="margin-top:10px;margin-left:250px;">
+        
+
+            <div id="dashboardcolumns">
+                <div class="row">
+                    <label style="word-wrap:break-word">
+                        <input id="chk_App" type="checkbox" value="" />APP Alert
+                    </label>
+                   
+                </div>
+                <div class="row">
+                    <label style="word-wrap:break-word">
+                        <input id="chk_Sms" type="checkbox" value="" />SMS Alert
+                    </label>
+                   
+                </div>
+                <div class="row">
+                    <label style="word-wrap:break-word">
+                        <input id="chk_Email" type="checkbox" value="" />Email Alert
+                    </label>
+                   
+                </div>
+             </div>
+       
+    </div>
+    <input type="button" id="btnsave" style="margin-left:auto;margin-right:auto;display:block;margin-top:2%;margin-bottom:0%" class="btn btn-primary" onclick="SAVE()" value="Submit" />
+    <input type="button" id="btnupdate" style="margin-left:auto;margin-right:auto;display:block;margin-top:2%;margin-bottom:0%" class="btn btn-primary" onclick="Update()" value="Update" />
+    <input type="button" value="BACK" style="margin-left:auto;margin-right:auto;display:block;margin-bottom:0%;margin-top:2%" id="btnback" onclick="location.reload()" class="btn btn-primary" />
+    @*<input type="button" id="btnsave" class="btn btn-success" onclick="SAVE()"  value="Submit" />
+        <input type="button" id="btnupdate" class="btn btn-success" onclick="Update()"  value="Update" />
+        <input type="button" value="BACK" style="margin-left:92%;margin-top:-38px" id="btnback" onclick="location.reload()" class="btn btn-danger" />*@
+</div>
+<div class="row">
+    <div class="col-md-2">
+        <div>
+            <input type="button" id="btnadd" class="btn btn-primary" onclick="showrow()" style="width:153px;margin-top:10px" value="ADD" />
+        </div>
+    </div>
+    <div class="col-md-10">
+        <div class="card-head" style="text-align:center;">
+            <h4>SMS Configuration</h4>
+        </div>
+    </div>
+</div>
+<div class="card card-box" id="div_table" style="margin-top:10px;">
+
+    <div class="card-body ">
+
+        <div class="table-scrollable">
+            <table id="tbldevices" border="1" style="width: 100%" class="table table-striped table-bordered">
+                <thead>
+                    <tr>
+                        <th class="center">S.no</th>
+                        <th class="center">Alert Type</th>
+                        <th class="center">Alert MobileNumbers</th>
+                        <th class="center">Edit</th>
+
+                    </tr>
+                </thead>
+                <tbody id="tbldevicebody"></tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        LoadEvents();
+    });
+    window.onload = function () {
+        $("#divrow").hide();
+    };
+    function showrow()
+    {
+        $("#divrow").show();
+        $("#btnupdate").hide();
+        $("#div_update").hide();
+    }
+    function LoadEvents() {
+
+        $.post("/Home/getEvents", function (data) {
+            
+            var dataT = data['data'];
+            var opt = "<option value='0'>--Select Events--</option>";
+            for (var i = 0; i < dataT.length; i++) {
+                opt += "<option value='" + dataT[i].EVENT_ID + "'>" + dataT[i].EVENT_NAME + "</option>";
+            }
+            $("#ddlEvents").append(opt);
+            
+        });
+    }
+    function ValidatePhoneNumber(value) {
+
+        return /^(\d{10},)*\d{10}$/.test(value);
+    }
+    $(document).ready(function () {
+
+        getallData();
+        
+
+    });
+
+    var arr = [];
+    function SAVE()
+    {
+        
+        var app_alert = false, sms_alert = false, email_alert = false;
+        if ($("#chk_App").prop('checked') == true) {
+            app_alert = true;
+        }
+        if ($("#chk_Sms").prop('checked') == true) {
+            sms_alert = true;
+        }
+        if ($("#chk_Email").prop('checked') == true) {
+            email_alert = true;
+        }
+
+        var Alldata = JSON.stringify({ "EventId": $("#ddlEvents").val(), "AppAlert": app_alert, "SmsAlert": sms_alert, "EmailAlert": email_alert });
+                
+                $.ajax({
+                    url: "/Home/Save_SIMConfiguration",
+                    type: 'POST',
+                    async: false,
+                  //  processData: false,
+                    cache: false,
+                    data: Alldata,
+                    contentType: "application/json",
+
+                    success: function (data) {
+                        
+                        if (data.data == "true") {
+                            alert("Data Saved Successfully");
+                            location.reload();
+                        }
+                        else {
+                            alert(data.data);
+                        }
+                    },
+                    error: function (err) {
+
+                    }
+                });
+          //  }
+      //  }
+
+    }
+
+
+   
+    function getallData() {
+       // $("#load").show();
+        $.post("/Home/GetAll_Sim_configurationData", function (data) {
+            //console.log(dataT);
+            var dataT = data['data'];
+            var arr = [];
+            for (var i = 0; i < dataT.length; i++) {
+
+                arr.push([i + 1, dataT[i].CONFIG_TYPE, dataT[i].CONFIG_OPTIONAL1, '<a href="#" onclick="EDIT(' + dataT[i].CONFIG_ID + ')" class="btn btn-tbl-edit btn-xs"><i class="fa fa-pencil"></i></a>'])
+
+            }
+            $('#tbldevices').DataTable({
+                dom: 'Bfrtip',
+                buttons: [
+                    //'copy', 'csv', 'excel', 'pdf', 'print'
+                    'excel', 'pdf', 'print'
+                ],
+                data: arr,
+                deferRender: true,
+                // scrollY:        200,
+                scrollCollapse: true,
+                scroller: true,
+                processing: true,
+                columnDefs: [
+      { targets: 'no-sort', orderable: false }
+                ],
+                language: {
+                    'loadingRecords': '&nbsp;',
+                    'processing': 'Loading...'
+                }
+            });
+           // $("#load").hide();
+        });
+
+    }
+    function EDIT(configID)
+    {
+        
+        $("#divrow").show();
+        $("#div_update").show();
+        $("#div_add").hide();
+        $("#btnupdate").show();
+        $("#btnsave").hide();
+        $("#div_table").hide();
+
+        $("#hid_config").val(configID);
+        $.post("/Home/GetUserAlertType", { "CONFIG_ID": configID }, function (data) {
+
+            var dataT = data['data'];
+            var arr = [];
+            if(dataT!="")
+            {
+                $("#txtupdateMobile").val(dataT);
+            }
+
+        });
+    }
+    function Update()
+    {
+        var confidid= $("#hid_config").val();
+        var  mobile_numbers=$("#txtupdateMobile").val();
+        $.post("/Home/UpdateAlertType", { "CONFIG_ID": confidid, "MobileNumbers": mobile_numbers }, function (data) {
+
+            var dataT = data['data'];
+
+            if (dataT ==true) {
+                alert("Updated Successfully");
+                location.reload();
+            }
+            else
+            {
+                alert("Failed");
+            }
+        });
+    }
+</script>
+
+
+

@@ -1,0 +1,692 @@
+﻿
+@{
+    ViewBag.Title = "Installations";
+    Layout = "~/Views/Shared/Layout2.cshtml";
+}
+
+<style>
+    #rcorners2 {
+        /*border-radius: 35px;*/
+        border: 2px solid #73AD21;
+        padding: 20px;
+        /*width: 200px;*/
+        /*height: 150px;*/
+    }
+
+    #rcorner1 {
+        border: 2px solid #fb7061;
+        padding: 20px;
+    }
+
+    .select2 {
+        width: 100% !important;
+    }
+
+    .table td {
+        padding: 5px;
+        vertical-align: middle;
+        font-size: 12px !important;
+    }
+
+    .table th {
+        font-weight: 500;
+        font-size: 13px !important;
+    }
+</style>
+<div class="row" id="divrow">
+    <div class="col-lg-6">
+        <div id="div_distributors">
+            Select Distributor:<select id="ddldistributor" class="form-control" onchange="LoadDealers()" style="width:400px">
+                <option value='0' selected>-Select Distributor-</option>
+            </select>
+        </div>
+        <div id="div_dealers">
+            Select Dealer:<select id="ddldealer" class="form-control" onchange="LoadCustomers()" style="width:400px;">
+                <option value='0' selected>-Select Dealer-</option>
+            </select>
+        </div>
+        <div id="div_customers">
+            Select Customers:<select id="ddlCustomers" class="form-control" onchange="bindOrders()" style="width:400px;"> </select>
+            <input type="button" id="btnaddcustomer" class="btn btn-success" data-target="#custModal" data-toggle="modal" value="Add Customer" />
+        </div>
+        <div id="div_orders">
+            Select Order :<select class="form-control" id="ddlOrder" style="width:400px">
+                <option value="0">-Select-</option>
+            </select>
+            <input type="button" id="btnOrderModal" class="btn btn-success" data-target="#OrderModal" data-toggle="modal" value="Create Order" />
+
+
+        </div>
+
+        <div id="divicename">
+            Device Name :<select class="form-control" id="ddldevicename" style="width:400px">
+                <option value="0">-Select-</option>
+                @foreach (var item in ViewBag.deviceTypes)
+            {
+                    <option value="@item.ID">@item.DEVICE_TYPENAME</option>
+                }
+            </select>
+        </div>
+        <div id="div_vehiclenumber">
+            Vehicle Reg. Number:<input type="text" id="txtvehicleno" style="width:400px;" class="form-control" placeholder="" />
+        </div>
+        <div id="div_vehicletype">
+            @* Vehicle Type:<input type="text" id="txtvehtype" style="width:400px;" class="form-control" placeholder="" />*@
+            VEHICLE TYPE:<select id="ddl_vehicletype" class="form-control" style="width:400px">
+                <option value="0" selected>--Select--</option>
+                <option value="1">Auto</option>
+                <option value="2">Bus</option>
+                <option value="3">Cargo</option>
+                <option value="4">Car</option>
+                <option value="5">Debris</option>
+                <option value="6">Fireescape</option>
+                <option value="7">Fire</option>
+                <option value="8">Roller</option>
+                <option value="9">School_bus</option>
+                <option value="10">Tanker</option>
+                <option value="12">Tractor</option>
+                <option value="13">Bulldozer</option>
+                <option value="14">Tipper</option>
+                <option value="15">Tipper</option>
+                <option value="16">Oil Tanker</option>
+                <option value="17">Scooter</option>
+                <option value="18">Student</option>
+
+            </select>
+        </div>
+        <div id="div_imei">
+            IMEI :<input type="text" id="txt_IMEI" class="form-control" style="width:400px;" placeholder="" />
+        </div>
+        <div id="div_simnumber">
+            SIM Number:<input type="text" id="txt_SIM" class="form-control" style="width:400px;" placeholder="" />
+        </div>
+        <div style="width:20px">
+            Status  <input type="checkbox" class="form-control" id="chkstatus" />
+        </div>
+
+        <input type="button" id="btnsubmit" class="btn btn-primary" onclick="Submit('Submit')" style="margin-top:10px;" value="Submit" />
+
+        <input type="button" value="BACK" style="margin-top:10px;" id="btnback" onclick="Back()" class="btn btn-tbl-delete" />
+    </div>
+
+</div>
+@*<div>
+    <input type="button" id="btnsave" class="btn btn-success" onclick="Save('save')" style="margin-left:84%;margin-top:10px" value="Submit" />
+    <input type="button" id="btnupdate" class="btn btn-success" onclick="Save('update')" style="margin-left:84%;margin-top:10px" value="Update" />
+    <input type="button" value="BACK" style="margin-left:92%;margin-top:-38px" id="btnback" onclick="Back()" class="btn btn-warning" />
+        </div>*@
+<div class="modal inmodal" id="custModal" tabindex="-1" role="dialog" aria-hidden="true" style="display: none;">
+    <div class="modal-dialog">
+        <div class="modal-content animated fadeIn">
+            <div class="modal-header">
+                <button type="button" id="closeotpmodal" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
+            </div>
+            <div class="modal-body">
+                <div id="div_customername">
+                    Customer Name :<input type="text" id="txtcustname" class="form_control" style="width:400px;" placeholder="" />
+                </div>
+
+                <div id="div_email">
+                    Email_ID :<input type="text" id="txtemail" class="form-control" style="width:400px;" placeholder="" />
+                </div>
+
+                <div id="div_telephnno">
+                    Telephone Number : <input type="text" id="txttelephnno" style="width:400px;" class="form-control" placeholder="" />
+                </div>
+                <div id="div_mobileno">
+                    Mobile Number : <input type="text" id="txtmblno" style="width:400px;" class="form-control" placeholder="" />
+                </div>
+                <div id="div_country">
+                    Country Name:<select id="ddlcountry" class="form-control" style="width:400px;" onchange="bindstates()">
+
+                        <option value="0">-Select-</option>
+                        @foreach (var item1 in ViewBag.countries)
+            {
+                            <option value="@item1.COUNTRY_ID">@item1.COUNTRY_NAME</option>
+                        }
+                    </select>
+                </div>
+                <div id="div_state">
+                    State Name:<select id="ddlstate" class="form-control" style="width:400px;" onchange="bindcity()">
+                        <option value="0">-Select-</option>
+                    </select>
+                </div>
+                <div id="div_city">
+
+                    City Name:<select id="ddlcity" style="width:400px;" class="form-control">
+                        <option value="0">-Select-</option>
+                    </select>
+                </div>
+                <div id="address">
+                    Address:<input type="text" id="txtaddress" class="form-control" style="width:400px;" placeholder="" />
+                    <div>
+                        <div id="zipcode">
+                            Zip Code :<input type="text" id="txtzipcode" class="form-control" style="width:400px;" placeholder="" />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer" style="text-align:center;">
+
+                    <button type="button" id="btn_save" onclick="Save(id)" class="btn btn-primary">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal inmodal" id="OrderModal" tabindex="-1" role="dialog" aria-hidden="true" style="display: none;">
+    <div class="modal-dialog">
+        <div class="modal-content animated fadeIn">
+            <div class="modal-header">
+                <button type="button" id="closeotpmodal" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
+            </div>
+            <div class="modal-body">
+
+                <div id="div_packages">
+                    <label>Select Package:</label>
+                    <select id="ddlpackages" class="form-control" style="width:400px;">
+                        <option value="0" selected>-Select-</option>
+                        @foreach (var item1 in ViewBag.packages)
+                        {
+                            <option value="@item1.PACKAGE_ID">@item1.PACKAGE_NAME</option>
+                        }
+                    </select>
+                </div>
+
+                <div id="div_orders">
+                    Number Of Orders:
+                    <input type="number" id="txt_orders" value="0" style="width:400px;" class="form-control" />
+                </div>
+
+
+                <div id="div_saveordrs">
+                    <input type="button" id="btnsave" class="btn btn-primary" onclick="SaveOrder()" style="margin-top:10px;" value="Submit" />
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+
+</div>
+
+
+
+<script>
+    $(document).ready(function () {
+        $("#load").show();
+        var categType = localStorage.getItem("CATEG_TYPE_ID");
+        if (categType == 1 || categType == 2 || categType == 5 || categType == 6) {
+            $("#tbldevices>thead>tr").append("<th>Edit</th>");
+            $("#btnadd").show();
+            if (categType == 6) {
+
+                LoadCustomers();
+            }
+            else {
+                LoadDistributors();
+            }
+
+        }
+
+
+    });
+    window.onload = function () {
+
+
+
+        // BINDDATA();
+    }
+
+    function LoadDistributors() {
+        var ID = $("#ddlcategory").val();
+        $.post("/Home/getDistributors", { "CategID": 1 }, function (data) {
+
+            var dataT = data['data'];
+            var opt = "<option value='0'>-Select Distributor-</option>";
+            for (var i = 0; i < dataT.length; i++) {
+                opt += "<option value='" + dataT[i].CATEG_ID + "'>" + dataT[i].CATEG_NAME + "</option>";
+            }
+            $("#ddldistributor").text("");
+            $('#ddldistributor').append(opt);
+
+        });
+    }
+    function LoadDealers() {
+        
+        var categType = localStorage.getItem("CATEG_TYPE_ID");
+        var ID = $("#ddldistributor").val();
+        $.post("/Home/getDealers", { "CategID": ID }, function (data) {
+
+            var dataT = data['data'];
+            var opt = "<option value='0'>-Select Dealer-</option>";
+            for (var i = 0; i < dataT.length; i++) {
+
+
+                if (categType == 6) {
+                    opt += "<option value='" + dataT[i].CATEG_ID + "' selected>" + dataT[i].CATEG_NAME + "</option>";
+                    var opt2 = "<option value='" + dataT[i].CATEG_PARENT_ID + "' selected></option>";
+
+                    $("#ddldistributor").text("");
+                    $('#ddldistributor').append(opt2);
+                    $("#ddldistributor").hide();
+                    $("#lbl_dist").hide();
+                    $("#ddldealer").prop("disabled", true);
+                    //load customers
+                    var dealID = dataT[i].CATEG_ID;
+                    $.post("/Home/getCustomers", { "CategID": dealID }, function (data) {
+
+                        var dataT = data['data'];
+                        var opt = "<option value='0'>-Select Customer-</option>";
+                        for (var i = 0; i < dataT.length; i++) {
+                            opt += "<option value='" + dataT[i].CATEG_ID + "'>" + dataT[i].CATEG_NAME + "</option>";
+                        }
+                        $("#ddlCustomers").text("");
+                        $('#ddlCustomers').append(opt);
+                    });
+                }
+                else {
+                    opt += "<option value='" + dataT[i].CATEG_ID + "'>" + dataT[i].CATEG_NAME + "</option>";
+                }
+
+            }
+            $("#ddldealer").text("");
+            $('#ddldealer').append(opt);
+
+
+        });
+    }
+    function LoadCustomers() {
+        
+
+        if ($("#ddldistributor").val() != 0 && $("#ddldealer").val() != 0) {
+            d_ID = $("#ddldealer").val();
+        }
+        else if ($("#ddldistributor").val() != 0 && $("#ddldealer").val() == 0) {
+            d_ID = $("#ddldistributor").val();
+        }
+        else {
+            d_ID = localStorage.getItem("USERS_CATEG_ID");
+            $("#div_distributors").hide();
+            $("#div_dealers").hide();
+        }
+        $.post("/Home/getCustomers", { "CategID": d_ID }, function (data) {
+
+            var dataT = data['data'];
+            var opt = "<option value='0'>-Select Customer-</option>";
+            for (var i = 0; i < dataT.length; i++) {
+                opt += "<option value='" + dataT[i].CATEG_ID + "'>" + dataT[i].CATEG_NAME + "</option>";
+            }
+            $("#ddlCustomers").text("");
+            $('#ddlCustomers').append(opt);
+        });
+
+
+    }
+    function bindstates() {
+        if ($("#ddlcountry").val() != '0') {
+            var ID = $("#ddlcountry").val();
+            $.post("/Home/getstate", { "CountryID": ID }, function (data) {
+
+                var dataT = data['data'];
+                var opt = "<option value='0'>-Select-</option>";
+                for (var i = 0; i < dataT.length; i++) {
+                    opt += "<option value='" + dataT[i].STATE_ID + "'>" + dataT[i].STATE_NAME + "</option>";
+                }
+                $("#ddlstate").text("");
+                $('#ddlstate').append(opt);
+            });
+        }
+    }
+    function bindcity() {
+        if ($("#ddlstate").val() != '0') {
+            var ID = $("#ddlstate").val();
+            $.post("/Home/getcity", { "StateID": ID }, function (data) {
+
+                var dataT = data['data'];
+                var opt = "<option value='0'>-Select-</option>";
+                for (var i = 0; i < dataT.length; i++) {
+                    opt += "<option value='" + dataT[i].CITY_CITYID + "'>" + dataT[i].CITY_NAME + "</option>";
+                }
+                $("#ddlcity").text("");
+                $('#ddlcity').append(opt);
+            });
+        }
+    }
+
+    //ddldatabase
+
+    function binddatabase() {
+        
+        $.post("/Home/getdbname", function (data) {
+
+            var dataT = data['data'];
+            var opt = "<option value='0'>-Select-</option>";
+            for (var i = 0; i < dataT.length; i++) {
+                opt += "<option value='" + dataT[i].Database_ID + "'>" + dataT[i].Database_Name + "</option>";
+            }
+            $("#ddldatabase").text("");
+            $('#ddldatabase').append(opt);
+            $('#ddldatabase').val(1);
+        });
+
+    }
+
+    function EDIT(ID) {
+
+        
+
+        $("#btnsave").hide();
+        $("#btnupdate").show();
+
+        localStorage.setItem("CATEG_ID", ID);
+        $("#divrow").show();
+        $("body").scrollTop(0);
+        $.post("/Home/editcategory", { "CATEG_ID": ID }, function (data) {
+            
+            var dataT = data['data']; var opt = "";
+            $("#ddlcountry").val(dataT[0].CATEG_COUNTRY_ID);
+            bindstates();
+            $("#txtpartnername").attr("readonly", true);
+
+            if ($("#hiddenquery").val() == "CLIENTS") {
+                $("#txtClientname").val(dataT[0].CATEG_NAME);
+
+                opt += '<option value="0">-Select -</option>'
+
+                opt += '<option value=' + dataT[0].CATEG_PARENT_ID + ' selected>' + dataT[0].PARENT_NAME + '</option>'
+
+                $("#ddlpartner").text("");
+                $("#ddlpartner").append(opt);
+                //  $("#ddlpartner").select3().val(dataT[0].CATEG_PARENT_ID).trigger('change');
+            }
+            else {
+                $("#txtpartnername").val(dataT[0].CATEG_NAME);
+            }
+
+
+            $("#txttelephonenuber").val(dataT[0].CATEG_MOBILENUMBER);
+            $("#txtdescription").val(dataT[0].CATEG_DESC);
+            $("#txtfaxnumber").val(dataT[0].CATEG_FAX);
+            $("#txtcontactperson").val(dataT[0].CATEG_CONTACTPERSON);
+            $("#txtwebsitename").val(dataT[0].CATEG_WEBSITENAME);
+            $("#txtnoofusers").val(dataT[0].CATEG_NOOFUSERS);
+            $("#txtnoofdevices").val(dataT[0].CATG_NOOFDEVICES);
+            $("#txtemail").val(dataT[0].CATEG_EMAILID);
+            $("#txtmobilenumber").val(dataT[0].CATEG_MOBILENUMBER);
+            $("#txtaddress").val(dataT[0].CATEG_ADDRESS);
+            //  $("#ddlpackages").val(dataT[0].CATEG_PACKAGE_ID);
+            $("#ddlCategType").val(dataT[0].CATEG_CATETYPE_ID);
+
+            setTimeout(function () {
+                $("#ddlstate").val(dataT[0].CATEG_STATE_ID);
+                bindcity();
+            }, 1000);
+
+            //setTimeout(function () {
+            //    $("#ddlpartner").val(dataT[0].CATEG_PARENT_ID);
+
+            //}, 1000);
+
+
+
+            setTimeout(function () {
+
+                $("#ddlcity").val(dataT[0].CATEG_CITY_ID);
+
+            }, 1000);
+
+
+
+
+            $("#txtzipcode").val(dataT[0].CATEG_ZIPCODE);
+            $("#ddlunitspeed").val(dataT[0].CATEG_UOMSPEED);
+            $("#ddlunitvolume").val(dataT[0].CATEG_UOMVOLUME);
+            var dbname = dataT[0].CATEG_DBNAME;
+
+            var value = dbname.split(";");
+
+            var database = value[1].split("=");
+
+            if (dataT[0].CATEG_STATUS == "True") {
+                $("#txtstatus").prop('checked', true);
+            }
+
+        });
+    }
+
+
+    function bindOrders() {
+        //  LoadIMEI();
+        // LoadSIMS();
+        var parent_ID;
+        var ID = $("#ddlCustomers").val();
+        if (localStorage.getItem("USERS_CATEG_ID") == "1")
+        {
+            parent_ID= $("#ddldealer").val();
+        }
+        else
+        {
+        parent_ID = localStorage.getItem("USERS_CATEG_ID");
+        }
+         
+        var categ_name = $("#ddlCustomers Option:selected").text();
+        if (ID != '0') {
+            $.post("/Home/LoadOrders", { "CATEG_ID": ID, "categname": categ_name, "ParentID": parent_ID }, function (data) {
+                var dataT = data['data'];
+                var opt = "<option value='0'>-Select-</option>";
+                for (var i = 0; i < dataT.length; i++) {
+                    opt += "<option value='" + dataT[i].ORDER_ID + "'>" + dataT[i].ORDER_NAME + "</option>";
+                }
+                $("#ddlOrder").text("");
+                $('#ddlOrder').append(opt);
+            });
+        }
+    }
+
+    function Save(id) {
+
+        var PARENTID = 0;
+        //if (id == "save") {
+        //    btn = "BTN_SAVE";
+        //    nousers = "";
+        //}
+        //else {
+        //    var ID = localStorage.getItem("CATEG_ID");
+        //    btn = "BTN_UPDATE";
+
+        //}
+        var NO_USER = 0;
+
+        var formData = new FormData();
+        // var file = document.getElementById("upload_logo").files[0];
+
+        // formData.append("imageFile", file);
+
+        if ($("#ddldistributor").val() != '' && $("#ddldealer").val() != '' && $("#txtcustname").val() != '' && $("#txtemail").val() != '' && $("#txtaddress").val() != ''
+            && $("#ddlcountry").val() != 0 && $("#ddlstate").val() != 0 && $("#ddlcity").val() != 0 && $("#txtzipcode").val() != 0 && NO_USER == 0) {
+
+            formData.append("DISTRIBUTOR_ID", $("#ddldistributor").val());
+            formData.append("DEALER_ID", $("#ddldealer").val());
+            //  formData.append("Customer_Id",$("#ddlcustomer").val());
+            //formData.append("CATEG_ID", ID);
+            //formData.append("btn", btn);
+            formData.append("CATEG_NAME", $("#txtcustname").val());
+            formData.append("CATEG_MOBILENUMBER", $("#txtmblno").val());
+            formData.append("CATEG_TELEPHONE", $("#txttelephnno").val());
+            formData.append("CATEG_EMAILID", $("#txtemail").val());
+            formData.append("CATEG_ADDRESS", $("#txtaddress").val());
+            formData.append("CATEG_COUNTRYID", $("#ddlcountry").val());
+            formData.append("CATEG_STATEID", $("#ddlstate").val());
+            formData.append("CATEG_CITYID", $("#ddlcity").val());
+            formData.append("CATEG_ZIPCODE", $("#txtzipcode").val());
+            formData.append("CATEG_CATETYPE_ID", categType);
+            $.ajax({
+                url: "/Home/save_customer",
+                type: 'POST',
+                cache: false,
+                contentType: false,
+                processData: false,
+                data: formData,
+                success: function (data) {
+                    var dataT = data['data']
+
+                    alert(dataT);
+                    location.reload();
+                    //}
+                    //else {
+                    //    alert(data);
+                    //}
+
+                }
+            });
+        }
+        else {
+            if ($("#txtpartnername").val() == '') {
+                alert("enter partner name..");
+                $("#txtpartnername").focus();
+            }
+            else if ($("#txtcontactperson").val() == "") {
+                alert("enter contactperson name..");
+                $("#txtcontactperson").focus();
+            }
+            else if ($("#txtmobilenumber").val() == "") {
+                alert("enter mobilenumber..");
+                $("#txtmobilenumber").focus();
+            }
+            else if ($("#txtemail").val() == "") {
+                alert("enter email..");
+                $("#txtemail").focus();
+            }
+            else if ($("#txtaddress").val() == "") {
+                alert("enter address..");
+                $("#txtaddress").focus();
+            }
+            else if ($("#ddlcountry").val() == 0) {
+                alert("select  country..");
+                $("#ddlcountry").focus();
+            }
+            else if ($("#ddlstate").val() == 0) {
+                alert("select  state..");
+                $("#ddlstate").focus();
+            }
+            else if ($("#ddlcity").val() == 0) {
+                alert("select  city..");
+                $("#ddlcity").focus();
+            }
+            else if ($("#ddldatabase").val() == 0) {
+                alert("Please Select Database");
+                $("#ddldatabase").focus();
+            }
+            else if (NO_USER == 1) {
+                alert("enter noof users");
+                $("#txtnoofusers").focus();
+            }
+        }
+    }
+    function SaveOrder() {
+        if ($("#txt_orders").val() != "" && $("#txt_orders").val() != 0) {
+
+
+            $.post("/Home/CreateOrder", { "Categ_ID": $("#ddlCustomers").val(), "PackageId": $("#ddlpackages").val(), "Categ_Name": $("#ddlCustomers Option:selected").text(), "Number": $("#txt_orders").val() }, function (data) {
+                //console.log(dataT);
+                
+                var dataT = data['data'];
+
+                if (dataT == "True") {
+                    alert("Order Created Successfully");
+                    location.reload();
+                }
+                else if (dataT == "False") {
+                    alert("Failed to add Order");
+                }
+                else {
+                    alert(dataT);
+                }
+            });
+        } else {
+            alert("Please Enter Atleast One Order");
+            $("#txt_orders").focus();
+        }
+    }
+    function Submit(id) {
+
+        
+        var ID = '0'
+        if (id == "Submit") {
+            btn = "btnsubmit";
+
+        }
+        else {
+            ID = localStorage.getItem("DEVICE_ID");
+            btn = "BTN_UPDATE";
+
+        }
+        var Status = false;
+        if ($("#chkstatus").is(':checked') == true) {
+            Status = true;
+        }
+
+
+        //btn_device_Save_Click(string btn, string DEVICEID, string DEVICECALLNO1, string DEVICECALLNO2,string DEVICESERIALNO,string DEVICESALEDATE,
+        //string DEVICEMFGDATE,string COUNTRYID,string SIMID,string DEVICEDATADURATION,string DEVICESPEEDDURATION,string DEVICESTOPDURATION,string STATUS,
+        //   string CATEG_ID,string CATEG_NAME)
+        if ($("#txt_IMEI").val() != "" && $("#txt_SIM").val() != "" && $("#txt_vehicle").val() != "" && $("#ddlCustomers").val() != 0) {
+
+            if (($("#txt_IMEI").val().length == 15 || $("#txt_IMEI").val().length == 12) && ($("#txt_SIM").val().length == 10 || $("#txt_SIM").val().length == 13)) {
+                $.post("/Home/Install_Devices", {
+                    "btn": btn,
+                    "DEVICENAME": $("#ddldevicename Option:selected").text(),
+                    "DEVICESERIALNO": $("#txt_IMEI").val(),
+                    "DeviceID": ID,
+                    "VehicleNo": $("#txt_vehicle").val(),
+                    "VehicleType": $("#ddl_vehicletype").val(),
+                    "VehcleName": $("#ddl_vehicletype Option:selected").text(),
+                    "OrderId": $("#ddlOrder").val(),
+                    "SIMnumber": $("#txt_SIM").val(),
+                    "STATUS": Status, "CATEG_ID": $("#ddlCustomers").val(), "CATEG_NAME": $("#ddlCustomers Option:selected").text(), "DealerID": d_ID
+                }, function (data) {
+
+                    var dataT = data['data']
+
+                    if (dataT == 'true') {
+                        alert("" + id + " successfully..");
+                        location.reload();
+                        $("#divrow").hide();
+                    }
+                    else {
+                        alert(dataT);
+                    }
+                });
+            }
+            else {
+                if ($("#txt_IMEI").val().length != 15) {
+                    alert("Please Enter 15 digit IMEI Number");
+                }
+                else if ($("#txt_SIM").val().length != 10 && $("#txt_SIM").val().length != 13) {
+                    alert("Please Enter 10 or 13 digit Sim Number");
+                }
+            }
+
+        }
+        else {
+            if ($("#txt_IMEI").val() == "") {
+                alert("Please Enter IMEI");
+            }
+            else if ($("#txt_SIM").val() == "") {
+                alert("Please Enter Sim Number");
+            }
+            else if ($("#txt_vehicle").val() == "") {
+                alert("Please Enter Vehicle Reg Number");
+            }
+            else if ($("#ddlCustomers").val() == 0) {
+                alert("Please Select Customer");
+            }
+        }
+    }
+
+
+
+</script>

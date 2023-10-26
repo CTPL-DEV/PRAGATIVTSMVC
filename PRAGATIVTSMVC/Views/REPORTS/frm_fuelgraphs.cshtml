@@ -1,0 +1,347 @@
+﻿@{
+    ViewBag.Title = "frm_fuelgraphs";
+    Layout = "~/Views/Shared/_NewLayout.cshtml";
+}
+<div id="load"></div>
+<div class="container-fluid">
+   
+     
+            <div class="row" id="divrow">
+                <div class="col-lg-2">
+                    Vehicle number
+                    <select class="form-control" id="ddlfuelvehicles">
+                        <option value="0">-select-</option>
+                        @foreach (var item in ViewBag.fuelvehicles)
+                        {
+                            <option value="@item.DEVICE_ID">@item.DEVICE_NAME</option>
+                        }
+                    </select>
+                </div>
+                <div class="col-lg-2">
+                    Start Date <input type="text" class="form-control" id="txtstartdate" />
+                </div>
+                <div class="col-lg-2">
+                    End Date <input type="text" class="form-control" id="txtenddate" />
+                </div>
+                <div class="col-lg-2">
+                    Report Type  <select class="form-control" id="ddlfuelreport">
+                        <option value="0">-select-</option>
+                        @foreach (var item in ViewBag.fueltype)
+                        {
+                            <option value="@item.TYPEID">@item.TYPENAME</option>
+                        }
+                        @*<option value="1">Fuel Refill Report</option>
+                            <option value="1">Fuel theft</option>
+                            <option value="1">Fuel consumption</option>
+                            <option value="1">Fuel Mileage Report</option>*@
+                    </select>
+
+                </div>
+                <div class="col-lg-2">
+                    <input type="button" id="btnview" onclick="View_fuel()" class="btn btn-success" style="margin-top:24px" value="View Report" />
+                </div>
+            </div>
+     
+        <div style="margin-top:10px" id="divfuel">
+            <table id="tblfueltrack" style="font-size: 11px;margin-left:10px;color:black" class="display nowrap table table-hover table-striped table-bordered" cellspacing="0" width="100%">
+                <thead>
+                    <tr>
+                        <th>Sno</th>
+                        <th>Vehicle Number</th>
+                        <th>Refill date</th>
+                        <th>Refill fuel(liter)</th>
+                        <th>Nearest Landmark</th>
+                        <th>Odometer</th>
+                    </tr>
+                </thead>
+                <tbody id="tblfueltrackbody"></tbody>
+            </table>
+        </div>
+        <div style="margin-top:10px" id="divtheft">
+            <table id="tblfueltrack_theft" style="font-size: 11px;margin-left:10px;color:black" class="display nowrap table table-hover table-striped table-bordered" cellspacing="0" width="100%">
+                <thead>
+                    <tr>
+                        <th>Sno</th>
+                        <th>Vehicle Number</th>
+                        <th>Theft date</th>
+                        <th>Theft location</th>
+                        <th>Start Level</th>
+                        <th>End Level</th>
+                    </tr>
+                </thead>
+                <tbody id="tblfueltrack_theftbody"></tbody>
+            </table>
+        </div>
+
+        <div style="margin-top:10px" id="divmileage">
+            <table id="tblfueltrack_mileage" style="font-size: 11px;margin-left:10px;color:black" class="display nowrap table table-hover table-striped table-bordered" cellspacing="0" width="100%">
+                <thead>
+                    <tr>
+                        <th>Sno</th>
+                        <th>Vehicle Number</th>
+                        <th>Refill date</th>
+                        <th>Refill fuel(Liter)</th>
+                        <th>Nearest landmarks</th>
+                        <th>Fuel Consumed</th>
+                        <th>KMS</th>
+                        <th>Milleage</th>
+                    </tr>
+                </thead>
+                <tbody id="tblfueltrack_mileagebody"></tbody>
+            </table>
+        </div>
+
+
+        <div id="piechart2" style="margin-top:10px">
+
+        </div>
+     
+    </div>
+        <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+        <script>
+            window.onload = function () {
+
+
+                $("#divfuel").css('display', 'none');
+                $("#divtheft").css('display', 'none');
+                $("#divmileage").css('display', 'none');
+
+                $("#load").hide();
+                $("#ddlfuelvehicles").select3();
+
+                $('#txtstartdate').bootstrapMaterialDatePicker({
+                    format: 'MM/DD/YYYY HH:mm',
+                    weekStart: 1,
+                    time: true,
+                    nowButton: true,
+                    clearButton: false,
+                    cancelText: 'Cancel',
+                    okText: 'OK',
+                    clearText: 'clear',
+                    triggerEvent: 'dblclick',
+                    switchOnClick: true,
+                    //  nowText: 'Aujourd\'hui'
+                });
+
+
+                $('#txtenddate').bootstrapMaterialDatePicker({
+                    format: 'MM/DD/YYYY HH:mm',
+                    weekStart: 1,
+                    time: true,
+                    nowButton: true,
+                    clearButton: false,
+                    cancelText: 'Cancel',
+                    okText: 'OK',
+                    clearText: 'clear',
+                    triggerEvent: 'dblclick',
+                    switchOnClick: true,
+                    // nowText: 'Aujourd\'hui'
+                });
+                curentdateandtime();
+            }
+
+            function curentdateandtime() {
+                var date = new Date();
+                var dd = date.getDate();
+                var mm = date.getMonth() + 1;
+                var yy = date.getFullYear();
+                var hours = date.getHours();
+                var minutes = date.getMinutes();
+                var ampm = hours >= 12 ? 'PM' : 'AM';
+                hours = hours % 12;
+                hours = hours ? hours : 12; // the hour '0' should be '12'
+                minutes = minutes < 10 ? '0' + minutes : minutes;
+
+                var strTime = hours + ':' + minutes + ' ' + ampm;
+
+                var fdt = mm + "/" + dd + "/" + yy + " " + hours + ":" + minutes + " " + ampm;
+                $('#txtenddate').val(fdt);
+                if (dd == "1" || dd == "01") {
+
+                }
+                else {
+                    dd = (dd - 1);
+                }
+                var sdt = mm + "/" + dd + "/" + yy + " " + hours + ":" + minutes + " " + ampm;
+                $('#txtstartdate').val(sdt);
+            }
+
+
+
+
+            function View_fuel() {
+                if ($("#ddlfuelvehicles").val() != '0' && $("#txtstartdate").val() != '' && $("#txtenddate").val() != '' && $("#ddlfuelreport").val() != '0') {
+
+
+                    $("#load").show();
+                    //_fuelgraphs(string VNO,string Formdate,string Todate)
+                    $.post("/Reports/_fuelgraphs", { "VNO": $("#ddlfuelvehicles").val(), "Formdate": $("#txtstartdate").val(), "Todate": $("#txtenddate").val(), "Value": $("#ddlfuelreport").val() }, function (data) {
+
+                        $("#load").hide();
+
+                        var dataT = data['Report'];
+
+                        if ($("#ddlfuelreport").val() == "1") {
+                            $("#divtheft").css('display', 'none');
+                            $("#divfuel").css('display', 'block');
+                            $("#divmileage").css('display', 'none');
+                            if ($.fn.dataTable.isDataTable('#tblfueltrack')) {
+                                $('#tblfueltrack').DataTable().destroy();
+                            }
+                            $("#tblfueltrackbody").empty();
+
+                            for (var i = 0; i < dataT.length; i++) {
+                                tr = $('<tr/>');
+                                tr.append("<td>" + (i + 1) + "</td>");
+                                tr.append("<td>" + (dataT[i].Vehicleno) + "</td>");
+                                tr.append("<td>" + (dataT[i].Refildate) + "</td>");
+                                tr.append("<td>" + (dataT[i].Refil_value) + "</td>");
+                                tr.append("<td>" + (dataT[i].Location) + "</td>");
+                                tr.append("<td>" + (dataT[i].Odometer) + "</td>");
+
+
+                                $("#tblfueltrack").append(tr);
+                            }
+                            $('#tblfueltrack').DataTable({
+                                dom: 'Bfrtip',
+                                "searching": false,
+                                "ordering": false,
+                                'scroll-y': true,
+                                "paging": false,
+                                buttons: [
+                                    'excel', 'pdf', 'print',
+                                ]
+                            });
+                        }
+                        else if ($("#ddlfuelreport").val() == "2") {
+                            $("#divtheft").css('display', 'block');
+                            $("#divfuel").css('display', 'none');
+                            $("#divmileage").css('display', 'none');
+                            if ($.fn.dataTable.isDataTable('#tblfueltrack_theft')) {
+                                $('#tblfueltrack_theft').DataTable().destroy();
+                            }
+                            $("#tblfueltrack_theftbody").empty();
+
+                            for (var i = 0; i < dataT.length; i++) {
+                                tr = $('<tr/>');
+                                tr.append("<td>" + (i + 1) + "</td>");
+                                tr.append("<td>" + (dataT[i].Vehicleno) + "</td>");
+                                tr.append("<td>" + (dataT[i].Refildate) + "</td>");
+                                tr.append("<td>" + (dataT[i].Refil_value) + "</td>");
+                                tr.append("<td>" + (dataT[i].Location) + "</td>");
+                                tr.append("<td>" + (dataT[i].Odometer) + "</td>");
+
+
+                                $("#tblfueltrack_theft").append(tr);
+                            }
+                            $('#tblfueltrack_theft').DataTable({
+                                dom: 'Bfrtip',
+                                "searching": false,
+                                "ordering": false,
+                                'scroll-y': true,
+                                "paging": false,
+                                buttons: [
+                                    'excel', 'pdf', 'print',
+                                ]
+                            });
+                        }
+
+                        else if ($("#ddlfuelreport").val() == "3") {
+                            $("#divtheft").css('display', 'none');
+                            $("#divfuel").css('display', 'none');
+                            $("#divmileage").css('display', 'none');
+                            Drawchart(dataT)
+
+                        }
+
+                        else if ($("#ddlfuelreport").val() == "4") {
+                            $("#divtheft").css('display', 'none');
+                            $("#divfuel").css('display', 'none');
+                            $("#piechart2").css('display', 'none');
+                            $("#divmileage").css('display', 'block');
+
+                            if ($.fn.dataTable.isDataTable('#tblfueltrack_mileage')) {
+                                $('#tblfueltrack_mileage').DataTable().destroy();
+                            }
+                            $("#tblfueltrack_mileagebody").empty();
+                            for (var i = 0; i < dataT.length; i++) {
+                                tr = $('<tr/>');
+                                tr.append("<td>" + (i + 1) + "</td>");
+                                tr.append("<td>" + (dataT[i].Vehicleno) + "</td>");
+                                tr.append("<td>" + (dataT[i].Refildate) + "</td>");
+                                tr.append("<td>" + (dataT[i].Refil_value) + "</td>");
+                                tr.append("<td>" + (dataT[i].Location) + "</td>");
+                                tr.append("<td>" + (dataT[i].Refil_fuel) + "</td>");
+                                tr.append("<td>" + (dataT[i].DISTANCE) + "</td>");
+                                tr.append("<td>" + (dataT[i].MILLEAGE) + "</td>");
+
+                                $("#tblfueltrack_mileage").append(tr);
+                            }
+                            $('#tblfueltrack_mileage').DataTable({
+                                dom: 'Bfrtip',
+                                "searching": false,
+                                "ordering": false,
+                                'scroll-y': true,
+                                "paging": false,
+                                buttons: [
+                                    'excel', 'pdf', 'print',
+                                ]
+                            });
+                        }
+
+
+
+                    });
+                }
+                else {
+                    // if ($("#ddlfuelvehicles").val() != '0' && $("#txtstartdate").val() != '' && $("#txtenddate").val() != '' && $("#ddlfuelreport").val() != '0') {
+                    if ($("#ddlfuelvehicles").val() == '0') {
+                        alert("please select vehicle number");
+                        $("#ddlfuelvehicles").focus();
+                    }
+                    else if ($("#txtstartdate").val() != '') {
+                        alert("please select start date");
+                        $("#txtstartdate").focus();
+                    }
+                    else if ($("#txtenddate").val() != '') {
+                        alert("please select end date");
+                        $("#txtenddate").focus();
+                    }
+                    else if ($("#ddlfuelreport").val() != '0') {
+                        alert("please select report type");
+                        $("#ddlfuelreport").focus();
+                    }
+                }
+            }
+
+            google.charts.load('current', { 'packages': ['corechart'] });
+            google.charts.setOnLoadCallback(View);
+            function Drawchart(dataT) {
+                var arr = [];
+                // alert(dataT.length);
+                for (var i = 0; i < dataT.length; i++) {
+                    arr.push([dataT[i].TRIPDATE, dataT[i].FUEL]);
+                }
+
+                var data = new google.visualization.DataTable();
+                data.addColumn('string', 'Month');
+                data.addColumn('number', 'FUEL');
+
+                for (var i = 0; i < arr.length; i++) {
+                    data.addRow([arr[i][0], arr[i][1]]);
+                }
+                var options = {
+                    'title': 'Consignment Detail Report',
+                    'width': 1000,
+                    'height': 600,
+                    vAxis: {
+                        title: 'Fuel(Liters)'
+                    }
+                };
+
+                // Instantiate and draw our chart, passing in some options.
+                var chart = new google.visualization.LineChart(document.getElementById('piechart2'));
+                chart.draw(data, options);
+            }
+
+        </script>

@@ -1,0 +1,165 @@
+﻿
+@{
+    ViewBag.Title = "Certificates";
+    Layout = "~/Views/Shared/Layout2.cshtml";
+}
+
+<h2>Certificates</h2>
+
+<div id="load" style="display:none;"></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-3-typeahead/4.0.2/bootstrap3-typeahead.min.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-multiselect/0.9.13/js/bootstrap-multiselect.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-multiselect/0.9.13/css/bootstrap-multiselect.css" />
+<style>
+    #rcorners2 {
+        /*border-radius: 35px;*/
+        border: 2px solid #73AD21;
+        padding: 20px;
+        /*width: 200px;*/
+        /*height: 150px;*/
+    }
+
+    #rcorner1 {
+        border: 2px solid #fb7061;
+        padding: 20px;
+    }
+
+    .dataTable {
+        border-colaapse: collapse !important;
+    }
+
+    .table td {
+        padding: 5px;
+        vertical-align: middle;
+        font-size: 12px !important;
+    }
+
+    .table th {
+        font-weight: 500;
+        font-size: 13px !important;
+    }
+
+    .checkbox input[type=checkbox] {
+        opacity: 1;
+    }
+</style>
+
+
+@*<div class="row page-titles">
+        <div class="col-md-5 col-8 align-self-center">
+            <h3 class="text-themecolor m-b-0 m-t-0">SIMS</h3>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/Home/frm_GridTrack_Distance">Home</a></li>
+                <li class="breadcrumb-item active">SIMS</li>
+            </ol>
+        </div>
+    </div>*@
+<div class="masonry-item col-md-12">
+    <input type="hidden" id="hid_sim_id" value="" />
+    <input type="hidden" id="hid_simId" value="" />
+    <input type="hidden" id="hid_apn_id" value="" />
+    <input type="hidden" id="hid_plan_id" value="" />
+    <input type="hidden" id="hid_account_id" value="" />
+    <div class="bgc-white p-20 bd" id="div_stock" style="display:none;">
+        <h6 class="c-grey-900">Upload Stock</h6>
+
+
+        <div class="row">
+
+            <div class="col-md-3 mb-3">
+                <a href="/Content/ais-140-protocol.pdf" download id="download" hidden></a>
+                <input type="button" id="btndownload" class="btn btn-primary" onclick="Download()" style="margin-left:40%;margin-top:10px" value="Download Sample file" />
+
+
+            </div>
+
+            <!--<div class="col-md-3 mb-3">
+                <a href="/Content/ais-140-protocol.pdf" download id="download" hidden></a>
+                <input type="button" id="btndownload" class="btn btn-primary" onclick="Download()" style="margin-left:40%;margin-top:10px" value="Download Sample file" />
+
+            </div>
+            <div class="col-md-3 mb-3">
+                <a href="/Content/ais-140-protocol.pdf" download id="download" hidden></a>
+                <input type="button" id="btndownload" class="btn btn-primary" onclick="Download()" style="margin-left:40%;margin-top:10px" value="Download Sample file" />
+
+
+            </div>
+            <div class="col-md-3 mb-3">
+                <a href="/Content/ais-140-protocol.pdf" download id="download" hidden></a>
+                <input type="button" id="btndownload" class="btn btn-primary" onclick="Download()" style="margin-left:40%;margin-top:10px" value="Download Sample file" />
+
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-3 mb-3">
+                <a href="/Content/ais-140-protocol.pdf" download id="download" hidden></a>
+                <input type="button" id="btndownload" class="btn btn-primary" onclick="Download()" style="margin-left:40%;margin-top:10px" value="Download Sample file" />
+
+            </div>
+            <div class="col-md-3 mb-3">
+                <a href="/Content/ais-140-protocol.pdf" download id="download" hidden></a>
+                <input type="button" id="btndownload" class="btn btn-primary" onclick="Download()" style="margin-left:40%;margin-top:10px" value="Download Sample file" />
+
+            </div>
+            <div class="col-md-3 mb-3">
+                <a href="/Content/ais-140-protocol.pdf" download id="download" hidden></a>
+                <input type="button" id="btndownload" class="btn btn-primary" onclick="Download()" style="margin-left:40%;margin-top:10px" value="Download Sample file" />
+
+            </div>
+
+            <div class="col-md-3 mb-3">
+                <a href="/Content/ais-140-protocol.pdf" download id="download" hidden></a>
+                <input type="button" id="btndownload" class="btn btn-primary" onclick="Download()" style="margin-left:40%;margin-top:10px" value="Download Sample file" />
+
+            </div>
+
+
+        </div>
+        <div class="row">
+            <div class="col-md-3 mb-3">
+                <a href="/Content/ais-140-protocol.pdf" download id="download" hidden></a>
+                <input type="button" id="btndownload" class="btn btn-primary" onclick="Download()" style="margin-left:40%;margin-top:10px" value="Download Sample file" />
+
+
+            </div>
+            <div class="col-md-3 mb-3">
+                <a href="/Content/ais-140-protocol.pdf" download id="download" hidden></a>
+                <input type="button" id="btndownload" class="btn btn-primary" onclick="Download()" style="margin-left:40%;margin-top:10px" value="Download Sample file" />
+
+            </div>
+        </div>-->
+        @*<input type="button" id="btnsave" class="btn btn-success" onclick="Save()" style="margin-left:40%;margin-top:10px" value="Submit" />
+        <input type="button" id="btnupdate" class="btn btn-success" onclick="Update()" style="display:none;margin-left:40%;margin-top:10px;" value="Update" />
+        <input type="button" value="BACK" style="margin-left:1%;margin-top:5px" id="btnback" onclick="Back()" class="btn btn-danger" />*@
+    <!--</div>-->
+
+
+    
+
+</div>
+
+
+<script>
+              
+               function Download()
+               {
+                   /*var Path = '/Content/sim_upload.xls';*/
+                   
+                   var categType = localStorage.getItem("CATEG_TYPE_ID");
+                   if (categType == 1) {
+                       /*var Path = '/Content/ais-140-protocol.pdf'*/
+                       document.getElementById('download').click();
+                       /*window.open(Path, '_blank');*/
+                   }
+                   //var Path = '/Content/ais-140-protocol.pdf'
+
+                   //window.open(Path, '_blank');
+                   else {
+                       alert("fail");
+                   }
+               }
+
+</script>
+
+

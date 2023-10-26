@@ -1,0 +1,116 @@
+﻿@{
+    ViewBag.Title = "Trackingtest";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<style>
+    /*body {
+        margin: 0.5em;
+    }*/
+
+    #map {
+        width: 95%;
+        height: 85%;
+        position: absolute;
+        border: 1px solid red;
+    }
+
+    .button3 {
+        background: #eee;
+        text-decoration: none;
+        color: #333;
+        font-family: Arial, sans-serif;
+        font-size: 11px;
+        font-weight: bold;
+        padding: 3px 5px;
+        border: 1px solid #aaa;
+        border-radius: 3px;
+        cursor: default;
+    }
+
+        .button3:hover {
+            background-color: #f2f2f2;
+            border-color: #888;
+            box-shadow: 0 0 2px #ccc;
+        }
+
+        .button3:active {
+            vertical-align: -1px;
+        }
+</style>
+<div class="container-fluid">
+    <div class="row page-titles" >
+        <div class="col-md-5 col-8 align-self-center">
+            <h3 class="text-themecolor m-b-0 m-t-0">Tracking</h3>
+            <ol class="breadcrumb">
+                @*<li class="breadcrumb-item"><a href="/Home/frm_GridTrack_Distance">Home</a></li>*@
+                @*<li class="breadcrumb-item active">Tracking</li>*@
+            </ol>
+        </div>
+    </div>
+
+  
+    <div class="row" id="divrow">
+        <div style="overflow:auto;height:500px">
+            <div class="col-lg-2">
+                <div style="width:110px;margin-top:10px" class="right-inner-addon" align="center">
+                    <input type="search" class="form-control" placeholder="Search" name="search">
+                    <select style="margin-top:10px" >
+                        <option value="0">ALL</option>
+                        <option value="0">ON</option>
+                        <option value="0">OFF</option>
+                        <option value="0">PARKED</option>
+                    </select>
+                </div>
+                <table id="tbltrack" style="font-weight:normal;font-size:12px" class="display nowrap table table-hover table-striped table-bordered" cellspacing="0" width="100%">
+
+                    </table>
+            </div>
+        </div>
+        <div class="col-lg-10">
+            <div id="gomaps" style="height:85%;width:106%" class="gmaps"> </div>
+        </div>
+    </div>
+</div>
+<script>
+
+    window.onload = function () {
+
+        initMap();
+        Loadworkorders();
+    }
+
+    function initMap() {
+
+        var myLatLng = { lat: 23.852464, lng: 78.858390 };
+
+
+        map = new google.maps.Map(document.getElementById('gomaps'), {
+            zoom: 5,
+            center: myLatLng,
+            gestureHandling: 'greedy',
+            styles: CustomMapStyles,
+        });
+     //   TravelPath1();
+    }
+
+
+
+    function Loadworkorders() {
+
+        $.post("/Home/Load_Vehicles", { "ClientId": $("#ddlclients").val() }, function (data) {
+
+            var dataT = data['data'];
+            console.log(dataT);
+            for (var i = 0; i < dataT.length; i++) {
+                tr = $('<tr/>');
+                tr.append("<td><img style='width:23px;color:red'  src='/IMAGES/Truck_N.png' />-<a href='javascript:void(0)'><u>" +dataT[i].VEHICLES_REGNUMBER + "</u></a></td>");
+                $("#tbltrack").append(tr);
+            }
+
+             //   opt += "<option value='" + dataT[i].VEHICLES_DEVICE_ID + "'>" + dataT[i].VEHICLES_REGNUMBER + "</option>";
+         
+        });
+    }
+    
+</script>
+

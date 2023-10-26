@@ -1,0 +1,843 @@
+﻿
+@{
+    ViewBag.Title = "SMS_Configuration";
+    Layout = "~/Views/Shared/Layout2.cshtml";
+}
+
+<style>
+    -webkit-scrollbar {
+        width: 0px;
+        background: transparent;
+    }
+
+    .box {
+        border-radius: 4px;
+        padding: 10px;
+    }
+    .table td {
+        padding: 5px;
+        vertical-align: middle;
+        font-size:12px!important;
+    }
+       .table th {
+       font-weight:500;
+       font-size:13px!important;
+    }
+</style>
+
+<div  id="divrow">
+    <h4>SMS Configuration</h4>
+    @*<div class="row">
+        Select Vehicle:<select id="ddlVehicle" class="form-control" style="width:200px;margin-left:35px;">
+            <option value="0">-Select-</option>
+            @foreach (var item in ViewBag.Vehicles)
+            {
+                <option value="@item.VEHICLES_REGNUMBER">@item.VEHICLES_REGNUMBER</option>
+            }
+
+        </select>
+    </div>*@
+    <input type="hidden" id="hid_config"  value="" />
+
+    <div class="row" id="div_update" style="margin-top:10px;margin-left:250px;">
+        Enter Mobile Numbers: <input type="text" id="txtupdateMobile" style="width:50%;" class="form-control" placeholder="" />
+    </div>
+    <div class="row" id="div_add" style="margin-top:10px;margin-left:250px;">
+        <div class="col-lg-6">
+
+            <div id="dashboardcolumns">
+                <div class="row">
+                    <label style="word-wrap:break-word">
+                        <input id="chkGeofence" type="checkbox" value="" />Geofence
+                    </label>
+                    @*<label>
+                        <input id="rtxt_Geofence" type="text" value="" disabled="disabled" style="margin-left:55px;"/>
+                    </label>*@
+                </div>
+                <div class="row">
+                    <label style="word-wrap:break-word">
+                        <input id="chkOv" type="checkbox" value="" />Speed Violation
+                    </label>
+                    @*<label>
+                        <input id="rtxt_OV" type="text" value="" disabled="disabled" style="margin-left:10px;" />
+                    </label>*@
+                </div>
+                <div class="row">
+                    <label style="word-wrap:break-word">
+                        <input id="chk_Stop" type="checkbox" value="" />Stoppage
+                    </label>
+                    @*<label>
+                        <input id="rtxt_Stop" type="text" value="" disabled="disabled" style="margin-left:55px;"/>
+                    </label>*@
+                </div>
+                <div class="row">
+                    <label style="word-wrap:break-word">
+                        <input id="chk_Ignition" type="checkbox" value="" />IGNITION ON/OFF
+                    </label>
+                    @*<label>
+                        <input id="rtxt_IGNITION" type="text" value="" disabled="disabled" style="margin-left:8px;" />
+                    </label>*@
+                </div>
+                <div class="row">
+                    <label style="word-wrap:break-word">
+                        <input id="chkEoil" type="checkbox" value="" />Engine Oil
+                    </label>
+                    @*<label>
+                        <input id="rtxt_Eoil" type="text" value="" disabled="disabled" style="margin-left:55px;"/>
+                    </label>*@
+                </div>
+                <div class="row">
+                    <label style="word-wrap:break-word">
+                        <input id="chkGoil" type="checkbox" value="" />Gear Box Oil
+                    </label>
+                    @*<label>
+                        <input id="rtxt_Goil" type="text" value="" disabled="disabled"  style="margin-left:45px;"/>
+                    </label>*@
+                </div>
+                <div class="row">
+                    <label style="word-wrap:break-word">
+                        <input id="chkIns" type="checkbox" value="" />Insurance
+                    </label>
+                    @*<label>
+                        <input id="rtxt_Ins" type="text" value="" disabled="disabled" style="margin-left:55px;"/>
+                    </label>*@
+                </div>
+                <div class="row">
+                    <label style="word-wrap:break-word">
+                        <input id="chkISP" type="checkbox" value="" />Inter State Permit
+                    </label>
+                    @*<label>
+                        <input id="rtxt_ISP" type="text" value="" disabled="disabled"/>
+                    </label>*@
+                </div>
+
+                
+            </div>
+        </div>
+
+
+
+        <div class="col-lg-6">
+            
+            <div class="row">
+                <label style="word-wrap:break-word">
+                    <input id="chkPC" type="checkbox" value="" />Pollution Control
+                </label>
+                @*<label>
+                    <input id="rtxt_PC" type="text" value="" disabled="disabled" style="margin-left:11px;"/>
+                </label>*@
+            </div>
+            <div class="row">
+                <label style="word-wrap:break-word">
+                    <input id="chk_FC" type="checkbox" value="" />Fitness Certificate
+                </label>
+                @*<label>
+                    <input id="rtxt_FC" type="text" value="" disabled="disabled" />
+                </label>*@
+            </div>
+            <div class="row">
+                <label style="word-wrap:break-word">
+                    <input id="chk_HT" type="checkbox" value="" />Home Tax
+                </label>
+                @*<label>
+                    <input id="rtxt_HT" type="text" value="" disabled="disabled" style="margin-left:60px;"/>
+                </label>*@
+            </div>
+            <div class="row">
+                <label style="word-wrap:break-word">
+                    <input id="chkTR" type="checkbox" value="" />Tyre Replacement
+                </label>
+                @*<label>
+                    <input id="rtxt_TR" type="text" value="" disabled="disabled"/>
+                </label>*@
+            </div>
+            <div class="row">
+                <label style="word-wrap:break-word">
+                    <input id="chkWBL" type="checkbox" value="" />Wheel Balancing
+                </label>
+                @*<label>
+                    <input id="rtxt_WBL" type="text" value="" disabled="disabled" style="margin-left:10px;"/>
+                </label>*@
+            </div>
+            <div class="row">
+                <label style="word-wrap:break-word">
+                    <input id="chkRV" type="checkbox" value="" />Route Violation
+                </label>
+                @*<label>
+                    <input id="rtxt_RV" type="text" value="" disabled="disabled" style="margin-left:10px;"/>
+                </label>*@
+            </div>
+            <div class="row">
+                <label style="word-wrap:break-word">
+                    <input id="chkNP" type="checkbox" value="" />National Permit
+                </label>
+                @*<label>
+                    <input id="rtxt_NP" type="text" value="" disabled="disabled" style="margin-left:10px;" />
+                </label>*@
+            </div>
+        </div>
+
+        
+    </div>
+    <input type="button" id="btnsave" style="margin-left:auto;margin-right:auto;display:block;margin-top:2%;margin-bottom:0%" class="btn btn-primary" onclick="SAVE()" value="Submit" />
+    <input type="button" id="btnupdate" style="margin-left:auto;margin-right:auto;display:block;margin-top:2%;margin-bottom:0%" class="btn btn-primary" onclick="Update()" value="Update" />
+    <input type="button" value="BACK" style="margin-left:auto;margin-right:auto;display:block;margin-bottom:0%;margin-top:2%" id="btnback" onclick="location.reload()" class="btn btn-primary" />
+        @*<input type="button" id="btnsave" class="btn btn-success" onclick="SAVE()"  value="Submit" />
+        <input type="button" id="btnupdate" class="btn btn-success" onclick="Update()"  value="Update" />
+        <input type="button" value="BACK" style="margin-left:92%;margin-top:-38px" id="btnback" onclick="location.reload()" class="btn btn-danger" />*@
+    </div>
+<div class="row">
+<div class="col-md-2">
+    <div>
+        <input type="button" id="btnadd" class="btn btn-primary" onclick="showrow()" style="width:153px;margin-top:10px" value="ADD" />
+    </div>
+</div>
+    <div class="col-md-10">
+        <div class="card-head" style="text-align:center;">
+            <h4>SMS Configuration</h4>
+        </div>
+    </div>
+</div>
+<div class="card card-box" id="div_table" style="margin-top:10px;">
+   
+    <div class="card-body ">
+        
+        <div class="table-scrollable">
+            <table id="tbldevices" border="1" style="width: 100%" class="table table-striped table-bordered">
+                <thead>
+                    <tr>
+                        <th class="center">S.no</th>
+                        <th class="center">Alert Type</th>
+                        <th class="center">Alert MobileNumbers</th>
+                        <th class="center">Edit</th>
+                        
+                    </tr>
+                </thead>
+                <tbody id="tbldevicebody"></tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+    window.onload = function () {
+        $("#divrow").hide();
+    };
+   
+    function showrow()
+    {
+        $("#divrow").show();
+        $("#btnupdate").hide();
+        $("#div_update").hide();
+    }
+    function ValidatePhoneNumber(value) {
+        
+        return /^(\d{10},)*\d{10}$/.test(value);
+    }
+    $(document).ready(function () {
+
+        getallData();
+        $("#chkGeofence").click(function () {
+           
+            if($("#chkGeofence").is(":checked"))
+            {
+                $("#rtxt_Geofence").prop('disabled', false);
+            }
+            else { $("#rtxt_Geofence").prop('disabled', true); }
+        });
+
+        $("#chkOv").click(function () {
+            
+            if ($("#chkOv").is(":checked")) {
+                $("#rtxt_OV").prop('disabled', false);
+            }
+            else { $("#rtxt_OV").prop('disabled', true); }
+        });
+
+        $("#chk_Stop").click(function () {
+           
+            if ($("#chk_Stop").is(":checked")) {
+                $("#rtxt_Stop").prop('disabled', false);
+            }
+            else { $("#rtxt_Stop").prop('disabled', true); }
+        });
+
+        $("#chkEoil").click(function () {
+           
+            if ($("#chkEoil").is(":checked")) {
+                $("#rtxt_Eoil").prop('disabled', false);
+            }
+            else { $("#rtxt_Eoil").prop('disabled', true); }
+        });
+
+        $("#chkGoil").click(function () {
+           
+            if ($("#chkGoil").is(":checked")) {
+                $("#rtxt_Goil").prop('disabled', false);
+            }
+            else { $("#rtxt_Goil").prop('disabled', true); }
+        });
+
+        $("#chkIns").click(function () {
+          
+            if ($("#chkIns").is(":checked")) {
+                $("#rtxt_Ins").prop('disabled', false);
+            }
+            else { $("#rtxt_Ins").prop('disabled', true); }
+        });
+        $("#chkISP").click(function () {
+           
+            if ($("#chkISP").is(":checked")) {
+                $("#rtxt_ISP").prop('disabled', false);
+            }
+            else { $("#rtxt_ISP").prop('disabled', true); }
+        });
+        $("#chkPC").click(function () {
+           
+            if ($("#chkPC").is(":checked")) {
+                $("#rtxt_PC").prop('disabled', false);
+            }
+            else { $("#rtxt_PC").prop('disabled', true); }
+        });
+        $("#chk_FC").click(function () {
+           
+            if ($("#chk_FC").is(":checked")) {
+                $("#rtxt_FC").prop('disabled', false);
+            }
+            else { $("#rtxt_FC").prop('disabled', true); }
+        });
+        $("#chk_HT").click(function () {
+           
+            if ($("#chk_HT").is(":checked")) {
+                $("#rtxt_HT").prop('disabled', false);
+            }
+            else { $("#rtxt_HT").prop('disabled', true); }
+        });
+        $("#chkTR").click(function () {
+           
+            if ($("#chkTR").is(":checked")) {
+                $("#rtxt_TR").prop('disabled', false);
+            }
+            else { $("#rtxt_TR").prop('disabled', true); }
+        });
+        $("#chkWBL").click(function () {
+           
+            if ($("#chkWBL").is(":checked")) {
+                $("#rtxt_WBL").prop('disabled', false);
+            }
+            else { $("#rtxt_WBL").prop('disabled', true); }
+        });
+       
+        $("#chkRV").click(function () {
+         
+            if ($("#chkRV").is(":checked")) {
+                $("#rtxt_RV").prop('disabled', false);
+            }
+            else { $("#rtxt_RV").prop('disabled', true); }
+        });
+        $("#chkNP").click(function () {
+           
+            if ($("#chkNP").is(":checked")) {
+                $("#rtxt_NP").prop('disabled', false);
+            }
+            else { $("#rtxt_NP").prop('disabled', true); }
+        });
+
+        $("#chk_Ignition").click(function () {
+
+            if ($("#chk_Ignition").is(":checked")) {
+                $("#rtxt_IGNITION").prop('disabled', false);
+            }
+            else { $("#rtxt_IGNITION").prop('disabled', true); }
+        });
+        
+    });
+
+    var arr = [];
+    function SAVE()
+    {
+        
+        ValidateAll();
+        //var status = ValidateAll();
+        //
+        //if(status==true)
+        //{
+            //alert("save");
+            //if ($("#ddlVehicle").val() == 0) {
+            //    alert("Please Select Vehicle");
+            //}
+            //else {
+             //   var vehicleNumber = $("#ddlVehicle").val();
+                var Alldata = JSON.stringify({ 'Alertdata': arr });
+                // var Alldata = JSON.stringify(arr);
+                $.ajax({
+                    url: "/Home/Save_SIMConfiguration",
+                    type: 'POST',
+                    async: false,
+                  //  processData: false,
+                    cache: false,
+                    data: Alldata,
+                    contentType: "application/json",
+
+                    success: function (data) {
+                        
+                        if (data.data == "true") {
+                            alert("Data Saved Successfully");
+                            location.reload();
+                        }
+                        else {
+                            alert(data.data);
+                        }
+                    },
+                    error: function (err) {
+
+                    }
+                });
+          //  }
+      //  }
+
+    }
+    //function ValidateAll()
+    //{
+    //    arr = [];
+    //    var eachStatus = [];
+    //    if ($("#chkGeofence").is(":checked")) {
+    //        var phone = $("#rtxt_Geofence").val();
+    //        var status = ValidatePhoneNumber(phone);
+    //        if (status == true) {
+    //            arr.push({
+    //                AlertType: "Geofence",
+    //                Value: $("#rtxt_Geofence").val()
+    //            })
+    //        } else { 
+    //            alert("Please Enter Valid Phone Number for Geofence");
+                
+    //        }
+    //        eachStatus.push(status);
+            
+    //    }
+
+    //    if ($("#chkOv").is(":checked")) {
+    //        var phone = $("#rtxt_OV").val();
+    //        var status = ValidatePhoneNumber(phone);
+    //        if (status == true) {
+    //            arr.push({
+    //                AlertType: "Speed Voilation",
+    //                Value: $("#rtxt_OV").val()
+    //            })
+    //        } else {
+    //            alert("Please Enter Valid Phone Number for Speed Voilation");
+
+    //        }
+    //        eachStatus.push(status);
+    //    }
+
+    //    if ($("#chk_Stop").is(":checked")) {
+    //        var phone = $("#rtxt_Stop").val();
+    //        var status = ValidatePhoneNumber(phone);
+    //        if (status == true) {
+    //            arr.push({
+    //                AlertType: "Stoppage",
+    //                Value: $("#rtxt_Stop").val()
+    //            })
+    //        } else {
+    //            alert("Please Enter Valid Phone Number for Stoppage");
+
+    //        }
+    //        eachStatus.push(status);
+    //    }
+
+    //    if ($("#chkEoil").is(":checked")) {
+    //        var phone = $("#rtxt_Eoil").val();
+    //        var status = ValidatePhoneNumber(phone);
+    //        if (status == true) {
+    //            arr.push({
+    //                AlertType: "Engine Oil",
+    //                Value: $("#rtxt_Eoil").val()
+    //            })
+    //        } else {
+    //            alert("Please Enter Valid Phone Number for Engine Oil");
+
+    //        }
+    //        eachStatus.push(status);
+    //    }
+
+    //    if ($("#chkGoil").is(":checked")) {
+    //        var phone = $("#rtxt_Goil").val();
+    //        var status = ValidatePhoneNumber(phone);
+    //        if (status == true) {
+    //            arr.push({
+    //                AlertType: "GearBox Oil",
+    //                Value: $("#rtxt_Goil").val()
+    //            })
+    //        } else {
+    //            alert("Please Enter Valid Phone Number for GearBox Oil");
+
+    //        }
+    //        eachStatus.push(status);
+    //    }
+
+    //    if ($("#chkIns").is(":checked")) {
+    //        var phone = $("#rtxt_Ins").val();
+    //        var status = ValidatePhoneNumber(phone);
+    //        if (status == true) {
+    //            arr.push({
+    //                AlertType: "Insurance",
+    //                Value: $("#rtxt_Ins").val()
+    //            })
+    //        } else {
+    //            alert("Please Enter Valid Phone Number for Insurance");
+
+    //        }
+    //        eachStatus.push(status);
+    //    }
+
+    //    if ($("#chkISP").is(":checked")) {
+    //        var phone = $("#rtxt_ISP").val();
+    //        var status = ValidatePhoneNumber(phone);
+    //        if (status == true) {
+    //            arr.push({
+    //                AlertType: "Inter State Permit",
+    //                Value: $("#rtxt_ISP").val()
+    //            })
+    //        } else {
+    //            alert("Please Enter Valid Phone Number for Inter State Permit");
+
+    //        }
+    //        eachStatus.push(status);
+    //    }
+
+    //    if ($("#chkPC").is(":checked")) {
+    //        var phone = $("#rtxt_PC").val();
+    //        var status = ValidatePhoneNumber(phone);
+    //        if (status == true) {
+    //            arr.push({
+    //                AlertType: "Pollution Control",
+    //                Value: $("#rtxt_PC").val()
+    //            })
+    //        } else {
+    //            alert("Please Enter Valid Phone Number for Pollution Control");
+
+    //        }
+    //        eachStatus.push(status);
+    //    }
+
+    //    if ($("#chk_FC").is(":checked")) {
+    //        var phone = $("#rtxt_FC").val();
+    //        var status = ValidatePhoneNumber(phone);
+    //        if (status == true) {
+    //            arr.push({
+    //                AlertType: "Fitness Cetificate",
+    //                Value: $("#rtxt_FC").val()
+    //            })
+    //        } else {
+    //            alert("Please Enter Valid Phone Number for Fitness Cetificate");
+
+    //        }
+    //        eachStatus.push(status);
+    //    }
+
+    //    if ($("#chk_HT").is(":checked")) {
+    //        var phone = $("#rtxt_HT").val();
+    //        var status = ValidatePhoneNumber(phone);
+    //        if (status == true) {
+    //            arr.push({
+    //                AlertType: "Home Tax",
+    //                Value: $("#rtxt_HT").val()
+    //            })
+    //        } else {
+    //            alert("Please Enter Valid Phone Number for Home Tax");
+
+    //        }
+    //        eachStatus.push(status);
+    //    }
+
+    //    if ($("#chkTR").is(":checked")) {
+    //        var phone = $("#rtxt_TR").val();
+    //        var status = ValidatePhoneNumber(phone);
+    //        if (status == true) {
+    //            arr.push({
+    //                AlertType: "Tyre Replacement",
+    //                Value: $("#rtxt_TR").val()
+    //            })
+    //        } else {
+    //            alert("Please Enter Valid Phone Number for Tyre Replacement");
+
+    //        }
+    //        eachStatus.push(status);
+    //    }
+
+    //    if ($("#chkWBL").is(":checked")) {
+    //        var phone = $("#rtxt_WBL").val();
+    //        var status = ValidatePhoneNumber(phone);
+    //        if (status == true) {
+    //            arr.push({
+    //                AlertType: "Wheel Balancing",
+    //                Value: $("#rtxt_WBL").val()
+    //            })
+    //        } else {
+    //            alert("Please Enter Valid Phone Number for Wheel Balancing");
+
+    //        }
+    //        eachStatus.push(status);
+    //    }
+
+    //    if ($("#chkRV").is(":checked")) {
+    //        var phone = $("#rtxt_RV").val();
+    //        var status = ValidatePhoneNumber(phone);
+    //        if (status == true) {
+    //            arr.push({
+    //                AlertType: "Route Violation",
+    //                Value: $("#rtxt_RV").val()
+    //            })
+    //        } else {
+    //            alert("Please Enter Valid Phone Number for Route Violation");
+
+    //        }
+    //        eachStatus.push(status);
+    //    }
+    //    if ($("#chkNP").is(":checked")) {
+    //        var phone = $("#rtxt_NP").val();
+    //        var status = ValidatePhoneNumber(phone);
+    //        if (status == true) {
+    //            arr.push({
+    //                AlertType: "Route Violation",
+    //                Value: $("#rtxt_NP").val()
+    //            })
+    //        } else {
+    //            alert("Please Enter Valid Phone Number for Nationnal Permit");
+
+    //        }
+    //        eachStatus.push(status);
+    //    }
+    //    
+    //    var found = eachStatus.includes(false);
+    //    var a = eachStatus.indexOf(false);
+    //    if(a>-1)
+    //    {
+    //        return false;
+    //    }
+    //    else
+    //    {
+    //        return true;
+    //    }
+
+
+    //}
+
+    function ValidateAll() {
+        arr = [];
+        var eachStatus = [];
+        if ($("#chkGeofence").is(":checked")) {
+           
+                arr.push({
+                    AlertType: "GEO_IN",
+                  //  Value: $("#rtxt_Geofence").val()
+                })
+                arr.push({
+                    AlertType: "GEO",
+                  //  Value: $("#rtxt_Geofence").val()
+                })
+        }
+
+        if ($("#chkOv").is(":checked")) {
+           
+                arr.push({
+                    AlertType: "OVERSPEED_SMS",
+                   // Value: $("#rtxt_OV").val()
+                })
+          
+        }
+
+        if ($("#chk_Stop").is(":checked")) {
+          
+                arr.push({
+                    AlertType: "STOPPAGE",
+                    //Value: $("#rtxt_Stop").val()
+                })
+          
+        }
+
+        if ($("#chkEoil").is(":checked")) {
+           
+                arr.push({
+                    AlertType: "EngineOil",
+                   // Value: $("#rtxt_Eoil").val()
+                })
+           
+        }
+
+        if ($("#chkGoil").is(":checked")) {
+           
+                arr.push({
+                    AlertType: "GearBoxOil",
+                   // Value: $("#rtxt_Goil").val()
+                })
+           
+        }
+
+        if ($("#chkIns").is(":checked")) {
+           
+                arr.push({
+                    AlertType: "Insurance",
+                   // Value: $("#rtxt_Ins").val()
+                })
+           
+        }
+
+        if ($("#chkISP").is(":checked")) {
+           
+                arr.push({
+                    AlertType: "InterStatePermit",
+                  //  Value: $("#rtxt_ISP").val()
+                })
+           
+        }
+
+        if ($("#chkPC").is(":checked")) {
+           
+                arr.push({
+                    AlertType: "PollutionControl",
+                    //Value: $("#rtxt_PC").val()
+                })
+           
+        }
+
+        if ($("#chk_FC").is(":checked")) {
+           
+                arr.push({
+                    AlertType: "FitnessCetificate",
+                   // Value: $("#rtxt_FC").val()
+                })
+            
+        }
+
+        if ($("#chk_HT").is(":checked")) {
+          
+                arr.push({
+                    AlertType: "HomeTax",
+                    //Value: $("#rtxt_HT").val()
+                })
+           
+        }
+
+        if ($("#chkTR").is(":checked")) {
+         
+                arr.push({
+                    AlertType: "TyreReplacement",
+                   // Value: $("#rtxt_TR").val()
+                })
+            
+        }
+
+        if ($("#chkWBL").is(":checked")) {
+          
+                arr.push({
+                    AlertType: "WheelBalancing",
+                   // Value: $("#rtxt_WBL").val()
+                })
+          
+        }
+
+        if ($("#chkRV").is(":checked")) {
+          
+                arr.push({
+                    AlertType: "RouteViolation",
+                   // Value: $("#rtxt_RV").val()
+                })
+            
+        }
+        if ($("#chkNP").is(":checked")) {
+          
+                arr.push({
+                    AlertType: "RouteViolation",
+                   // Value: $("#rtxt_NP").val()
+                })
+            
+        }
+       
+        if ($("#chk_Ignition").is(":checked")) {
+
+            arr.push({
+                AlertType: "IGNITION_ON_OFF",
+//Value: $("#rtxt_IGNITION").val()
+            })
+
+        }
+    }
+    function getallData() {
+       // $("#load").show();
+        $.post("/Home/GetAll_Sim_configurationData", function (data) {
+            //console.log(dataT);
+            var dataT = data['data'];
+            var arr = [];
+            for (var i = 0; i < dataT.length; i++) {
+
+                arr.push([i + 1, dataT[i].CONFIG_TYPE, dataT[i].CONFIG_OPTIONAL1, '<a href="#" onclick="EDIT(' + dataT[i].CONFIG_ID + ')" class="btn btn-tbl-edit btn-xs"><i class="fa fa-pencil"></i></a>'])
+              
+            }
+            $('#tbldevices').DataTable({
+                dom: 'Bfrtip',
+                buttons: [
+                    //'copy', 'csv', 'excel', 'pdf', 'print'
+                    'excel', 'pdf', 'print'
+                ],
+                data: arr,
+                deferRender: true,
+                // scrollY:        200,
+                scrollCollapse: true,
+                scroller: true,
+                processing: true,
+                columnDefs: [
+      { targets: 'no-sort', orderable: false }
+                ],
+                language: {
+                    'loadingRecords': '&nbsp;',
+                    'processing': 'Loading...'
+                }
+            });
+           // $("#load").hide();
+        });
+
+    }
+    function EDIT(configID)
+    {
+        
+        $("#divrow").show();
+        $("#div_update").show();
+        $("#div_add").hide();
+        $("#btnupdate").show();
+        $("#btnsave").hide();
+        $("#div_table").hide();
+    
+        $("#hid_config").val(configID);
+        $.post("/Home/GetUserAlertType", { "CONFIG_ID": configID }, function (data) {
+       
+            var dataT = data['data'];
+            var arr = [];
+            if(dataT!="")
+            {
+                $("#txtupdateMobile").val(dataT);
+            }
+
+        });
+    }
+    function Update()
+    {
+        var confidid= $("#hid_config").val();
+        var  mobile_numbers=$("#txtupdateMobile").val();
+        $.post("/Home/UpdateAlertType", { "CONFIG_ID": confidid, "MobileNumbers": mobile_numbers }, function (data) {
+
+            var dataT = data['data'];
+          
+            if (dataT ==true) {
+                alert("Updated Successfully");
+                location.reload();
+            }
+            else
+            {
+                alert("Failed");
+            }
+        });
+    }
+</script>

@@ -1,0 +1,150 @@
+﻿
+@{
+    ViewBag.Title = "frm_closeticket";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@*<link rel="stylesheet" href="https://code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+<script src="https://code.jquery.com/jquery-1.10.2.js"></script>
+<script src="https://code.jquery.com/ui/1.11.4/jquery-ui.js"></script>*@
+<div class="container-fluid">
+    <div class="row page-titles">
+        <div class="col-md-5 col-8 align-self-center">
+            <h3 class="text-themecolor m-b-0 m-t-0">tickets</h3>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/Home/frm_GridTrack_Distance">Home</a></li>
+                <li class="breadcrumb-item active">tickets</li>
+            </ol>
+        </div>
+    </div>
+    <div class="row" id="divrow">
+        <div class="col-lg-6">
+           Ticket ID :<input type="text" id="txtticketid" class="form-control" readonly />
+            Company Name :<input type="text" id="txtcompanyname" class="form-control"  />
+            Completed Date :<input type="text" style="z-index:1000;" id="txtdate" class="form-control"  />
+            <label for="startDate"></label>
+            Comments :<textarea class="form-control" id="txtcomments"></textarea>
+        </div>
+        <div class="col-lg-6">
+            Requestor Name :<input type="text" id="txtreqname" class="form-control"  />
+            Completed By :<input type="text" id="txtcompletedby" class="form-control"  />
+            Ticket Subject :<textarea class="form-control" id="txtsubject"></textarea>
+        </div>
+      
+    </div>
+    
+    <input type="button" id="btnupdate" class="btn btn-success" onclick="Update()" style="margin-left:84%;margin-top:10px" value="Submit" />
+    <div>
+        @*<div>
+            <input type="button" class="btn btn-success" onclick="showrow()" style="width:153px;margin-top:10px" value="ADD" />
+        </div>*@
+        <div style="width: 116px;float:right">
+            <select id="ddlstatus" onchange="Statuschange()" class="form-control">
+                <option value="0">Active</option>
+                <option value="1">Inactive</option>
+            </select>
+        </div>
+        <table id="tbltickets" class="display nowrap table table-hover table-striped table-bordered" cellspacing="0" width="100%">
+            <thead>
+                <tr>
+                    <th>Ticket ID</th>
+                    <th>Requestor Name</th>
+                    <th>Request Time</th>
+                    <th>Client Name</th>
+                    <th>Mobile No</th>
+                    <th>Ticket Desc</th>
+                    <th>Edit</th>
+                </tr>
+            </thead>
+            <tbody>
+               
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+
+
+    window.onload = function () {
+
+        $("#divrow").hide();
+        $("#btnupdate").hide();
+        Statuschange();
+        $('#txtdate').datepicker({
+            format: "mm/dd/yyyy",
+            showOtherMonths: true,
+            selectOtherMonths: true,
+            autoclose: true,
+            changeMonth: true,
+            changeYear: true,
+            
+        });
+      
+        //$("#txtdate").Datepicker();
+    }
+
+
+
+
+    function Statuschange() {
+        $.post("/Home/_closedticket", { "ID": $("#ddlstatus").val() }, function (data) {
+
+           
+            var dataT = data['data'];
+            $("#tbltickets").empty();
+            for (var i = 0; i < dataT.length; i++) {
+
+                tr = $('<tr/>');
+                tr.append("<td>" + dataT[i].TICKET_ID + "</td>");
+                tr.append("<td>" + dataT[i].TICKET_REQUESTORNAME + "</td>");
+                tr.append("<td>" + dataT[i].TICKET_DATETIME + "</td>");
+                tr.append("<td>" + dataT[i].TICKET_COMPANYNAME + "</td>");
+                tr.append("<td>" + dataT[i].TICKET_MOBILENO + "</td>");
+                tr.append("<td><span style='display: inline-block;width: 200px;white-space: nowrap;overflow: hidden !important;text-overflow: ellipsis;'>" + dataT[i].TICKET_TICKETDESC  + "</span></td>");
+                tr.append('<td><input type="button" class="btn btn-primary" onclick="Edit(' + dataT[i].TICKET_ID + ')" value="Edit" /></td>')
+              
+                $('#tbltickets').append(tr);
+            }
+        });
+    }
+
+
+    function Edit(TICKET_ID) {
+     
+        $.post("/Home/_closedticket", { "ID": $("#ddlstatus").val() }, function (data) {
+            var dataT = data['data'];
+            $("#divrow").show();
+            $("#btnupdate").show();
+            $('body').scrollTop(0);
+            for (var i = 0; i < dataT.length; i++) {
+                console.log(data);
+                if (TICKET_ID == dataT[i].TICKET_ID) {
+
+                    localStorage.setItem("TicketID", dataT[i].TICKET_ID);
+                    localStorage.setItem("EMAILID", dataT[i].DEMOREQUEST_EMAILID)
+                    
+                    $("#txtticketid").val(dataT[i].TICKET_ID);
+                    $("#txtreqname").val(dataT[i].TICKET_REQUESTORNAME);
+                    $("#txtcompanyname").val(dataT[i].TICKET_COMPANYNAME);
+                    $("#txtdate").val(dataT[i].TICKET_DATETIME);
+                    $("#txtsubject").val(dataT[i].TICKET_TICKETDESC);
+                }
+            }
+        });
+    }
+    //ticket_Send_Click(string TicketID, string RequestorName, string CompanyName, string Subject,string CompletedBy,string CompleteDate,string Comments,string EmailId)
+    function Update() {
+
+        var TicketID= localStorage.getItem("TicketID");
+        var EmailID=localStorage.getItem("EMAILID");
+        $.post("/Home/ticket_Send_Click", { "TicketID": TicketID, "RequestorName": $("#txtreqname").val(), "CompanyName": $("#txtcompanyname").val(), "Subject": $("#txtsubject").val(), "CompletedBy": $("#txtcompletedby").val(), "CompleteDate": $("#txtdate").val(), "Comments": $("#txtcomments").val(), "EmailId": EmailID }, function (data) {
+
+
+        })
+        
+    }
+   
+    
+
+
+</script>

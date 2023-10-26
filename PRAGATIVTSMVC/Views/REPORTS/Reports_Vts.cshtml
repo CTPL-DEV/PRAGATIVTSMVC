@@ -1,0 +1,1881 @@
+﻿@{
+    ViewBag.Title = "Reports_Vts";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div id="load"></div>
+<style>
+
+</style>
+<style>
+    .modal-body {
+        /*max-height: 400px;*/
+        overflow-y: auto;
+    }
+
+    .modal-dialog {
+        width: 100%;
+        height: 100%;
+        padding: 0;
+    }
+
+    .modal-content {
+        height: 100%;
+        border-radius: 0;
+    }
+
+    .dt-buttons {
+        margin-left: 10px !important;
+    }
+
+    .select2 {
+        width: 100% !important;
+    }
+
+    .text {
+        font-size: 12px;
+        font-family: inherit;
+        color: black;
+    }
+</style>
+<div class="container-fluid">
+    <div class="row page-titles">
+        <div class="col-md-5 col-8 align-self-center">
+            <h3 class="text-themecolor m-b-0 m-t-0">REPORTS</h3>
+        </div>
+    </div>
+    <div class="row">
+        <!-- Column -->
+        <div class="col-lg-3 col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <div class="d-flex flex-row">
+                        <div class="round round-lg align-self-center round-info"><i class="mdi mdi-view-dashboard"></i></div>
+                        <div class="m-l-10 align-self-center">
+                            <h3 class="m-b-0 font-light"></h3>
+                            <h5 class="text-muted m-b-0"><a data-toggle="modal" style="color:black" class="text" onclick="Getall()" data-target="#myModal_Dashboard">DASHBOARD REPORT</a></h5>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Column -->
+        <!-- Column -->
+        <div class="col-lg-3 col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <div class="d-flex flex-row">
+                        <div class="round round-lg align-self-center round-warning"><i class="mdi mdi-truck"></i></div>
+                        <div class="m-l-10 align-self-center">
+                            <h3 class="m-b-0 font-lgiht"></h3>
+                            <h5 class="text-muted m-b-0"><a class="text" style="color:black" data-toggle="modal" onclick="Vehicledetails()" data-target="#myModal_detailedreport">VEHICLESDETAIL REPORT</a></h5>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Column -->
+        <!-- Column -->
+        <div class="col-lg-3 col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <div class="d-flex flex-row">
+                        <div class="round round-lg align-self-center round-primary"><i class="mdi mdi-chart-histogram"></i></div>
+                        <div class="m-l-10 align-self-center">
+                            <h3 class="m-b-0 font-lgiht"></h3>
+                            <h5 class="text-muted m-b-0"><a class="text" style="color:black" data-toggle="modal" onclick="Getall()" data-target="#myModal_trackreport">TRACK REPORT</a></h5>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Column -->
+        <!-- Column -->
+        <div class="col-lg-3 col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <div class="d-flex flex-row">
+                        <div class="round round-lg align-self-center round-danger"><i class="mdi mdi-stop"></i></div>
+                        <div class="m-l-10 align-self-center">
+                            <h3 class="m-b-0 font-lgiht"></h3>
+                            <h5 class="text-muted m-b-0"><a class="text" data-toggle="modal" data-target="#myModal_stoppagereport" style="color:black">STOPPAGE REPORT</a></h5>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Column -->
+    </div>
+
+
+
+    <div class="row">
+
+        <div class="col-lg-3 col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <div class="d-flex flex-row">
+                        <div class="round round-lg align-self-center" style="background-color: #89c05f"><i class="mdi mdi-archive"></i></div>
+                        <div class="m-l-10 align-self-center">
+                            <h3 class="m-b-0 font-light"></h3>
+                            <h5 class="text-muted m-b-0"><a data-toggle="modal" class="text" style="color:black" onclick="" data-target="#myModal_Archivereport">ARCHIVE REPORT</a></h5>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <div class="d-flex flex-row">
+                        <div class="round round-lg align-self-center" style="background-color: #3ccac7"><i class="mdi mdi-cellphone-link"></i></div>
+                        <div class="m-l-10 align-self-center">
+                            <h3 class="m-b-0 font-light"></h3>
+                            <h5 class="text-muted m-b-0"><a data-toggle="modal" class="text" style="color:black" onclick="" data-target="#myModal_Disatncereport">MONTHLY WISE KMS SUMMARY</a></h5>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-3 col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <div class="d-flex flex-row">
+                        <div class="round round-lg align-self-center" style="background-color: #d913e1"><i class="mdi mdi-calendar-today"></i></div>
+                        <div class="m-l-10 align-self-center">
+                            <h3 class="m-b-0 font-light"></h3>
+                            <h5 class="text-muted m-b-0"><a data-toggle="modal" class="text" style="color:black" onclick="" data-target="#myModal_Daywiseditancereportt">FLEET DAY WISE KMS SUMMARY</a></h5>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        @*<div class="col-lg-3 col-md-6">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="d-flex flex-row">
+                            <div class="round round-lg align-self-center" style="background-color: #180784"><i class="mdi mdi-deviantart"></i></div>
+                            <div class="m-l-10 align-self-center">
+                                <h3 class="m-b-0 font-light"></h3>
+                                <h5 class="text-muted m-b-0"><a data-toggle="modal" data-target="#myModal_fleetpreformance_report" class="text" style="color:black" onclick="">FLEET PERFORMANCE REPORT</a></h5>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>*@
+
+    </div>
+
+
+
+    @*<div class="row">
+
+            <div class="col-lg-6 col-md-12">
+                <div id="piechart1"></div>
+
+            </div>
+        </div>
+        <div class="row">
+
+            <div class="col-lg-6 col-md-12">
+                <div id="piechart2"></div>
+            </div>
+        </div>*@
+
+    <div class="row">
+        <div class="col-lg-4 col-md-5">
+            <div class="card">
+                <div class="card-body">
+                    <h3 class="card-title">Distance Travelled in a Week (KMS)</h3>
+                    <h6 class="card-subtitle"></h6>
+                    <div id="visitor" style="height:290px; width:100%;"></div>
+                </div>
+                <div>
+                    <hr class="m-t-0 m-b-0">
+                </div>
+                <div class="card-body text-center ">
+                    <ul class="list-inline m-b-0">
+                        <li>
+                            <h6 class="text-muted" style="color:#16dc16 !important"><i class="fa fa-circle font-10 m-r-10 "></i>Above2100</h6>
+                        </li>
+                        <li>
+                            <h6 class="text-muted" style="color: #7a47e1 !important"><i class="fa fa-circle font-10 m-r-10"></i>1200 To 2100</h6>
+                        </li>
+                        <li>
+                            <h6 class="text-muted" style="color: #bc5bc8 !important"><i class="fa fa-circle font-10 m-r-10"></i>800 TO 1200</h6>
+                        </li>
+                        <li>
+                            <h6 class="text-muted" style="color: #26c6da !important"><i class="fa fa-circle font-10 m-r-10"></i>500 TO 800</h6>
+                        </li>
+                        <li>
+                            <h6 class="text-muted" style="color: #ed5f5f !important"><i class="fa fa-circle font-10 m-r-10"></i>100 TO 500</h6>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="col-lg-4 col-md-5">
+            <div id="piechart1"></div>
+            <ul class="list-inline m-b-0">
+                <li style="color:black;font-size:12px">
+                    <p>the above report shows the stoppage analysis of the fleet <br />i.e, number of vehicles whose cumulative stoppages </p>
+                </li>
+            </ul>
+            <div id="piechart2">
+
+            </div>
+            <ul class="list-inline m-b-0">
+                <li style="color:black;font-size:12px">
+                    <p>the above report displays the number of devices reporting to server </p>
+                </li>
+            </ul>
+
+        </div>
+
+         <div class="col-lg-4 col-md-5">
+            <div class="card">
+                <div class="card-body">
+                    <div class="d-flex flex-row">
+                        <div class="round round-lg align-self-center" style="background-color: #180784"><i class="mdi mdi-run"></i></div>
+                        <div class="m-l-10 align-self-center">
+                            <h3 class="m-b-0 font-light"></h3>
+                            <h5 class="text-muted m-b-0"><a data-toggle="modal" class="text" style="color:black" onclick="window.location.href='@Url.Action("DISATNCETRAVELLED_DETAILS", "REPORTS")'">DISTANCE TRAVELLED IN A WEEK</a></h5>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-body">
+                    <div class="d-flex flex-row">
+                        <div class="round round-lg align-self-center" style="background-color: #b70b47"><i class="mdi mdi-stop"></i></div>
+                        <div class="m-l-10 align-self-center">
+                            <h3 class="m-b-0 font-light"></h3>
+                            <h5 class="text-muted m-b-0"><a data-toggle="modal" class="text" style="color:black" onclick="window.location.href='@Url.Action("DOWNLOAD_STOPPAGE_WEEK", "REPORTS")'">STOPPAGE ANALYSIS IN A WEEK</a></h5>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-body">
+                    <div class="d-flex flex-row">
+                        <div class="round round-lg align-self-center" style="background-color: #ebe928"><i class="mdi mdi-deviantart"></i></div>
+                        <div class="m-l-10 align-self-center">
+                            <h3 class="m-b-0 font-light"></h3>
+                            <h5 class="text-muted m-b-0"><a class="text" style="color:black" onclick="window.location.href='@Url.Action("frm_GridTrack_Distance", "HOME")'">DEVICE PERFORMANCE IN A WEEK</a></h5>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+    @*---models report---*@
+
+    <div id="myModal_Dashboard" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+            <!-- Modal content-->
+            <div class="modal-content" style="width:245%;margin-left:-75%">
+                <div class="modal-header">
+                    <h4 class="modal-title">DASHOBOARD REPORT</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-lg-3">
+                            @*<div id="divassgrid" style="display:none">
+                                    Associate Clients : <select class="form-control" id="ddlassgrid" onchange="Getall()" style="width:12%">
+                                        <option value="0">-Select-</option>
+                                    </select>
+                                </div>*@<div id="divassgrid" style="display:none">
+                                <select class="form-control" id="ddlassgrid" onchange="Getall()" style="width:12%">
+                                    <option value="0"></option>
+                                </select>
+                            </div>
+
+                            <div id="divassgrid" style="display:block;margin-bottom:10px;">
+                                Associate Clients : <select class="form-control" id="ddlassgrid" onchange="Getall()">
+                                    <option value="0">-Select-</option>
+                                    @if (ViewBag.Ass_grid != null)
+                                    {
+                                        foreach (var item in ViewBag.Ass_grid)
+                                        {
+                                            <option value="@item.USERS_ID">@item.USERS_USERNAME</option>
+                                        }
+                                    }
+
+
+                                </select>
+
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="row" id="divrow">
+                        <table id="tbldashboardreport" style="font-size: 11px;margin-left:10px;color:black" class="display nowrap table table-hover table-striped table-bordered" cellspacing="0" width="100%">
+                            <thead>
+                                <tr>
+                                    <th>SNO</th>
+                                    <th>STATUS</th>
+                                    <th>SPEED</th>
+                                    <th>VEHICLE NUMBER</th>
+                                    <th>NEAREST LANDMARKS</th>
+                                    <th>LAST RECORD(D&T)</th>
+                                    <th>ODOMETER (KM)</th>
+                                    <th>DRIVER NAME</th>
+                                    <th>DRIVER NUMBER</th>
+                                    <th>DURATION(DAYS:HRS:MINS)</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tbldashboardbody"></tbody>
+                        </table>
+                    </div>
+                    <div class="modal-footer">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="myModal_detailedreport" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+            <!-- Modal content-->
+            <div class="modal-content" style="width:245%;margin-left:-75%">
+                <div class="modal-header">
+                    <h4 class="modal-title">VEHICLEDETAILS REPORT</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-lg-3">
+                            @*<div id="divassgrid" style="display:none">
+                                    Associate Clients : <select class="form-control" id="ddlassgrid" onchange="Getall()" style="width:12%">
+                                        <option value="0">-Select-</option>
+                                    </select>
+                                </div>*@<div id="divassgrid" style="display:none">
+                                <select class="form-control" id="ddlassgrid" onchange="Getall()" style="width:12%">
+                                    <option value="0"></option>
+                                </select>
+                            </div>
+
+                            <div id="divassgrid" style="display:block;margin-bottom:10px;">
+                                Associate Clients : <select class="form-control" id="ddlassgrid_details" onchange="Vehicledetails()">
+                                    <option value="0">-Select-</option>
+                                    @if (ViewBag.Ass_grid != null)
+                                    {
+                                        foreach (var item in ViewBag.Ass_grid)
+                                        {
+                                            <option value="@item.USERS_ID">@item.USERS_USERNAME</option>
+                                        }
+                                    }
+
+
+                                </select>
+
+                            </div>
+
+
+                        </div>
+                    </div>
+                    <div class="row" id="divrow">
+                        <table id="tbldetailesreport" style="font-size: 11px; color: black" class="display nowrap table table-hover table-striped table-bordered" cellspacing="0" width="100%">
+                            <thead>
+                                <tr>
+                                    <th>SNO</th>
+                                    <th>VEHICLE NUMBER</th>
+                                    <th>VEHICLE MODEL NAME</th>
+                                    <th>MAKE</th>
+                                    <th>YEAR OF MODEL</th>
+                                    <th>TANK CAPACITY(LITRE)</th>
+                                    <th>MAX SPEED(KM/HR)</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tbldetailesbody"></tbody>
+
+                        </table>
+                    </div>
+                    <div class="modal-footer">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="myModal_trackreport" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+            <!-- Modal content-->
+            <div class="modal-content" style="width:245%;margin-left:-75%">
+                <div class="modal-header">
+                    <h4 class="modal-title">TRACK REPORT</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div id="divassgrid" style="display:block;margin-bottom:10px;">
+                        <div class="row">
+                            <div class="col-lg-2">
+
+                                Associate Clients  <select class="form-control" id="ddlassgrid_vehicles" onchange="Vehicles()">
+                                    <option value="0">-Select-</option>
+                                    @if (ViewBag.Ass_grid != null)
+                                    {
+                                        foreach (var item in ViewBag.Ass_grid)
+                                        {
+                                            <option value="@item.USERS_ID">@item.USERS_USERNAME</option>
+                                        }
+                                    }
+
+
+                                </select>
+                            </div>
+                            <div class="col-lg-2">
+                                Vehicles <select class="form-control" id="ddlvehicles">
+                                    <option value="0">-Select-</option>
+                                </select>
+                            </div>
+                            <div class="col-lg-2">
+                                StartDate <input type="text" id="txtstartdate" class="form-control" />
+                            </div>
+                            <div class="col-lg-2">
+                                EndDate <input type="text" id="txtenddate" class="form-control" />
+                            </div>
+                            <div class="col-lg-2">
+                                Interval <select id="ddlinterval" class="form-control">
+                                    @*<option value="-1">Select Interval</option>*@
+                                    @*<option value="-1"></option>*@
+                                    <option value="0">Default Interval</option>
+                                    <option value="60">1 Hour</option>
+                                    <option value="120">2 Hour</option>
+                                    <option value="180">3 Hour</option>
+                                    <option value="240">4 Hour</option>
+                                    <option value="720">12 Hour</option>
+                                    <option value="1440">1 Day</option>
+                                    <option value="10080">1 Week</option>
+                                </select>
+                            </div>
+                            <div class="col-lg-2" style="margin-top:25px">
+                                <input type="button" onclick="Search()" style="color: #ffffff; background-color: #7460ee;" value="View Report" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <table id="tbltrackreport" style="font-size: 11px; color: black; " class="display nowrap table table-hover table-striped table-bordered" cellspacing="0" width="100%">
+                            <thead>
+                                <tr>
+                                    <th>SNO</th>
+                                    <th>VEHICLE NUMBER</th>
+                                    <th>DATE</th>
+                                    <th>TIME</th>
+                                    <th>CURRENT ODOMETER</th>
+                                    <th>SPEED</th>
+                                    <th>NEAREST LANDMARKS</th>
+                                    <th>DISTANCE COVERED(KMS)</th>
+                                    <th>DRIVER NAME</th>
+                                    <th>DEGREES(C)</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tbltrackreportbody"></tbody>
+                        </table>
+                    </div>
+
+                    <div class="modal-footer">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="myModal_Archivereport" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+            <!-- Modal content-->
+            <div class="modal-content" style="width:245%;margin-left:-75%">
+
+                <div class="modal-header">
+                    ARCHIVE TRACK REPORT
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div id="divassgrid" style="display:block;margin-bottom:10px;">
+                        <div class="row">
+                            <div class="col-lg-2">
+
+                                Associate Clients  <select class="form-control" id="ddlassgrid_archivevehicles" onchange="Vehicles_archive()">
+                                    <option value="0">-Select-</option>
+                                    @if (ViewBag.Ass_grid != null)
+                                    {
+                                        foreach (var item in ViewBag.Ass_grid)
+                                        {
+                                            <option value="@item.USERS_ID">@item.USERS_USERNAME</option>
+                                        }
+                                    }
+
+
+                                </select>
+                            </div>
+                            <div class="col-lg-2">
+                                Vehicles <select class="form-control" id="ddlvehicles_archive">
+                                    <option value="0">-Select-</option>
+                                </select>
+                            </div>
+                            <div class="col-lg-2">
+                                StartDate <input type="text" id="txtstartdate_archive" class="form-control" />
+                            </div>
+                            <div class="col-lg-2">
+                                EndDate <input type="text" id="txtenddate_archive" class="form-control" />
+                            </div>
+                            <div class="col-lg-2">
+                                Interval <select id="ddlinterval_archive" class="form-control">
+                                    @*<option value="-1">Select Interval</option>*@
+                                    <option value="-1"></option>
+                                    <option value="0">Default Interval</option>
+                                    <option value="60">1 Hour</option>
+                                    <option value="120">2 Hour</option>
+                                    <option value="180">3 Hour</option>
+                                    <option value="240">4 Hour</option>
+                                    <option value="720">12 Hour</option>
+                                    <option value="1440">1 Day</option>
+                                    <option value="10080">1 Week</option>
+                                </select>
+                            </div>
+                            <div class="col-lg-2" style="margin-top:25px">
+                                <input type="button" onclick="Search_archive()" style="color:#ffffff;background-color:#4caf50;" value="Archive Report" />
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div>
+                        <table id="tblarchivereport" style="font-size: 11px; color: black" class="display nowrap table table-hover table-striped table-bordered" cellspacing="0" width="100%">
+                            <thead>
+                                <tr>
+                                    <th>SNO</th>
+                                    <th>VEHICLE NUMBER</th>
+                                    <th>DATE</th>
+                                    <th>TIME</th>
+                                    <th>CURRENT ODOMETER</th>
+                                    <th>SPEED</th>
+                                    <th>NEAREST LANDMARKS</th>
+                                    <th>DISTANCE COVERED(KMS)</th>
+                                    <th>DRIVER NAME</th>
+                                    <th>DEGREES(C)</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tblarchivereportbody"></tbody>
+                        </table>
+
+                    </div>
+                    <div class="modal-footer">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="myModal_Disatncereport" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+            <!-- Modal content-->
+            <div class="modal-content" style="width:245%;margin-left:-75%">
+
+                <div class="modal-header">
+                    VEHICLE WISE MONTHLY KMS REPORT
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+
+                </div>
+                <div class="modal-body">
+                    <div id="divassgrid" style="display:block;margin-bottom:10px;">
+                        <div class="row">
+                            <div class="col-lg-3">
+
+                                Associate Clients  <select class="form-control" id="ddlassgrid_distancevehicles" onchange="MonthlydistanceReport()">
+                                    <option value="0">-Select-</option>
+                                    @if (ViewBag.Ass_grid != null)
+                                    {
+                                        foreach (var item in ViewBag.Ass_grid)
+                                        {
+                                            <option value="@item.USERS_ID">@item.USERS_USERNAME</option>
+                                        }
+                                    }
+
+
+                                </select>
+                            </div>
+                            <div class="col-lg-2">
+                                Month :<select class="form-control" id="ddlmonth">
+                                    <option value="0">-Select-</option>
+                                    <option value="01">Jan</option>
+                                    <option value="02">Feb</option>
+                                    <option value="03">Mar</option>
+                                    <option value="04">Apr</option>
+                                    <option value="05">May</option>
+                                    <option value="06">Jun</option>
+                                    <option value="07">Jul</option>
+                                    <option value="08">Aug</option>
+                                    <option value="09">Sep</option>
+                                    <option value="10">Oct</option>
+                                    <option value="11">Nov</option>
+                                    <option value="12">Dec</option>
+                                </select>
+                            </div>
+                            <div class="col-lg-2" style="margin-top:25px">
+                                <input type="button" onclick="MonthlydistanceReport()" style="color: #ffffff; background-color: #3ccac7;" value="Distance Report" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row" id="divrow">
+
+                        <div>
+                            <table id="tblmonthlyreport" style="font-size: 11px; color: black; " class="display nowrap table table-hover table-striped table-bordered" cellspacing="0" width="100%">
+                                <thead>
+                                    <tr id="Columns"></tr>
+                                </thead>
+                                <tbody id="tblmonthlyreportbody"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="myModal_Daywiseditancereportt" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+            <!-- Modal content-->
+            <div class="modal-content" style="width:245%;margin-left:-75%">
+
+                <div class="modal-header">
+                    FLEET DAY WISE KMS SUMMARY REPORT
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+
+                </div>
+
+
+                @*<input type="button" value="X" style="margin-left:97%" class="close" data-dismiss="modal" />*@
+                <div class="modal-body">
+                    <div id="divassgrid" style="display:block;margin-bottom:10px;">
+                        <div class="row">
+                            <div class="col-lg-3">
+
+                                Associate Clients  <select class="form-control" id="ddlassgrid_daywiseditancereportt" onchange="Daywiseditancereport()">
+                                    <option value="0">-Select-</option>
+                                    @if (ViewBag.Ass_grid != null)
+                                    {
+                                        foreach (var item in ViewBag.Ass_grid)
+                                        {
+                                            <option value="@item.USERS_ID">@item.USERS_USERNAME</option>
+                                        }
+                                    }
+
+
+                                </select>
+
+                            </div>
+                            <div class="col-lg-2">
+                                StartDate  <input type="text" id="txtfromdate_24" class="form-control" />
+                            </div>
+                            <div class="col-lg-2">
+                                EndaDate <input type="text" id="txttodate_24" class="form-control" />
+                            </div>
+                            <div class="col-lg-2" style="margin-top:25px">
+                                <input type="button" onclick="Daywiseditancereport()" style="color: #ffffff; background-color: #d913e1;" value="Day Wise Report" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row" id="divrow">
+                        <div>
+                            <table id="tbldaywisereport" style="font-size: 11px; color: black" class="display nowrap table table-hover table-striped table-bordered" cellspacing="0" width="100%">
+                                <thead>
+                                    <tr>
+                                        <th>SNO</th>
+                                        <th>VEHICLE NUMBER</th>
+                                        <th>START LOCATION</th>
+                                        <th>END LOCATION</th>
+                                        <th>RUNNING TIME(HH:MM:SS)</th>
+                                        <th>DAY RUN TIME(HH:MM:SS)</th>
+                                        <th>NIGHT RUN TIME(HH:MM:SS)</th>
+                                        <th>STOPPAGE TIME(HH:MM:SS)</th>
+                                        <th>DAY STOP TIME(HH:MM:SS)</th>
+                                        <th>NIGHT STOP TIME(HH:MM:SS)</th>
+                                        <th>ACTUAL (KMS)</th>
+                                        <th>IDEAL KM(S)</th>
+                                        <th>AVERAGE RUNNINGE SPEED (KM/HR)</th>
+                                        <th>AVERAGE SPEED (KM/HR)</th>
+                                        <th>OS</th>
+                                        <th>RA</th>
+                                        <th>RD</th>
+                                        <th>ND</th>
+                                        <th>CD</th>
+                                        <th>STOPPAGE(DRIVERS HOME)</th>
+                                        <th>STOPPAGE(SERVICE TIME)</th>
+                                        <th>STOPPAGE(LOADING TIME)</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tbldaywisereportbody"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="myModal_fleetpreformance_report" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content" style="width:245%;margin-left:-75%">
+                <div class="modal-header">
+                    <h4 class="modal-title"></h4>
+                    FLEET DAY WISE KMS SUMMARY REPORT
+                </div>
+                <input type="button" value="X" style="margin-left:97%" class="close" data-dismiss="modal" />
+                <div class="modal-body">
+
+
+
+                    <div class="modal-footer">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    
+
+
+
+
+    <div id="myModal_stoppagereport" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+            <!-- Modal content-->
+            <div class="modal-content" style="width:245%;margin-left:-75%">
+                <div class="modal-header">
+                    <h4 class="modal-title">STOPPAGE REPORT</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div id="divassgrid" style="display:block;margin-bottom:10px;">
+                        <div class="row">
+                            <div class="col-lg-2">
+
+                                Associate Clients  <select class="form-control" id="ddlstoppagegrid_vehicles" onchange="Vehicles_STOPPAGE()">
+                                    <option value="0">-Select-</option>
+                                    @if (ViewBag.Ass_grid != null)
+                                    {
+                                        foreach (var item in ViewBag.Ass_grid)
+                                        {
+                                            <option value="@item.USERS_ID">@item.USERS_USERNAME</option>
+                                        }
+                                    }
+                                </select>
+                            </div>
+                            <div class="col-lg-2">
+                                Vehicles <select class="form-control" id="ddlvehicles_stoppage">
+                                    <option value="1">-Select All-</option>
+                                </select>
+                            </div>
+                            <div class="col-lg-2">
+                                StartDate <input type="text" id="txtstartdate_stoppage" class="form-control" />
+                            </div>
+                            <div class="col-lg-2">
+                                EndDate <input type="text" id="txtenddate_stoppage" class="form-control" />
+                            </div>
+                            <div class="col-lg-2">
+                                Interval <select id="ddlinterval_stoppage" class="form-control">
+                                    @*<option value="-1">Select Interval</option>*@
+                                    <option value="0">Default Interval</option>
+                                    <option value="60">1 Hour</option>
+                                    <option value="120">2 Hour</option>
+                                    <option value="180">3 Hour</option>
+                                    <option value="240">4 Hour</option>
+                                    <option value="720">12 Hour</option>
+                                    <option value="1440">1 Day</option>
+                                    <option value="10080">1 Week</option>
+                                </select>
+                            </div>
+                            <div class="col-lg-2" style="margin-top:25px">
+                                <input type="button" onclick="Search_stoppage()" style="color: #ffffff; background-color: #fc4b6c; " value="View Report" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <table id="tblstoppage_report" style="font-size: 11px; color: black; " class="display nowrap table table-hover table-striped table-bordered" cellspacing="0" width="100%">
+                            <thead>
+                                <tr>
+                                    <th>SNO</th>
+                                    <th>VEHICLE NUMBER</th>
+                                    <th>START DATE</th>
+                                    <th>END DATE</th>
+                                    <th>TIME DIFFERENCE</th>
+                                    <th>LANDMARK</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tblstoppage_reportbody"></tbody>
+                        </table>
+                    </div>
+
+                    <div class="modal-footer">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <input type="hidden" id="ddlyear" />
+    <input type="hidden" id="ddlKM" value="Kms" />
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script>
+
+        window.onload = function () {
+            //   Assgrid();
+
+
+
+
+            window.setTimeout(function () {
+                $("#load").hide();
+            }, 3000);
+
+            $('#ddlassgrid').select2();
+            $('#ddlassgrid_vehicles').select2();
+            $('#ddlvehicles_archive').select2();
+            $('#ddlassgrid_details').select2();
+            $('#ddlassgrid_daywiseditancereportt').select2();
+
+            Vehicles();
+            Vehicles_archive();
+            $('#txtstartdate').bootstrapMaterialDatePicker
+               ({
+                   shortTime: true,
+                   format: 'MM/DD/YYYY hh:mm A ',
+                   triggerEvent: 'dblclick',
+                   switchOnClick: true,
+                   twelvehour: true
+               });
+
+
+            $('#txtenddate').bootstrapMaterialDatePicker
+              ({
+                  shortTime: true,
+                  format: 'MM/DD/YYYY hh:mm A ',
+                  triggerEvent: 'dblclick',
+                  switchOnClick: true,
+                  twelvehour: true
+              });
+            $('#txtstartdate_archive').bootstrapMaterialDatePicker
+              ({
+                  shortTime: true,
+                  format: 'MM/DD/YYYY hh:mm A ',
+                  triggerEvent: 'dblclick',
+                  switchOnClick: true,
+                  twelvehour: true
+              });
+
+
+            $('#txtenddate_archive').bootstrapMaterialDatePicker
+              ({
+                  shortTime: true,
+                  format: 'MM/DD/YYYY hh:mm A ',
+                  switchOnClick: true,
+                  twelvehour: true
+              });
+
+            //
+            $('#txtfromdate_24').bootstrapMaterialDatePicker
+             ({
+                 shortTime: true,
+                 format: 'MM/DD/YYYY hh:mm A ',
+                 triggerEvent: 'dblclick',
+                 switchOnClick: true,
+                 twelvehour: true
+             });
+            $('#txttodate_24').bootstrapMaterialDatePicker
+            ({
+                shortTime: true,
+                format: 'MM/DD/YYYY hh:mm A ',
+                triggerEvent: 'dblclick',
+                switchOnClick: true,
+                twelvehour: true
+            });
+
+
+        
+
+            $('#txtstartdate_stoppage').bootstrapMaterialDatePicker
+            ({
+                shortTime: true,
+                format: 'MM/DD/YYYY hh:mm A ',
+                switchOnClick: true,
+                twelvehour: true,
+                triggerEvent: 'dblclick',
+            });
+            $('#txtenddate_stoppage').bootstrapMaterialDatePicker
+            ({
+                shortTime: true,
+                format: 'MM/DD/YYYY hh:mm A ',
+                switchOnClick: true,
+                twelvehour: true,
+                triggerEvent: 'dblclick',
+              
+            });
+
+
+
+
+
+            $("#ddlvehicles").select2();
+            $("#ddlvehicles_stoppage").select2();
+            
+            curentdateandtime();
+        }
+
+        function curentdateandtime() {
+            var date = new Date();
+            var dd = date.getDate();
+            var mm = date.getMonth() + 1;
+            var yy = date.getFullYear();
+            var hours = date.getHours();
+            var minutes = date.getMinutes();
+            var ampm = hours >= 12 ? 'PM' : 'AM';
+            hours = hours % 12;
+            hours = hours ? hours : 12; // the hour '0' should be '12'
+            minutes = minutes < 10 ? '0' + minutes : minutes;
+
+            var strTime = hours + ':' + minutes + ' ' + ampm;
+
+            var fdt = mm + "/" + dd + "/" + yy + " " + hours + ":" + minutes + " " + ampm;
+            $('#txtenddate').val(fdt);
+            $('#txtenddate_archive').val(fdt);
+
+
+            // $('#txtenddate').val(fdt);
+            $('#txttodate_24').val(fdt);
+
+            $('#txtenddate_stoppage').val(fdt);
+
+            if (dd == "1" || dd == "01") {
+
+            }
+            else {
+                dd = (dd - 1);
+            }
+            var sdt = mm + "/" + dd + "/" + yy + " " + hours + ":" + minutes + " " + ampm;
+
+            $('#txtstartdate').val(sdt);
+
+            $('#txtfromdate_24').val(sdt);
+            $('#txtstartdate_archive').val(sdt);
+
+            $('#txtstartdate_stoppage').val(sdt);
+        }
+        function Assgrid() {
+
+            $.post("/REPORTS/Ass_grid", function (data) {
+                var dataT = data['data'];
+                $("#ddlassgrid").empty();
+
+                var count = dataT.length;
+                if (count > 0) {
+                    //  alert("ojk")
+                    $("#divassgrid").css('display', 'block');
+                    //var opt = "<option value='0'>-Select -</option>";
+                    //for (var i = 0; i < dataT.length; i++) {
+                    //    opt += "<option value='" + dataT[i].USERS_ID + "'>" + dataT[i].USERS_USERNAME + "</option>";
+                    //}
+                    //$("#ddlassgrid").text("");
+                    //$('#ddlassgrid').append(opt);
+                    //$('#ddlassgrid').select2();
+                }
+
+            });
+        }
+
+
+        function Getall() {
+
+
+            $.post("/REPORTS/_frm_ViewReports", { "USERID": $('#ddlassgrid').val() }, function (data) {
+
+
+                var dataT = data['data'];
+
+
+                if ($.fn.dataTable.isDataTable('#tbldashboardreport')) {
+                    $('#tbldashboardreport').DataTable().destroy();
+                }
+                $("#tbldashboardbody").empty();
+
+
+
+
+                for (var i = 0; i < dataT.length; i++) {
+                    tr = $('<tr/>');
+                    tr.append("<td>" + (i + 1) + "</td>");
+                    tr.append("<td>" + (dataT[i].COLORSTATUS) + "</td>");
+                    tr.append("<td>" + (dataT[i].SPEED) + "</td>");
+                    tr.append("<td>" + (dataT[i].VEHICLENUMBER) + "</td>");
+                    tr.append("<td>" + (dataT[i].PLACE) + "</td>");
+                    tr.append("<td>" + (dataT[i].TRIPDATA_TRIPDATE) + "</td>");
+                    tr.append("<td>" + (dataT[i].ODOMETER) + "</td>");
+                    tr.append("<td>" + (dataT[i].DRIVER_NAME) + "</td>");
+                    tr.append("<td>" + (dataT[i].DRIVERNUMBER) + "</td>");
+                    tr.append("<td>" + (dataT[i].TRIPDATAT_SPEED) + "</td>");
+
+                    $("#tbldashboardreport").append(tr);
+                }
+                $('#tbldashboardreport').DataTable({
+                    dom: 'Brtip',
+                    'ordering': false,
+                    "paging": false,
+                    //"scrollX": true,
+                    buttons: [
+                        //'copy', 'csv', 'excel', 'pdf', 'print'
+                        'excel', 'pdf', 'print'
+                    ],
+
+                    "bPaginate": false,
+                    "bFilter": false,
+                    "sScrollY": "600",
+                    // "sScrollX": "100%",
+                    "sScrollXInner": "400%",
+                    "bScrollCollapse": true
+                });
+
+
+
+
+            });
+        }
+
+
+        function Vehicles() {
+            //UserID
+            // alert("yes");
+            $.post("/REPORTS/frmVehicles", { "UserID": $('#ddlassgrid_vehicles').val() }, function (data) {
+
+                //
+
+                var dataT = data['data'];
+
+
+                $("#ddlvehicles").empty();
+                $("#ddlvehicles").empty();
+
+                var count = dataT.length;
+                if (count > 0) {
+                    //  alert("ojk")
+                    $("#ddlvehicles").css('display', 'block');
+                    var opt = "<option value='0'>-Select -</option>";
+                    for (var i = 0; i < dataT.length; i++) {
+                        opt += "<option value='" + dataT[i].DEVICE_ID + "'>" + dataT[i].DEVICE_NAME + "</option>";
+                    }
+                    $("#ddlvehicles").text("");
+                    $('#ddlvehicles').append(opt);
+                    $('#ddlvehicles').select2();
+                }
+            });
+        }
+
+
+
+        
+
+
+
+
+        Vehicles_STOPPAGE();
+
+        function Vehicles_STOPPAGE() {
+            
+
+            if ($('#ddlstoppagegrid_vehicles').val() == 1)
+            {
+                ALLVEHICLES();
+            }
+            else {
+                $.post("/REPORTS/frmVehicles", { "UserID": $('#ddlstoppagegrid_vehicles').val() }, function (data) {
+
+                    //
+
+                    var dataT = data['data'];
+
+
+                    $("#ddlvehicles_stoppage").empty();
+                    $("#ddlvehicles_stoppage").empty();
+
+                    var count = dataT.length;
+                    if (count > 0) {
+                        //  alert("ojk")
+                        $("#ddlvehicles_stoppage").css('display', 'block');
+                        var opt = "<option value='0'>-Select -</option>";
+                        for (var i = 0; i < dataT.length; i++) {
+                            opt += "<option value='" + dataT[i].DEVICE_ID + "'>" + dataT[i].DEVICE_NAME + "</option>";
+                        }
+                        $("#ddlvehicles_stoppage").text("");
+                        $('#ddlvehicles_stoppage').append(opt);
+                        $('#ddlvehicles_stoppage').select2();
+                    }
+                });
+            }
+
+            
+        }
+
+
+
+        //frmVehicles_ALL
+
+
+
+
+
+        function ALLVEHICLES() {
+
+
+            $.post("/REPORTS/frmVehicles_ALL",  function (data) {
+                var dataT = data['data'];
+                $("#ddlvehicles_stoppage").empty();
+                $("#ddlvehicles_stoppage").empty();
+                var count = dataT.length;
+                if (count > 0) {
+                    //  alert("ojk")
+                    $("#ddlvehicles_stoppage").css('display', 'block');
+                    var opt = "<option value='0'>-Select -</option>";
+                    for (var i = 0; i < dataT.length; i++) {
+                        opt += "<option value='" + dataT[i].DEVICE_ID + "'>" + dataT[i].DEVICE_NAME + "</option>";
+                    }
+                    $("#ddlvehicles_stoppage").text("");
+                    $('#ddlvehicles_stoppage').append(opt);
+                    $('#ddlvehicles_stoppage').select2();
+                }
+            });
+        }
+
+
+
+
+        function Vehicles_archive() {
+            //UserID
+            // alert("yes");
+            $.post("/REPORTS/frmVehicles", { "UserID": $('#ddlassgrid_archivevehicles').val() }, function (data) {
+
+                //
+
+                var dataT = data['data'];
+
+
+                $("#ddlvehicles_archive").empty();
+                $("#ddlvehicles_archive").empty();
+
+                var count = dataT.length;
+                if (count > 0) {
+                    //  alert("ojk")
+                    $("#ddlvehicles_archive").css('display', 'block');
+                    var opt = "<option value='0'>-Select -</option>";
+                    for (var i = 0; i < dataT.length; i++) {
+                        opt += "<option value='" + dataT[i].DEVICE_ID + "'>" + dataT[i].DEVICE_NAME + "</option>";
+                    }
+                    $("#ddlvehicles_archive").text("");
+                    $('#ddlvehicles_archive').append(opt);
+                    $('#ddlvehicles_archive').select2();
+                }
+            });
+        }
+        function Search() {
+
+            if ($("#ddlvehicles").val() != '0') {
+
+
+                if ($.fn.dataTable.isDataTable('#tbltrackreport')) {
+                    $('#tbltrackreport').DataTable().destroy();
+                }
+                $("#tbltrackreportbody").empty();
+
+
+                var i = 0;
+
+                serverSide: true;
+                var filteredData, simple_checkbox, numOfVisibleRows;
+                var MySearch = $('#tbltrackreport').DataTable({
+                    dom: 'Bfrtip',
+                    buttons: [
+                        'excel', 'pdf', 'print'
+                    ],
+
+                    "bPaginate": false,
+                    "bFilter": false,
+                    "sScrollY": "600",
+                    "sScrollX": "100%",
+                    "sScrollXInner": "400%",
+                    "bScrollCollapse": true,
+
+
+                    "paging": true,
+                    "searching": true,
+                    "ordering": false,
+                    //  "filtering": true,
+                    autoFill: true,
+                    //"ordering": true,
+                    //sDom: "Bfrtip",
+                    //sDom: '<"search-box"r><"H"lf>t<"F"ip>',
+                    //colReorder: true,
+                    //"rowHeight": '20px',
+                    //"targets": 0,
+                    //"paging": true,
+                    //"sPaginationType": "full_numbers",
+                    highlight: true,
+                    fixedColumns: {
+                        leftColumns: 4
+                    },
+                    keys: {
+                        columns: ':not(:first-child)'
+                    },
+                    "scrollX": false,
+                    //"scrollY": 660,
+                    "language": {
+                        sProcessing: " please wait ",
+                        // "lengthMenu": "No of Records Per Page :  _MENU_ ",
+                        "zeroRecords": " <img style='width:20px' src='/IMAGES/loading.gif'>",
+                        "infoEmpty": "Showing 0 to 0 of 0 entries",
+                        "infoFiltered": "From _MAX_ Total Entries",
+                        "infoEmpty": "No records available",
+                    },
+                    processing: true,
+                    select: true,
+                    // "lengthMenu": [[50, 100, 500, -1], [50, 100, 500, "All"]],
+                    // "lengthMenu": [[100, 500, 1000, -1], [100, 500, 1000, "All"]],
+                    //"dom": 'Blfrtip',
+                    //"buttons": [
+                    //'excel', 'pdf'
+                    //],
+
+                    "sAjaxSource": "/Home/_frm_view_tripdata",
+                    "fnServerParams": function (aoData) {
+
+                        aoData.push(
+
+                               { "name": "VNO", "value": $("#ddlvehicles").val() },
+                               { "name": "FROMDATE", "value": $("#txtstartdate").val() },
+                                { "name": "TODATE", "value": $("#txtenddate").val() },
+                                 { "name": "INTERVAL", "value": $("#ddlinterval").val() });
+
+                    },
+                    "bDeferRender": true,
+                    "bInfo": true,
+                    fixedHeader: true,
+                    fixedHeader: {
+                        header: false,
+                        footer: true
+                    },
+                    "columns": [
+                       //{
+                       //    mRender: function (data, type, row) {
+
+                       //        return "<td><span style='display: inline-block;width: 150px;white-space: nowrap;overflow: hidden !important;text-overflow: ellipsis;'>" + row.TRIPID + "</span></td>"
+                       //    }
+                       //},
+                        { "data": "TRIPID" },
+                        { "data": "VEHICLE_NO" },
+                        { "data": "TRIPDATA_TRIPDATE" },
+                        { "data": "TIME" },
+                        { "data": "ODOMETER" },
+                        { "data": "TRIPDATAT_SPEED" },
+                         { "data": "PLACE" },
+                         { "data": "DISTANCE" },
+                         { "data": "DRIVER_NAME" },
+                         { "data": "DEGREES" },
+
+                             //{
+                             //    "mData": null,
+                             //    "bSortable": false,
+                             //    mRender: function (data, type, row) {
+
+                             //        return '<input type="button" class="btn btn-primary" onclick="EDIT(' + row.DEVICE_ID + ')" value="EDIT" />'
+
+                             //    }
+                             //},
+                    ],
+
+                })
+
+            }
+            else {
+                alert("select vehicle number..");
+            }
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        function Search_archive() {
+
+            if ($("#ddlvehicles_archive").val() != '0') {
+
+
+                if ($.fn.dataTable.isDataTable('#tblarchivereport')) {
+                    $('#tblarchivereport').DataTable().destroy();
+                }
+                $("#tblarchivereportbody").empty();
+
+
+                var i = 0;
+
+                serverSide: true;
+                var filteredData, simple_checkbox, numOfVisibleRows;
+                var MySearch = $('#tblarchivereport').DataTable({
+                    dom: 'Bfrtip',
+                    buttons: [
+                        'excel', 'pdf', 'print'
+                    ],
+                    "bPaginate": false,
+                    "bFilter": false,
+                    "sScrollY": "600",
+                    // "sScrollX": "100%",
+                    "sScrollXInner": "400%",
+                    "bScrollCollapse": true,
+
+
+
+                    "paging": true,
+                    "searching": true,
+                    "ordering": false,
+                    autoFill: true,
+                    highlight: true,
+                    fixedColumns: {
+                        leftColumns: 4
+                    },
+                    keys: {
+                        columns: ':not(:first-child)'
+                    },
+                    "scrollX": false,
+                    //"scrollY": 660,
+                    "language": {
+                        sProcessing: " please wait ",
+                        // "lengthMenu": "No of Records Per Page :  _MENU_ ",
+                        "zeroRecords": " <img style='width:20px' src='/IMAGES/loading.gif'>",
+                        "infoEmpty": "Showing 0 to 0 of 0 entries",
+                        "infoFiltered": "From _MAX_ Total Entries",
+                        "infoEmpty": "No records available",
+                    },
+                    processing: true,
+                    select: true,
+                    // "lengthMenu": [[50, 100, 500, -1], [50, 100, 500, "All"]],
+                    // "lengthMenu": [[100, 500, 1000, -1], [100, 500, 1000, "All"]],
+                    //"dom": 'Blfrtip',
+                    //"buttons": [
+                    //'excel', 'pdf'
+                    //],
+                    "sAjaxSource": "/Home/_frm_archive_report",
+                    "fnServerParams": function (aoData) {
+                        aoData.push({ "name": "VNO", "value": $("#ddlvehicles_archive").val() },
+                  { "name": "FRMDATE", "value": $('#txtstartdate_archive').val() },
+                  { "name": "TODATE", "value": $('#txtenddate_archive').val() },
+                  { "name": "INTERVAL", "value": $("#ddlinterval_archive").val() });
+                    },
+                    "bDeferRender": true,
+                    "bInfo": true,
+                    fixedHeader: true,
+                    fixedHeader: {
+                        header: false,
+                        footer: true
+                    },
+                    "columns": [
+                       //{
+                       //    mRender: function (data, type, row) {
+
+                       //        return "<td><span style='display: inline-block;width: 150px;white-space: nowrap;overflow: hidden !important;text-overflow: ellipsis;'>" + row.TRIPID + "</span></td>"
+                       //    }
+                       //},
+
+                          { "data": "TRIPID" },
+                        { "data": "VEHICLE_NO" },
+                        { "data": "TRIPDATA_TRIPDATE" },
+                        { "data": "TIME" },
+                        { "data": "ODOMETER" },
+                        { "data": "TRIPDATAT_SPEED" },
+                         { "data": "PLACE" },
+                         { "data": "DISTANCE" },
+                         { "data": "DRIVER_NAME" },
+                         { "data": "DEGREES" },
+                             //{
+                             //    "mData": null,
+                             //    "bSortable": false,
+                             //    mRender: function (data, type, row) {
+
+                             //        return '<input type="button" class="btn btn-primary" onclick="EDIT(' + row.DEVICE_ID + ')" value="EDIT" />'
+
+                             //    }
+                             //},
+                    ],
+
+                })
+
+            }
+            else {
+                alert("select vehicle number..");
+            }
+        }
+
+
+
+
+
+        function Vehicledetails() {
+            $.post("/REPORTS/_view_Violation", { "strOperation": 11, "UserID": $("#ddlassgrid_details").val() }, function (data) {
+
+
+              
+                var dataT = data['data'];
+
+
+                if ($.fn.dataTable.isDataTable('#tbldetailesreport')) {
+                    $('#tbldetailesreport').DataTable().destroy();
+                }
+                $("#tbldetailesbody").empty();
+
+
+
+                for (var i = 0; i < dataT.length; i++) {
+                    tr = $('<tr/>');
+                    tr.append("<td>" + (i + 1) + "</td>");
+                    tr.append("<td>" + (dataT[i].VEHICLENUMBER) + "</td>");
+                    tr.append("<td>" + (dataT[i].TYPE) + "</td>");
+                    tr.append("<td>" + (dataT[i].VEHICLEMFG) + "</td>");
+
+
+
+                    tr.append("<td>" + (dataT[i].MODEL) + "</td>");
+                    tr.append("<td>" + (dataT[i].TANKCAPACITY) + "</td>");
+                    tr.append("<td>" + (dataT[i].MAXSPEED) + "</td>");
+
+                    $("#tbldetailesreport").append(tr);
+                }
+                $('#tbldetailesreport').DataTable({
+                    dom: 'Brtip',
+                    'ordering': false,
+                    "paging": false,
+                    //"scrollX": true,
+                    buttons: [
+                        //'copy', 'csv', 'excel', 'pdf', 'print'
+                        'excel', 'pdf', 'print'
+                    ],
+                    "bPaginate": false,
+                    "bFilter": false,
+                    "sScrollY": "600",
+                    // "sScrollX": "100%",
+                    "sScrollXInner": "400%",
+                    "bScrollCollapse": true
+                });
+
+            });
+        }
+
+
+
+
+
+
+
+
+
+        function Search_stoppage() {
+            $.post("/Reports/_view_Violation", { "VNO": $("#ddlvehicles_stoppage").val(), "FRMDATE": $("#txtstartdate_stoppage").val(), "TODATE": $("#txtenddate_stoppage").val(), "strOperation": '12' }, function (data) {
+
+                var dataT = data['data'];
+
+                console.log(dataT);
+
+                if ($.fn.dataTable.isDataTable('#tblstoppage_report')) {
+                    $('#tblstoppage_report').DataTable().destroy();
+                }
+                $("#tblstoppage_reportbody").empty();
+
+
+
+                for (var i = 0; i < dataT.length; i++) {
+                    tr = $('<tr/>');
+                    tr.append("<td>" + (i + 1) + "</td>");
+                    tr.append("<td>" + (dataT[i].VEHICLENUMBER) + "</td>");
+                    tr.append("<td>" + (dataT[i].st_date) + "</td>");
+                    tr.append("<td>" + (dataT[i].ed_date) + "</td>");
+                    tr.append("<td>" + (dataT[i].TIME) + "</td>");
+                    tr.append("<td>" + (dataT[i].PLACE) + "</td>");
+                    $("#tblstoppage_report").append(tr);
+                }
+                $('#tblstoppage_report').DataTable({
+                    dom: 'Brtip',
+                    'ordering': false,
+                    "paging": false,
+                    //"scrollX": true,
+                    buttons: [
+                        //'copy', 'csv', 'excel', 'pdf', 'print'
+                        'excel', 'pdf', 'print'
+                    ],
+                    "bPaginate": false,
+                    "bFilter": false,
+                    "sScrollY": "600",
+                    // "sScrollX": "100%",
+                    "sScrollXInner": "400%",
+                    "bScrollCollapse": true
+                });
+
+            });
+        }
+
+
+
+
+
+        function MonthlydistanceReport() {
+            $("#load").show();
+
+
+            if ($.fn.dataTable.isDataTable('#tblmonthlyreport')) {
+                $('#tblmonthlyreport').DataTable().destroy();
+            }
+            $("#tblmonthlyreportbody").empty();
+            $("#Columns").empty();
+            var date = new Date();
+            var dd = "";
+            var mm = date.getMonth() + 1;
+            var yy = "";
+            var today = new Date();
+
+            if (mm < 10) {
+                mm = "0" + mm;
+            }
+
+            if ($("#ddlmonth").val() == mm) {
+                dd = date.getDay();
+            }
+            else {
+                dd = daysInMonth($("#ddlmonth").val(), today.getFullYear());
+            }
+
+            if (mm < $("#ddlmonth").val()) {
+                alert("yes")
+                yy = date.getFullYear() - 1;
+            }
+            else {
+                yy = date.getFullYear();
+
+
+            }
+
+
+            var fdate = $("#ddlmonth").val() + "/" + dd + "/" + yy;
+            //   alert(fdate);
+            $("#ddlyear").val(yy);
+            $.post("/REPORTS/MatrixReport", { "Date": fdate, "USERID": $("#ddlassgrid_distancevehicles").val() }, function (data) {
+                $("#load").hide();
+                var dataT = data['Report'];
+                var columnsdata0 = "";
+                columnsdata0 = "<th>SNO</th><th>VEHICLES_NO</th>";
+                // alert(dd);
+                for (var i = 0; i < dd; i++) {
+                    columnsdata0 = columnsdata0 + '<th>' + "Day" + (i + 1) + ' KMS</th>';
+                }
+                //   console.log(columnsdata0);
+
+                // Columns0
+                $("#Columns").append(columnsdata0);
+                for (var i = 0; i < dataT.length; i++) {
+                    tr = $('<tr/>');
+                    tr.append("<td>" + (i + 1) + "</td>");
+                    tr.append("<td>" + (dataT[i].VehicleNo) + "</td>");
+
+                    for (var j = 1; j <= dd; j++) {
+                        if (j < 10) {
+                            j = "0" + j;
+                        }
+                        // alert("Kms" + yy + "" + $("#ddlmonth").val() + "" + j);
+
+                        //     tr.append("<td>" + "Kms" + yy + "" + $("#ddlmonth").val() + "" + j + "</td>");
+
+                        var KM = dataT[i].Kms + $("#ddlyear").val() + $("#ddlmonth").val() + j;
+
+                        var KMM = "Kms" + $("#ddlyear").val() + $("#ddlmonth").val() + j;
+                        var KMSS = KMM.replace(/['"]+/g, '');
+                        tr.append("<td>" + dataT[i][KMSS] + "</td>");
+                    }
+
+                    $("#tblmonthlyreport").append(tr);
+                }
+                $('#tblmonthlyreport').DataTable({
+                    dom: 'Brtip',
+                    'ordering': false,
+                    "paging": false,
+                    //"scrollX": true,
+                    buttons: [
+                        //'copy', 'csv', 'excel', 'pdf', 'print'
+                        'excel', 'pdf', 'print'
+                    ],
+                    "bPaginate": false,
+                    "bFilter": false,
+                    "sScrollY": "600",
+                    //  "sScrollX": "100%",
+                    "sScrollXInner": "400%",
+                    "bScrollCollapse": true
+                });
+
+
+
+
+
+
+
+
+
+            });
+        }
+
+
+        function daysInMonth(month, year) {
+            return new Date(year, month, 0).getDate();
+        }
+
+
+
+
+
+        function Daywiseditancereport() {
+            $("#load").show();
+            $.post("/REPORTS/_view_Violation", { "strOperation": 25, "UserID": $("#ddlassgrid_daywiseditancereportt").val(), "FRMDATE": $("#txtfromdate_24").val(), "TODATE": $("#txttodate_24").val() }, function (data) {
+                $("#load").hide();
+                var dataT = data['data'];
+                string = null, string
+
+                if ($.fn.dataTable.isDataTable('#tbldaywisereport')) {
+                    $('#tbldaywisereport').DataTable().destroy();
+                }
+                $("#tbldaywisereportbody").empty();
+
+
+
+                for (var i = 0; i < dataT.length; i++) {
+
+                    tr = $('<tr/>');
+                    tr.append("<td>" + (i + 1) + "</td>");
+
+                    tr.append("<td>" + (dataT[i].VEHICLENUMBER) + "</td>");
+                    tr.append("<td>" + (dataT[i].STARTLOCATION) + "</td>");
+                    tr.append("<td>" + (dataT[i].ENDLOCATION) + "</td>");
+
+                    tr.append("<td>" + (dataT[i].TOTALRUNNINGTIME) + "</td>");
+                    tr.append("<td>" + (dataT[i].DAYRUN) + "</td>");
+                    tr.append("<td>" + (dataT[i].NIGHTRUN) + "</td>");
+
+                    tr.append("<td>" + (dataT[i].TOTALSTOPTIME) + "</td>");
+                    tr.append("<td>" + (dataT[i].DAYSTOPS) + "</td>");
+                    tr.append("<td>" + (dataT[i].NIGHTSTOPTIME) + "</td>");
+
+                    tr.append("<td>" + (dataT[i].ACTUALKMS) + "</td>");
+                    tr.append("<td>" + (dataT[i].IDLEKMS) + "</td>");
+                    tr.append("<td>" + (dataT[i].ACERAGE_RUNNNING_SPEED) + "</td>");
+                    tr.append("<td>" + (dataT[i].ACERAGE_SPEED) + "</td>");
+                    tr.append("<td>" + (dataT[i].OS) + "</td>");
+                    tr.append("<td>" + (dataT[i].RA) + "</td>");
+                    tr.append("<td>" + (dataT[i].RD) + "</td>");
+                    tr.append("<td>" + (dataT[i].ND) + "</td>");
+                    tr.append("<td>" + (dataT[i].CD) + "</td>");
+
+                    tr.append("<td>" + (dataT[i].driverhome_stop) + "</td>");
+                    tr.append("<td>" + (dataT[i].servicetime_stop) + "</td>");
+                    tr.append("<td>" + (dataT[i].loadingtime_stop) + "</td>");
+
+                    $("#tbldaywisereport").append(tr);
+                }
+                $('#tbldaywisereport').DataTable({
+
+                    dom: 'Brtip',
+                    'ordering': false,
+                    "paging": false,
+                    //"scrollX": true,
+                    buttons: [
+                        //'copy', 'csv', 'excel', 'pdf', 'print'
+                        'excel', 'pdf', 'print'
+                    ],
+                    "bPaginate": false,
+                    "bFilter": false,
+                    "sScrollY": "600",
+                    //"sScrollX": "100%",
+                    "sScrollXInner": "400%",
+                    "bScrollCollapse": true
+                });
+
+            });
+        }
+
+
+
+
+
+
+        google.charts.load('current', { 'packages': ['corechart'] });
+        google.charts.setOnLoadCallback(drawChart);
+        google.charts.setOnLoadCallback(drawChart1);
+        google.charts.setOnLoadCallback(drawChart2);
+        // Draw the chart and set the chart values
+        function drawChart() {
+            var data = google.visualization.arrayToDataTable([
+            ['Task', 'Hours per Day'],
+            ['Above 2100', 3],
+            ['1200 To 2100', 18],
+            ['800 To 1200', 24],
+            ['500 To 800', 21],
+            ['100 To 500', 54],
+
+            ]);
+
+            // Optional; add a title and set the width and height of the chart
+            var options = { 'title': 'Distance Travelled in a Week', 'width': 550, 'height': 400 };
+
+            // Display the chart inside the <div> element with id="piechart"
+            var chart = new google.visualization.PieChart(document.getElementById('piechart'));
+            chart.draw(data, options);
+        }
+
+
+
+
+
+
+        google.charts.load("current", { packages: ["corechart"] });
+        google.charts.setOnLoadCallback(drawChart);
+        google.charts.setOnLoadCallback(drawChart2);
+        function drawChart1() {
+
+
+            $.post("/REPORTS/STOPPAGE_WEEK", function (data) {
+                // console.log(data);
+
+                var dataT = data['Report'];
+
+
+                //   alert(dataT[0].vcount + ".." + dataT[1].DaysCnt + ".." + dataT[2].DaysCnt + ".." + dataT[3].DaysCnt + ".." + dataT[4].DaysCnt);
+                if (dataT.length == 4) {
+                    var data = google.visualization.arrayToDataTable([
+                   ['Task', 'Hours per Day'],
+                   ['1 Day', dataT[0].vcount],
+                   ['2 Days', dataT[1].vcount],
+                   ['3 Days', dataT[2].vcount],
+                   ['4 Days', dataT[3].vcount],
+                   //['5 Days', dataT[4].vcount]
+                    ]);
+
+                }
+                if (dataT.length == 5) {
+                    var data = google.visualization.arrayToDataTable([
+                     ['Task', 'Hours per Day'],
+                     ['1 Day', dataT[0].vcount],
+                     ['2 Days', dataT[1].vcount],
+                     ['3 Days', dataT[2].vcount],
+                     ['4 Days', dataT[3].vcount],
+                     ['5 Days', dataT[4].vcount]
+                    ]);
+                }
+
+
+
+                var options = {
+                    title: 'Stoppage Analysis In a Week',
+                    pieHole: 0.4,
+                    'width': 400, 'height': 250
+                };
+
+
+                var chart = new google.visualization.PieChart(document.getElementById('piechart1'));
+                chart.draw(data, options);
+            });
+
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        function drawChart2() {
+
+
+            $.post("/REPORTS/DEVICE_PERFOMANCE_WEEK", function (data) {
+                // console.log(data);
+
+                var dataT = data['Report'];
+
+                //   alert(dataT[0].vcount + ".." + dataT[1].DaysCnt + ".." + dataT[2].DaysCnt + ".." + dataT[3].DaysCnt + ".." + dataT[4].DaysCnt);
+
+                //for (var i = 0; i < dataT.length; i++) {
+                //    var data = google.visualization.arrayToDataTable([
+                //      [dataT[i].Name, dataT[0].NOTWORKING],
+                //    ]);
+                //}
+              
+
+                var data = google.visualization.arrayToDataTable([
+            ['Task', 'Hours per Day'],
+            ['Reportingto server', dataT[0].WORKING],
+            ['Not reportingto server', dataT[0].NOTWORKING],
+                ]);
+
+                var options = {
+                    title: 'DEVICE PERFORMANCE',
+
+                    // text: 'Upcoming Meetings',
+                    pieHole: 0.4,
+                    'width': 400, 'height': 250
+                };
+
+                var chart = new google.visualization.PieChart(document.getElementById('piechart2'));
+                chart.draw(data, options);
+            });
+        }
+
+
+    </script>

@@ -1,0 +1,113 @@
+﻿@{
+    ViewBag.Title = "Categories";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<style>
+    .clr {
+        color: white;
+    }
+</style>
+<div class="container-fluid">
+    <div class="row page-titles">
+        <div class="col-md-5 col-8 align-self-center">
+            <h3 class="text-themecolor m-b-0 m-t-0">Categories</h3>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/Home/frm_GridTrack_Distance">Home</a></li>
+                <li class="breadcrumb-item active">Categories</li>
+            </ol>
+        </div>
+    </div>
+    <div class="row" id="divrow">
+        <div class="col-lg-6">
+            Name : <input type="text" id="txtname"  class="form-control" placeholder="" />
+
+            Email : <input type="text" id="txtemail"  class="form-control" placeholder="" />
+
+            Designation : <input type="text" id="txtdesignation"  class="form-control" placeholder="" />
+
+            Contact Person <input type="text" id="txtcontactperson"  class="form-control" placeholder="" />
+
+            Address:<textarea class="form-control" id="txtaddress" style="color:white;"></textarea>
+
+        </div>
+        <div class="col-lg-6">
+          Category Type :<select class="form-control"  id="ddlcategtype">
+                <option value="0">-Select-</option>
+                <option value="ORG">ORGANIZATION</option>
+                <option value="PARTNER">PARTNERS</option>
+                <option value="CLIENT">CLIENTS</option>
+            </select>
+            Mobile Number :<input type="number" id="txtmobile"  class="form-control" placeholder="" />
+
+            Telephone Number :<input type="text" id="txttelephone"  class="form-control" placeholder="" />
+
+            Website Name :<input type="text"  id="txtwebsite" class="form-control" placeholder="" />
+
+            Zip Code :<input type="text" id="txtzipcode"  class="form-control" placeholder="" />
+
+
+        </div>
+        <input type="button" id="btnsave" class="btn btn-success" onclick="Save()" style="margin-left:92%;margin-top:10px" value="Submit" />
+        <input type="button" id="btnupdate" class="btn btn-success" onclick="Update()" style="margin-left:92%;margin-top:10px" value="Update" />
+    </div>
+
+    <div>
+        <input type="button" class="btn btn-success" onclick="showrow()" style="width:153px;margin-bottom:8px" value="ADD CATEGORIES" />
+        <table id="tblCategories" class="table table-hover table-striped table-bordered" width="100%">
+            <tr>
+                <th>ID</th>
+                <th>NAME</th>
+                <th>EMAIL</th>
+                <th>CONTACT PERSON</th>
+                <th>MOBILE NUMBER</th>
+                <th>CATEGORY TYPE</th>
+                <th>ACTIONS</th>
+            </tr>
+            @{
+                int i = 1;
+                foreach (var item in ViewBag.data)
+                {
+                    <tr>
+                        <td>@i</td>
+                        <td>@item.CATEG_NAME</td>
+                        <td>@item.CATEG_EMAILID</td>
+                        <td>@item.CATEG_CONTACTPERSON</td>
+                        <td>@item.CATEG_MOBILENUMBER</td>
+                        <td>@item.CATEG_TYPE</td>
+                        @if (item.CATEG_STATUS == 1)
+                        {
+                            <td>
+                                <input type="button" value="EDIT" onclick="EDIT(@item.CATEG_ID)" class="btn btn-primary" />
+                                <input type="button" value="IN ACTIVE" onclick="UPDATESTATUS(0,@item.CATEG_ID)" class="btn btn-danger" />
+                            </td>
+                        }
+                        else
+                        {
+                            <td>
+                                <input type="button" value="EDIT" onclick="EDIT(@item.CATEG_ID)" class="btn btn-primary" />
+                                <input type="button" value="ACTIVE" onclick="UPDATESTATUS(1,@item.CATEG_ID)" class="btn btn-success" />
+                                
+                            </td>
+                        }
+
+                    </tr>
+                    i++;
+                }
+            }
+        </table>
+    </div>
+</div>
+<script src="~/CUSTOMSCRIPTS/Categories.js"></script>
+<script src="~/Scripts/jquery-1.10.2.min.js"></script>
+
+
+@*<script src="~/Scripts/jquery.min.js"></script>*@
+<script src="~/Scripts/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/1.2.2/js/dataTables.buttons.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/1.2.2/js/buttons.flash.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/2.5.0/jszip.min.js"></script>
+<script src="https://cdn.rawgit.com/bpampuch/pdfmake/0.1.18/build/pdfmake.min.js"></script>
+<script src="https://cdn.rawgit.com/bpampuch/pdfmake/0.1.18/build/vfs_fonts.js"></script>
+<script src="https://cdn.datatables.net/buttons/1.2.2/js/buttons.html5.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/1.2.2/js/buttons.print.min.js"></script>
+

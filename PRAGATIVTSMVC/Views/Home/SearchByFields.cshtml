@@ -1,0 +1,89 @@
+﻿
+@{
+    ViewBag.Title = "SearchByFields";
+    Layout = "~/Views/Shared/Layout2.cshtml";
+}
+
+<h2>SearchByFields</h2>
+<div class="row" style="margin-top:10px;" id="div_search">
+
+
+    <label id="lbl_dist">Search By Type:</label> <select id="ddlSearch" class="form-control" style="width:200px;">
+        <option value='0' selected>--Select--</option>
+        <option value='1'>Customer Name</option>
+        <option value='2'>IMEI</option>
+        <option value='3'>Vehicle No</option>
+        <option value='4'>Mobile No</option>
+        <option value='5'>SIM No</option>
+        <option value='6'>SIM Operator</option>
+    </select>
+
+
+    <label>Enter Text:</label><input type="text" id="txt_SearchValue" class="form-control" style="width:200px;" />
+
+    @*Vehicle Number:<input type="text" id="txt_vehicleNum" class="form-control" style="width:200px;margin-left:35px;" />*@
+    <input type="button" id="btn_load" class="btn btn-primary" style="margin-left:20px;" value="Search" onclick="GetDataByType()" />
+
+</div>
+<div class="row">
+    <table border="1" style="width: 100%;display:none;" class="table table-striped table-bordered" id="tblSearch">
+        <thead>
+            <tr><th class='center'>S.no</th><th class='center'>Status</th><th class='center'> Distributor </th><th class='center'> Dealer </th><th class='center' width="250px;"> Customer </th><th class='center'>Username </th><th class='center'> Password </th><th class='center'> VehicleNumber </th><th class='center'> MobileNumber </th><th class='center'> IMEI </th><th class='center'> SIM Number </th><th class='center'>SIM Operator</th><th class='center'> Order Start Date </th><th>Action</th></tr>
+        </thead>
+        <tbody id="tblSearchbody">
+           
+        </tbody>
+    </table>
+</div>
+<script>
+    function GetDataByType() {
+   
+
+        $('#tblSearch').show();
+        $("#load").show();
+        $.post("/Home/getDataByType", { "TypeId": $('#ddlSearch').val(), "TypeValue": $('#txt_SearchValue').val() }, function (data) {
+         
+            
+            var dataT = data['data'];
+           
+            if ($.fn.dataTable.isDataTable('#tblSearch')) {
+                $('#tblSearch').DataTable().destroy();
+            }
+           
+            $('#tblSearchbody').empty();
+            for (var i = 0; i < dataT.length; i++) {
+
+                
+               
+
+                tr = $('<tr/>');
+
+                tr.append("<td>" + (i + 1) + "</td>");
+                tr.append("<td class='center'><img src=" + dataT[i].Status + " /></td>");
+                tr.append("<td>" + dataT[i].Distributorname + "</td>");
+                tr.append("<td>" + dataT[i].DealerName + "</td>");
+                tr.append("<td>" + dataT[i].CustomerName + "</td>");
+                tr.append("<td>" + dataT[i].UserName + "</td>");
+                tr.append("<td>" + dataT[i].UserPassword + "</td>");
+                tr.append("<td>" + dataT[i].VehicleRegNumebr + "</td>");
+                tr.append("<td>" + dataT[i].MobileNo + "</td>")
+                tr.append("<td>" + dataT[i].IMEI + "</td>");
+                tr.append("<td>" + dataT[i].SimNumber + "</td>");
+                tr.append("<td>" + dataT[i].SIMOperator + "</td>");
+                tr.append("<td>" + dataT[i].StartDate + "</td>");
+                tr.append("<td>" + dataT[i].EndDate + "</td>");
+                //  tr.append("<td><a href='#' class='btn btn-primary' onclick='NewSIM(" + dataT[i].DEVICE_ID + "," + dataT[i].CATEG_ID + ")'>Change SIM</a></td>");
+                $("#tblSearch").append(tr);
+            }
+            $('#tblSearch').dataTable({
+                //  dom: 'Blfrtip',
+                "sPaginationType": "full_numbers",
+                buttons: [
+                    //'copy', 'csv', 'excel', 'pdf', 'print'
+                    'excel', 'pdf', 'print'
+                ]
+            });
+           
+        });
+    }
+</script>

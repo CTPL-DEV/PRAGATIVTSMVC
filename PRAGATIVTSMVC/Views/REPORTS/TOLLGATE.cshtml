@@ -1,0 +1,614 @@
+﻿
+@{
+    ViewBag.Title = "TOLLGATE";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<style>
+    a label {
+        cursor: pointer;
+    }
+</style>
+<div id="load"></div>
+<div class="container-fluid" id="printarea">
+    @*<div class="row page-titles">
+            <div class="col-md-5 col-8 align-self-center">
+                <h3 class="text-themecolor m-b-0 m-t-0">FASTTAG</h3>
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="/Home/frm_GridTrack_Distance">Home</a></li>
+                    <li class="breadcrumb-item active">FASTTAG</li>
+                </ol>
+            </div>
+        </div>*@
+    <div class="row">
+        <div class="col-12">
+
+            <div class="card" style="margin-top:15px">
+                <div class="box-body">
+                </div>
+                <div class="card-body">
+                    <h4 class="card-title">TOLLGATE</h4>
+                    <div class="col-lg-12" style="margin-bottom:10px">
+                        <div class="col-md-3" style="margin-left:-29px">
+                            <select id="ddlvehicles_history" class="form-control">
+                                <option value="0">-Select Vehicle-</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <input type="text" style="margin-top:-14%;margin-left:107%;" id="txtfrmdate" placeholder="FROM DATE" class="form-control" />
+                        </div>
+                        <div class="col-md-3">
+                            <input type="text" style="margin-top: -15%; margin-left: 215%;" id="txttodate" placeholder="TO DATE" class="form-control" />
+                        </div>
+                        <div class="col-md-3">
+                            <input type="button" style="margin-top: -14%; margin-left: 323%; margin-left: 323%; background-color: #8485ed; color: white; " value="Search" onclick="Search()" />
+                            @*<input type="button" style="margin-top: -14%; margin-left: 323%; margin-left: 352%; background-color: #8485ed; color: white;" onclick="printData()" value="PDF" />*@
+                        </div>
+
+                    </div>
+
+                    <div id="divspnamount" class="col-md-12" style="margin-top:-84px;display:none">
+                        <div class="box" style="background-color: red; color: white; float: right; margin-right: -15px">
+                            <h4 class="card-title" style="color:white">TOTAL AMOUNT</h4>
+                            <label>DEDUCTION <span id="spnamount">00</span></label>
+                        </div>
+                    </div>
+                    <div class="col-md-12" id="divtrans" style="display:none">
+                        <input type="text" class="form-control" id="transdate" placeholder="transaction date" style="margin-left:-12px;width:20%;margin-top:8%" />
+                        <input type="text" class="form-control" id="transamount" placeholder="₹" style="width:5%" />
+                        <input type="button" value="ADD" onclick="ADDAMOUNT()" style="width:5%" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="row">
+        <div class="col-lg-8">
+            <div id="map" style="height:73%" class="gmaps">
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div id="divhistory" style="height: 75%; overflow-x: auto;display:none">
+                <table id="tblhistory" border="1" style="font-size: 10px; width:100%" class="display nowrap table table-hover table-striped table-bordered" cellspacing="0" width="100%">
+
+                    <tr>
+                        <th>TOLLGATE NAME</th>
+                        <th>TOLL RATE</th>
+                        <th>E TOLL</th>
+                        <th>CASH</th>
+                        <th>TRANSACTION DATE</th>
+                    
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+
+    window.onload = function () {
+        //  initMap();
+     //   $("#divaddamount").css('display','none');
+        $("#load").hide();
+        bindvehicles();
+
+        
+        $('#transdate').bootstrapMaterialDatePicker({
+            format: 'MM/DD/YYYY HH:mm',
+            weekStart: 1,
+            time: true,
+            nowButton: true,
+            clearButton: false,
+            cancelText: 'Cancel',
+            okText: 'OK',
+            clearText: 'clear',
+            triggerEvent: 'dblclick',
+            switchOnClick: true,
+        });
+
+
+
+
+
+
+        $('#txtfrmdate').bootstrapMaterialDatePicker({
+            format: 'MM/DD/YYYY HH:mm',
+            weekStart: 1,
+            time: true,
+            nowButton: true,
+            clearButton: false,
+            cancelText: 'Cancel',
+            okText: 'OK',
+            clearText: 'clear',
+            triggerEvent: 'dblclick',
+            switchOnClick: true,
+            //  nowText: 'Aujourd\'hui'
+        });
+
+
+        $('#txttodate').bootstrapMaterialDatePicker({
+            format: 'MM/DD/YYYY HH:mm',
+            weekStart: 1,
+            time: true,
+            nowButton: true,
+            clearButton: false,
+            cancelText: 'Cancel',
+            okText: 'OK',
+            clearText: 'clear',
+            triggerEvent: 'dblclick',
+            switchOnClick: true,
+            // nowText: 'Aujourd\'hui'
+        });
+
+        var dt = new Date();
+
+        var onedayAgo = new Date();
+
+        onedayAgo.setDate(onedayAgo.getDate() - 1);
+
+        var time = dt.getHours() + ":" + dt.getMinutes();
+
+        var date001 = onedayAgo.getMonth() + 1 + "/" + onedayAgo.getDate() + "/" + onedayAgo.getFullYear() + " " + time;
+        $('#txtfrmdate').val(date001);
+
+        var date002 = dt.getMonth() + 1 + "/" + dt.getDate() + "/" + dt.getFullYear() + " " + time;
+        $('#txttodate').val(date002);
+
+
+        $('#transdate').val(date001);
+    }
+
+    var TOLLDATA;
+
+    var markersZ = [];
+    var iconBase = 'https://maps.google.com/mapfiles/kml/shapes/';
+    var icons = {
+        Truck: {
+            icon: iconBase + 'parking_lot_maps.png'
+        },
+        Plant: {
+            icon: iconBase + 'library_maps.png'
+        },
+        Port: {
+            icon: iconBase + 'info-i_maps.png'
+        },
+        Vehi: {
+            icon: '/Content/icons/placeholder_yellow.png'
+        },
+        Bus: {
+            icon: '/Content/icons/bus.png'
+        },
+        From: {
+            icon: '/Content/icons/placeholder_nu.png'
+        },
+        To: {
+            icon: '/Content/icons/maps-and-flags.png'
+        },
+        Stopped: {
+            icon: '/Content/icons/truck_r.png'
+        },
+        VehicleMoving: {
+            icon: '/Content/icons/green_truck.png'
+        },
+        Datanotreceiving: {
+            icon: '/Content/icons/truck_y.png'
+        },
+        Dirctions: {
+            icon: '/Truck/truck_green_0.png'
+        },
+    };
+
+
+
+    function ADDAMOUNT() {
+
+        var coun = parseInt($("#spnamount").text()) + parseInt($("#transamount").val());
+        $("#spnamount").text(coun);
+    }
+
+    function printData() {
+      
+        var divToPrint = document.getElementById('printarea');
+
+        var newWin = window.open('', 'Print-Window');
+
+        newWin.document.open();
+
+        newWin.document.write('<html><body onload="window.print()">' + printarea.innerHTML + '</body></html>');
+
+        newWin.document.close();
+
+        // setTimeout(function () { newWin.close(); }, 10);
+
+    }
+
+
+    function bindvehicles() {
+
+        $.post("/Home/Load_Vehicles", { "ClientId": $("#ddlclients").val() }, function (data) {
+
+            var dataT = data['data'];
+            var opt = "<option value='0'>-Select-</option>";
+            var opt = "<option value='-1'>Select Vehicle</option>";
+            for (var i = 0; i < dataT.length; i++) {
+                opt += "<option value='" + dataT[i].VEHICLES_DEVICE_ID + "'>" + dataT[i].VEHICLES_REGNUMBER + "</option>";
+            }
+            $("#ddlvehicles").text("");
+            $('#ddlvehicles').append(opt);
+            $('#ddlvehicles').select2();
+            $("#ddlvehicles_history").text("");
+            $('#ddlvehicles_history').append(opt);
+            $("#ddlvehicles_history").select2();
+        });
+    }
+
+
+
+
+
+    function initMap() {
+
+        $.post("/REPORTS/_fasttag", function (data) {
+            // alert("yes")
+            TOLLDATA = data;
+            ALLvehiclesdata(data);
+
+        });
+
+    }
+
+
+
+
+
+
+
+    function movemarker000(lat,lng) {
+        map.setCenter(new google.maps.LatLng(lat, lng))
+        map.setZoom(12);
+            return false;
+    }
+
+
+
+
+
+    var map;
+    var Slider_TrackInfo;
+    var Pause_d;
+    var pause = -1;
+    var Slider_TrackInfo;
+    var lst_LMarks;
+    function Search() {
+
+        $("#load").show();
+
+        $.post("/REPORTS/_fasttag", { "VNO": $("#ddlvehicles_history Option:selected").text(), "fromdate": $("#txtfrmdate").val(), "enddate": $("#txttodate").val() }, function (data) {
+            // alert("yes")
+            TOLLDATA = data;
+           // ALLvehiclesdata(data);
+
+            $.post("/Home/Tracking_history", { "Startdate": $("#txtfrmdate").val(), "Enddate": $("#txttodate").val(), "Dev_ID": $("#ddlvehicles_history").val() }, function (data) {
+
+                var DATAT = data['TripData'];
+                Slider_TrackInfo = DATAT;
+                setdata(data);
+                $("#load").hide();
+            });
+
+        });
+
+
+    }
+
+    var marker = null;
+    var timerHandle = null;
+
+    function setdata(data) {
+        $("#divhistory").css('display', 'block');
+        $("#divspnamount").css('display', 'block');
+        $("#divtrans").css('display', 'block');
+        
+        var amout = 0;
+     //   alert("yes");
+        var dataP = TOLLDATA['Report'];
+        var tolllength = TOLLDATA['Report'].length;
+     //   alert(tolllength);
+        var markerss = [];
+        dataT = data['TripData'];
+        var datalength = data['TripData'].length
+    //    alert(datalength);
+        //   alert(datalength)
+        if (datalength > 0) {
+
+            //  }
+            var mapOptions = {
+                center: new google.maps.LatLng(dataT[0].LATITUDE, dataT[0].LONGITUDE),
+                icon: '/Truck/truck_green_0.png',
+                zoom: 10,
+                gestureHandling: 'greedy',
+                styles: CustomMapStyles,
+                // mapTypeId: google.maps.MapTypeId.ROADMAP
+            };
+            map = new google.maps.Map(document.getElementById("map"), mapOptions);
+            var infowindow = new google.maps.InfoWindow();
+            var lat_lng = new Array();
+            var latlngbounds = new google.maps.LatLngBounds();
+            for (i = 0; i < datalength; i++) {
+                //  alert(markers.length);
+                // var data = markers[i]
+                // alert(data.lat + "  " + i + "->   " + data.lng);
+
+                //tblhistory
+
+                //NumberMarkers/marker' + (i + 1) + '.png
+
+
+
+                //tr = $('<tr/>');
+                //tr.append('<td><img src="/NumberMarkers/marker' + (i + 1) + '.png"  onclick="movemarker000(\'' + dataT[i].LATITUDE + '\',\'' + dataT[i].LONGITUDE + '\',' + (i + 1) + ')"></ img></td>');
+                //tr.append("<td>" + dataT[i].PLACE + "</td>");
+                //tr.append("<td>" + dataT[i].TRIPDATA_TRIPDATE + "</td>");
+                //tr.append("<td>" + dataT[i].ODOMETER + "</td>");
+                //$('#tblhistory').append(tr);
+
+
+                var myLatlng = new google.maps.LatLng(dataT[i].LATITUDE, dataT[i].LONGITUDE);
+
+                lat_lng.push(myLatlng);
+
+                var buscolor = "";
+                var title = "";
+
+                var f = datalength - 1;
+                if (i == 0) {
+
+                    buscolor = '/Truck/ring.png';
+                    title = 'starting point'
+                }
+                else if (i == f) {
+                    buscolor = '/Truck/truck_green_180.png';
+                    title = 'end point'
+                }
+                else {
+                    buscolor = '/NumberMarkers/dot.png';
+                    title = 'hyderabad'
+                }
+                 marker = new google.maps.Marker({
+                    position: myLatlng,
+                    icon: buscolor,
+                    map: map,
+                    title: title,
+                });
+
+
+                latlngbounds.extend(marker.position);
+                markerss.push(marker);
+                marker.setMap(map);
+                //  bounds.extend(marker.position);
+                markersZ.push(marker);
+                //   latlngbounds.extend(marker.position);
+                google.maps.event.addListener(marker, 'click', (function (marker, i) {
+                    //  alert("okk")
+                    var stringContent = '<div style="color:black"><table>'
+                 + '<tr><td><b>DRIVER:</b></td><td>' + dataT[i].DRIVER_NAME
+                                                  + '<tr><td><b>User Time:</b></td><td><label id="lblcurrentspeed">' + dataT[i].TRIPDATA_TRIPDATE
+                                                  + '</td><tr><td><b>SPEED(Km/Hr):</b></td><td>Date <label id="lblcurrentdate">'
+                                                   + dataT[i].TRIPDATAT_SPEED
+                                                   + '</td><tr><td><b>Odometer Reading(km):</b></td><td>Date <label id="lblcurrentdate">'
+                                                   + dataT[i].ODOMETER
+                                                    + '</td><tr><td><b>Time:</b></td><td>Postion <label id="">'
+                                                   + dataT[i].LATITUDE + "" + dataT[i].LONGITUDE
+                                                  + '</label></td></tr><tr><td><b>Postion:&nbsp;</b></td><td><label id="lblcurrentlocation">'
+                                                  + dataT[i].PLACE + '</label></td></tr></table></div>';
+                    return function () {
+                        infowindow.setContent(stringContent);
+                        infowindow.open(map, marker);
+                    }
+                })(marker, i));
+            }
+
+
+            /////toll/////////
+
+            for (j = 0; j < tolllength; j++) {
+                var myLatlng = new google.maps.LatLng(dataP[j].LATITUDE, dataP[j].LONGITUDE);
+                var buscolor = "";
+                var title = "";
+                buscolor = '/NumberMarkers/marker' + (dataP[j].cnt) + '.png';
+
+
+                marker = new google.maps.Marker({
+                    position: myLatlng,
+                    icon: buscolor,
+                    map: map,
+                    title: '',
+                });
+
+
+                tr = $('<tr/>');
+                //   tr.append("<td>" + (j + 1) + "</td>");
+
+                //tr.append('<td><img src="/NumberMarkers/marker' + (j + 1) + '.png"  onclick="movemarker000(\'' + dataP[j].LATITUDE + '\',\'' + dataP[j].LONGITUDE + '\',' + (i + 1) + ')"></ img></td>');
+                tr.append('<td><a  onclick="movemarker000(' + dataP[j].LATITUDE + ',' + dataP[j].LONGITUDE + ')"><u>' + dataP[j].PLAZANAME + '</u></a></td>');
+      
+                //   tr.append("<td>" + dataP[j].PLAZACODE + "</td>");
+                tr.append("<td>-</td>");
+                tr.append("<td>" + dataP[j].TRANSACTIONAMOUNT + "</td>");
+                tr.append("<td>-</td>");
+                tr.append("<td>" + dataP[j].TRANSACTIONDATE + "</td>");
+                $('#tblhistory').append(tr);
+                amout = parseFloat(amout) + parseFloat(dataP[j].TRANSACTIONAMOUNT);
+                latlngbounds.extend(marker.position);
+                markerss.push(marker);
+                marker.setMap(map);
+                markersZ.push(marker);
+                google.maps.event.addListener(marker, 'click', (function (marker, j) {
+
+                    var stringContent = '<div style="color:black"><table>'
+     + '<tr><td></td><td>' + dataP[j].PLAZANAME
+                                    + '</label></td></tr></table></div>';
+                    return function () {
+                        infowindow.setContent(stringContent);
+                        infowindow.open(map, marker);
+                    }
+                })(marker, j));
+            }
+
+            //toll//////
+
+
+            map.setCenter(latlngbounds.getCenter());
+            map.fitBounds(latlngbounds);
+
+            //***********ROUTING****************//
+
+            //Initialize the Path Array
+            var path = new google.maps.MVCArray();
+
+            //Initialize the Direction Service
+            var service = new google.maps.DirectionsService();
+
+            //Set the Path Stroke Color
+            var poly = new google.maps.Polyline({
+
+                map: map, strokeColor: '#4986E7'
+
+            });
+
+            //Loop and Draw Path Route between the Points on MAP
+            //   alert(lat_lng.length);
+            for (var i = 0; i < lat_lng.length; i++) {
+                if ((i + 1) < lat_lng.length) {
+                    var src = lat_lng[i];
+                    var des = lat_lng[i + 1];
+                    path.push(src);
+                    poly.setPath(path);
+                    service.route({
+                        origin: src,
+                        destination: des,
+                        // travelMode: google.maps.DirectionsTravelMode.DRIVING
+                    }, function (result, status) {
+                        if (status == google.maps.DirectionsStatus.OK) {
+                            for (var i = 0, len = result.routes[0].overview_path.length; i < len; i++) {
+                                path.push(result.routes[0].overview_path[i]);
+                            }
+                        }
+                    });
+                }
+            }
+
+            $("#spnamount").text(amout);
+            //var line = new google.maps.Polyline({
+            //    path: [{ lat: 22.291, lng: 153.027 }, { lat: 18.291, lng: 153.027 }],
+            //    icons: [{
+            //        icon: '/Truck/truck_green_0.png',
+            //        offset: '100%'
+            //    }],
+            //    map: map
+            //});
+        }
+        else {
+            alert("Data not avilable..");
+            initMap();
+        }
+
+    }
+
+    function Delay(delay) {
+        var startTime = new Date();
+        var endTime = null;
+        do {
+            endTime = new Date();
+        } while ((endTime - startTime) < delay);
+    }
+
+
+    function animate(d) {
+
+        // alert("animate("+d+")");
+        Pause_d = d;
+        var endPointCount = Slider_TrackInfo.length;
+
+
+
+        if (d > endPointCount - 1) {
+            // alert("endpoint");
+            map.panTo(new google.maps.LatLng(Slider_TrackInfo[endPointCount - 1].LATITUDE, Slider_TrackInfo[endPointCount - 1].LONGITUDE));
+            marker.setPosition(new google.maps.LatLng(Slider_TrackInfo[endPointCount - 1].Longitude, Slider_TrackInfo[endPointCount - 1].Longitude));
+            document.getElementById("btnPlay").value = "Play";
+            pause = -1;
+            return;
+        }
+
+        var p = new google.maps.LatLng(Slider_TrackInfo[d].LATITUDE, Slider_TrackInfo[d].LONGITUDE)
+        //  map.panTo(p);
+        marker.setPosition(p);
+        //updatePoly(d);
+        //timerHandle = setTimeout("animate(" + (d + 1) + ")", rcmb_Interval.get_value() != 0 ? rcmb_Interval.get_value() : alert("Please select an interval"));
+        timerHandle = setTimeout("animate(" + (d + 1) + ")", 250);
+    }
+
+    function startAnimation() {
+
+        if (document.getElementById("btnPlay").value == "Play") {
+            document.getElementById("btnPlay").value = "Pause";
+            if (pause == -1) {
+
+                clearTimeout(timerHandle);
+                if (marker != null)
+                    marker.setMap(null);
+                //   alert(Slider_TrackInfo[0].LATITUDE+""+Slider_TrackInfo[0].LONGITUDE)
+                map.setCenter(new google.maps.LatLng(Slider_TrackInfo[0].LATITUDE, Slider_TrackInfo[0].LONGITUDE));
+                marker = createMarker(new google.maps.LatLng(Slider_TrackInfo[0].LATITUDE, Slider_TrackInfo[0].LONGITUDE), "start", Slider_TrackInfo[0].LONGITUDE, "green");
+                //poly2 = new google.maps.Polyline({ path: [polyline.getPath().getAt(0)], strokeColor: "#0000FF", strokeWeight: 10 });
+                //            if (rcmb_Interval.get_value() == 0) {
+                //                alert("Please select an interval1 ");
+                //                return;
+                //            }
+                //            else {
+                setTimeout("animate(1)", 250);  // Allow time for the initial map display
+                //            }
+            }
+            else {
+
+                setTimeout("animate(" + Pause_d + ")", 250);
+            }
+        }
+        else if (document.getElementById("btnPlay").value == "Pause") {
+            document.getElementById("btnPlay").value = "Play";
+            clearTimeout(timerHandle);
+            pause = Pause_d;
+        }
+
+    }
+
+
+    function createMarker(latlng, label, html) {
+
+        var contentString = '<b>' + label + '</b><br>' + html;
+        var marker = new google.maps.Marker({
+            position: latlng,
+            map: map,
+            title: label,
+            //   icon: '/Truck/red.png',
+            icon: '/Truck/red1.png',
+            zIndex: 400
+        });
+        marker.myname = label;
+        // gmarkers.push(marker);
+
+        google.maps.event.addListener(marker, 'click', function () {
+            infowindow.setContent(contentString);
+            infowindow.open(map, marker);
+        });
+        return marker;
+    }
+
+
+
+
+
+</script>

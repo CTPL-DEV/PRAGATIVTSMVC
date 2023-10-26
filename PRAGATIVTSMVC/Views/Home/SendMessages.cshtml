@@ -1,0 +1,181 @@
+﻿
+@{
+    ViewBag.Title = "SendMessages";
+    Layout = "~/Views/Shared/Layout2.cshtml";
+}
+@{
+    ViewBag.Title = "SendMessages";
+    Layout = "~/Views/Shared/Layout2.cshtml";
+}
+
+<h2>SendMessages</h2>
+<style>
+    #rcorners2 {
+        /*border-radius: 35px;*/
+        border: 2px solid #73AD21;
+        padding: 20px;
+        /*width: 200px;*/
+        /*height: 150px;*/
+    }
+
+    #rcorner1 {
+        border: 2px solid #fb7061;
+        padding: 20px;
+    }
+
+    .select2 {
+        width: 100% !important;
+    }
+
+    .table td {
+        padding: 5px;
+        vertical-align: middle;
+        font-size: 12px !important;
+    }
+
+    .table th {
+        font-weight: 500;
+        font-size: 13px !important;
+    }
+</style>
+<div class="row" style="CENTER" id="divrow">
+    <div class="col-lg-6">
+        <div id="div_distributors">
+            Select Distributor:<select id="ddldistributor" class="form-control" onchange="LoadDealers()" style="width:400px">
+                <option value='0' selected>-Select Distributor-</option>
+            </select>
+        </div>
+        <div id="div_dealers">
+            Select Dealer:<select id="ddldealer" class="form-control" onchange="LoadCustomers()" style="width:400px;">
+                <option value='0' selected>-Select Dealer-</option>
+            </select>
+        </div>
+
+        <div id="div_Customers">
+        </div>
+        <div class="row">
+            Enter Text:    <textarea name="MESSAGE" rows="5" cols="60" id="MESSAGE"></textarea>
+        </div>
+        <div class="row">
+            <input type="button" id="btnsend" class="btn btn-primary" onclick="send('send')" style="margin-top:10px;" value="SEND" />
+        </div>
+
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        // $("#load").show();
+        LoadDistributors();
+
+
+    });
+    function LoadDistributors() {
+        d_ID = $("#ddlcategory").val();
+        $.post("/Home/getDistributors", { "CategID": 1 }, function (data) {
+
+            var dataT = data['data'];
+            var opt = "<option value='0'>-Select Distributor-</option>";
+            for (var i = 0; i < dataT.length; i++) {
+                opt += "<option value='" + dataT[i].CATEG_ID + "'>" + dataT[i].CATEG_NAME + "</option>";
+            }
+            $("#ddldistributor").text("");
+            $('#ddldistributor').append(opt);
+            $("#drp_distributor").text("");
+            $('#drp_distributor').append(opt);
+            var opt1 = "<option value='0'>-Select Dealer-</option>";
+            $('#drp_dealer').append(opt1);
+        });
+    }
+    function LoadDealers() {
+        d_ID = $("#ddldistributor").val();
+        $.post("/Home/getDealers", { "CategID": d_ID }, function (data) {
+
+            var dataT = data['data'];
+            var opt = "<option value='0' selected>-Select Dealer-</option>";
+            for (var i = 0; i < dataT.length; i++) {
+                opt += "<option value='" + dataT[i].CATEG_ID + "'>" + dataT[i].CATEG_NAME + "</option>";
+            }
+            $("#ddldealer").text("");
+            $('#ddldealer').append(opt);
+
+        });
+
+        $.post("/Home/getCustomers", { "CategID": d_ID }, function (data) {
+
+            var dataT = data['data'];
+            var opt = "";
+            for (var i = 0; i < dataT.length; i++) {
+                arrform.push(dataT[i].CATEG_ID);
+
+                opt += "<span>" + dataT[i].CATEG_NAME + "</span><input type='checkbox' style='margin-top:-21px;margin-left:60px' class='form-control'  id=chk_" + dataT[i]._ID + "  /><br>";
+            }
+            $("#div_Customers").text("");
+            $('#div_Customers').append(opt);
+        });
+
+
+    }
+    var arrform = [];
+    function LoadCustomers() {
+        
+            if ($("#ddldistributor").val() != 0 && $("#ddldealer").val() != 0) {
+                d_ID = $("#ddldealer").val();
+            }
+            else if ($("#ddldistributor").val() != 0 && $("#ddldealer").val() == 0) {
+                d_ID = $("#ddldistributor").val();
+            }
+            else {
+                d_ID = localStorage.getItem("USERS_CATEG_ID");
+                $("#div_distributors").hide();
+                $("#div_dealers").hide();
+            }
+            $.post("/Home/getCustomers", { "CategID": d_ID }, function (data) {
+
+                var dataT = data['data'];
+                var opt = "";
+                for (var i = 0; i < dataT.length; i++) {
+                    
+                    arrform.push(dataT[i].CATEG_ID);
+
+                    opt += "<span>" + dataT[i].CATEG_NAME + "</span><input type='checkbox' style='margin-top:-21px;margin-left:60px' class='form-control'  id=chk_" + dataT[i].CATEG_ID + "  />";
+                }
+                $("#div_Customers").text("");
+                $('#div_Customers').append(opt);
+            });
+
+    }
+    function send() {
+        
+        var length = arrform.length;
+
+        var arr1 = [];
+
+        for (var i = 0; i < length; i++) {
+
+            var chk = arrform[i];
+
+            if ($("#chk_" + chk).is(':checked') == true) {
+
+                arr1.push(chk);
+            }
+        }
+
+        var USERS_ID = localStorage.setItem("USERS_ID", arr1);
+
+        var USERS_ID = localStorage.getItem("USERS_ID");
+
+        $.post("/Home/send_messages", { "categ_ids": USERS_ID, "MESSAGE": $('#MESSAGE').val() }, function (data) {
+            var dataT = data['data'];
+            if (dataT = true) {
+                alert("Sent successfully");
+                location.reload();
+            }
+            else {
+                alert("Failed");
+            }
+        });
+    }
+
+
+</script>

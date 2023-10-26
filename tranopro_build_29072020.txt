@@ -1,0 +1,6 @@
+1.Renewal Count-Daily,Monthly,Yearly
+                Today Installations,Today Installations,3Months Pending Renewals
+
+2.Client creation-
+
+             Website bug fixed.

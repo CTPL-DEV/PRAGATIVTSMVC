@@ -1,0 +1,272 @@
+﻿
+@{
+    ViewBag.Title = "frm_Users";
+    Layout = "~/Views/Shared/Layout2.cshtml";
+}
+<style>
+    #rcorners2 {
+        /*border-radius: 35px;*/
+        border: 2px solid #73AD21;
+        padding: 20px;
+        /*width: 200px;*/
+        /*height: 150px;*/
+    }
+
+    #rcorner1 {
+        border: 2px solid #fb7061;
+        padding: 20px;
+    }
+    .table td {
+        padding: 5px;
+        vertical-align: middle;
+        font-size:12px!important;
+    }
+       .table th {
+       font-weight:500;
+       font-size:13px!important;
+    }
+</style>
+
+    
+    <div class="row" id="divrow">
+        <input type="hidden" id="hid_username" value="" />
+        <div class="col-lg-6">
+            User Type :<select id="ddlroles" onchange="bindusers()" class="form-control"><option value="0">-Select-</option></select>
+            Full Name :<input type="text" id="txtfullname" class="form-control" />
+            User Name :<input type="text" id="txtusername" class="form-control" />
+        </div>
+        <div class="col-lg-6">
+            Client Name :<select id="ddlclient" class="form-control"><option value="0">-Select-</option></select>
+            Password :<input type="password" id="txtpassword" class="form-control" />
+            <div style="width:20px ">
+                status <input type="checkbox" id="chkstatus" class="form-control" />
+            </div>
+            
+        </div>
+        <input type="button" id="btnsave" class="btn btn-success" onclick="Save('save')" style="margin-left:84%;margin-top:10px" value="Submit" />
+        <input type="button" id="btnupdate" class="btn btn-success" onclick="Save('update')" style="margin-left:84%;margin-top:10px" value="Update" />
+        <input type="button" value="BACK" style="margin-left:92%;margin-top:-38px" id="btnback" onclick="location.reload()" class=" btn btn-danger" />
+       </div>
+
+<div class="row" style="margin-left:1px;">
+
+    <input type="button" class="btn btn-primary" onclick="showrow()" style="width:57px;" value="ADD" />
+    <div class="card-head" style="text-align:center;">
+        <h4>USERS</h4>
+
+    </div>
+</div>
+   <div class="card card-box">
+         <div class="card-body">
+ 
+        <table id="tblusers" class="table table-striped table-bordered" cellspacing="0" width="100%">
+            <thead>
+                <tr>
+                    <th class="center">ID</th>
+                    <th class="center">Account Name</th>
+                    <th class="center">User FullName</th>
+                    <th class="center">User Name</th>
+                    <th class="center">User Password</th>
+                    <th class="center">User Type</th>
+                    <th class="center">Mobile Number</th>
+                    <th class="center">Email</th>
+                    <th class="center">Status</th>
+                    <th class="center">Edit</th>
+                </tr>
+            </thead>
+            <tbody>
+                @{
+                    int i = 1;
+                    foreach (var item in ViewBag.users)
+                    {
+                        <tr>
+                            <td>@i</td>
+                            <td>@item.CATEG_NAME</td>
+                            <td>@item.USERS_FULLNAME</td>
+                            <td>@item.USERS_USERNAME</td>
+                            <td>@item.USERS_PASSWORD</td>
+                            <td>@item.USERROLE_NAME</td>
+                            <td>@item.Mobilenumber</td>
+                            <td>@item.Email</td>
+                            @*<td>@item.USERS_STATUS</td>*@
+
+                            @if (item.USERS_STATUS == "Active")
+                            {
+                                <td>@item.USERS_STATUS</td>
+                                <td>
+                                    @*<input type="button" value="IN ACTIVE" style="width:100px" onclick="UPDATESTATUS(0,@item.CATEG_CATETYPE_ID)" class="btn btn-danger" />*@
+                                    @*<input type="button" value="EDIT" onclick="EDIT(@item.USERS_ID)" class="btn btn-primary" />*@
+									<a href='#' onclick="EDIT(@item.USERS_ID)" class='btn btn-tbl-edit btn-xs'><i class='fa fa-pencil'></i></a>
+                                </td>
+                            }
+                            else
+                            {
+                                <td>@item.USERS_STATUS</td>
+                                <td>
+                                    @*<input type="button" value="IN ACTIVE" style="width:100px" onclick="UPDATESTATUS(0,@item.CATEG_CATETYPE_ID)" class="btn btn-danger" />*@
+                                    @*<input type="button" value="EDIT" onclick="EDIT(@item.USERS_ID)" class="btn btn-primary" />*@
+									<a href='#' onclick="EDIT(@item.USERS_ID)" class='btn btn-tbl-edit btn-xs'><i class='fa fa-pencil'></i></a>
+                                </td>
+                            }
+                        </tr>
+                            i++;
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+
+</div>
+
+    
+<script>
+$(document).ready(function(){
+    $('#tblusers').dataTable();
+    bindroles();
+});
+    window.onload = function () {
+        $("#divrow").hide();
+
+        $("#btnupdate").hide();
+    }
+
+
+    //$('#tblusers').DataTable({
+    //    dom: 'Bfrtip',
+    //    buttons: [
+    //        //'copy', 'csv', 'excel', 'pdf', 'print'
+    //        'excel', 'pdf', 'print'
+    //    ]
+    //});
+
+    function showrow()
+    {
+        $("#divrow").show();
+        if (categType == 3) {
+            $('#ddlroles').val(4);
+            $('#ddlroles').attr("disabled", "disabled");
+            $("#ddlroles").val(4).trigger('change');
+        }
+    }
+
+
+
+    function bindroles() {
+       
+        
+            $.post("/Home/Bindroles", function (data) {
+                var dataT = data['data'];
+
+                var opt = "<option value='0'>-Select-</option>";
+                for (var i = 0; i < dataT.length; i++) {
+                    opt += "<option value='" + dataT[i].USERROLE_ID + "'>" + dataT[i].USERROLE_NAME + "</option>";
+                }
+                $("#ddlroles").text("");
+                $('#ddlroles').append(opt);
+            });
+            
+    }
+
+    function bindusers() {
+        var ID = $("#ddlroles").val();
+        if (ID != 0) {
+            $.post("/Home/bindclient", { "ID": ID }, function (data) {
+
+                var dataT = data['data'];
+                var opt = "<option value='0'>-Select-</option>";
+                for (var i = 0; i < dataT.length; i++) {
+                    if (categType == 3) 
+                        {
+                        opt += "<option value='" + dataT[i].CATEG_ID + "' selected>" + dataT[i].CATEG_NAME + "</option>";
+                        $('#ddlclient').attr("disabled", "disabled");
+                        }
+                    else{
+                        opt += "<option value='" + dataT[i].CATEG_ID + "'>" + dataT[i].CATEG_NAME + "</option>";
+                        }
+                }
+                $("#ddlclient").text("");
+                $('#ddlclient').append(opt);
+              //  $('#ddlclient').select3();
+            });
+        }
+    }
+    function EDIT(ID) {
+        
+        localStorage.setItem("USER_ID",ID);
+        $.post("/Home/frm_edit_user", { "USER_ID": ID }, function (data) {
+            
+            $("#divrow").show();
+            $("#btnsave").hide();
+            $("#btnupdate").show();
+           // console.log(data);
+            var dataT = data['data'];
+         
+            $("#ddlroles").val(dataT[0].USERS_ROLE_ID);
+            $("#ddlroles").attr("disabled", "disabled");
+           // bindusers();
+            $("#txtfullname").val(dataT[0].USERS_FULLNAME);
+            $("#txtpassword").val(dataT[0].USERS_PASSWORD);
+            $("#txtusername").val(dataT[0].USERS_USERNAME);
+            $("#hid_username").val(dataT[0].USERS_USERNAME);
+           // $("#ddlclient").val(dataT[0].USERS_CATEGORY_ID);
+            //window.setTimeout(function () {
+            //    $("#ddlclient").val(dataT[0].USERS_CATEGORY_ID);
+            //}, 1000);
+            var opt = "";
+            opt += '<option value="0">-Select -</option>'
+
+            opt += '<option value=' + dataT[0].USERS_CATEGORY_ID + ' selected>' + dataT[0].CATEG_NAME + '</option>'
+
+            $("#ddlclient").text("");
+            $("#ddlclient").append(opt);
+            $("#ddlclient").attr("disabled","disabled");
+            if (dataT[0].USER_ST == 'True') {
+                $("#chkstatus").prop('checked', true);
+            }
+        });
+    }
+  
+
+    function Save(id ) {
+        USER_ID=0;
+        if (id == "save") {
+            btn = "BTN_SAVE";
+            
+        }
+        else {
+            var ID = localStorage.getItem("USER_ID");
+            USER_ID=ID
+            btn = "BTN_UPDATE";
+        }
+        var Status = false;
+      
+        if ($("#chkstatus").is(':checked') == true) {
+            Status = true;
+        }
+       
+        //string btn,string ClientName,int USER_CATEG_ID,string USER_NAME,string USER_ID,string USER_FULLNAME,string USER_PASSWORD,string USER_TYPE,string USER_STATUS
+        $.post("/Home/btn_User_Save_Click", {
+            "btn": btn, "ClientName": $("#ddlclient option:selected").text(), "USER_CATEG_ID": $("#ddlclient").val(), "USER_NAME": $("#txtusername").val(), "USER_ID": USER_ID,
+            "USER_FULLNAME": $("#txtfullname").val(), "USER_PASSWORD": $("#txtpassword").val(), "USER_TYPE": $("#ddlroles").val(), "USER_STATUS": Status, "ORG_USERNAME": $("#hid_username").val()
+        }, function (data) {
+            var dataT = data['data']
+           
+            if (dataT == "true") {
+                alert("User created successfully..");
+                location.reload();
+            } else {
+                alert(dataT);
+            }
+
+        });
+    }
+
+
+
+
+
+
+
+
+
+</script>

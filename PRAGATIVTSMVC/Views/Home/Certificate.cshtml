@@ -1,0 +1,489 @@
+﻿
+@{
+    ViewBag.Title = "Certificate";
+    Layout = "~/Views/Shared/Layout2.cshtml";
+}
+
+<div class="masonry-item col-md-12">
+    <form class="container" id="needs-validation" novalidate>
+        <input type="hidden" id="hid_deviceid" value="@ViewBag.DeviceID" />
+        <div class="bgc-white p-20 bd">
+            <h6 class="c-grey-900">Install Info</h6>
+
+
+            <div class="row">
+                <div class="col-md-3 mb-3">
+                    <label for="validationCustom01">Type</label>
+                    <select id="drp_type" class="form-control">
+                        <option value="0">--Select Type--</option>
+                        <option value="1">New</option>
+                        <option value="2">Renew</option>
+                    </select>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <label for="validationCustom02">Fitment Date</label>
+                    <input type="text" class="form-control" id="fitmentDate" value="@ViewBag.FitmentDate" required>
+                    <div class="invalid-feedback">Please provide a valid zip.</div>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <label for="validationCustom02">Installation Date</label>
+                    <input type="text" class="form-control" id="Install_Date" value="@ViewBag.InstallDate" required>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <label for="validationCustom02">Renew Date</label>
+                    <input type="text" class="form-control" id="Renew_Date" value="@ViewBag.RenewDate" required>
+                </div>
+            </div>
+
+            
+    </div>
+    <div class="bgc-white p-20 bd">
+        <h6 class="c-grey-900">Vehicle Details</h6>
+
+     
+            <div class="row">
+                <div class="col-md-3 mb-3">
+                    <label for="validationCustom02">Vehicle RegNumber</label>
+                    <input type="text" class="form-control" id="txt_vehicleRegNum" placeholder="Vehicle Regnumber" disabled="disabled" value="@ViewBag.vehRegNum" required>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <label for="validationCustom01">Chassis Number</label>
+                    <input type="text" class="form-control" id="txt_chassisNumber" placeholder="Chassis Number" value="" required>
+
+                </div>
+                <div class="col-md-3 mb-3">
+                    <label for="validationCustom02">Engine Number</label>
+                    <input type="text" class="form-control" id="txt_engineNumber" placeholder="Engine Number" value="" required>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <label for="validationCustom02">Vehicle Type</label>
+                    <select id="drp_vehtype" class="form-control">
+                        <option value="0" selected>--Select--</option>
+                        <option value="1">Auto</option>
+                        <option value="2">Bus</option>
+                        <option value="3">Cargo</option>
+                        <option value="4">Car</option>
+                        <option value="5">Debris</option>
+                        <option value="6">Fireescape</option>
+                        <option value="7">Fire</option>
+                        <option value="8">Roller</option>
+                        <option value="9">School_bus</option>
+                        <option value="10">Tanker</option>
+                        <option value="12">Tractor</option>
+                        <option value="13">Bulldozer</option>
+                        <option value="14">Tipper</option>
+                        <option value="15">Tipper</option>
+                        <option value="16">Oil Tanker</option>
+                        <option value="17">Scooter</option>
+                        <option value="18">Student</option>
+                        <option value="19"></option>
+                    </select>
+                </div>
+                
+            </div>
+            <div class="row">
+                <div class="col-md-3 mb-3">
+                    <label for="validationCustom02">Vehicle Maker</label>
+                    <input type="text" class="form-control" id="txt_vehicleMaker" placeholder="Vehicle Maker" value="" required>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <label for="validationCustom01">Vehicle Model</label>
+                    <input type="text" class="form-control" id="txt_model" placeholder="model" value="" required>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <label for="validationCustom02">Registration Date</label>
+                    <input type="text" class="form-control" id="Reg_Date"  value="" required>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <label for="validationCustom02">Model Year</label>
+                    <input type="text" class="form-control" id="txt_year" value="" required>
+                </div>
+                
+            </div>
+      
+    </div>
+    <div class="bgc-white p-20 bd">
+        <h6 class="c-grey-900">Device Details</h6>
+
+       
+            <div class="row">
+                <div class="col-md-3 mb-3">
+                    <label for="validationCustom01">Name</label>
+                    <input type="text" class="form-control" id="txt_deviceName"  placeholder="Device Name" disabled="disabled" value="@ViewBag.deviceName" required>
+
+                </div>
+                <div class="col-md-3 mb-3">
+                    <label for="validationCustom02"> IMEI </label>
+                    <input type="text" class="form-control" id="txt_IMEI" placeholder="IMEI" disabled="disabled" value="@ViewBag.IMEI" required>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <label for="validationCustom02">SIM Number</label>
+                       <input type="text" class="form-control" id="txt_simnumber" placeholder="SIM Number " disabled="disabled" value="@ViewBag.SimNumber" required>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <label for="validationCustom02">Network Operator</label>
+                    <input type="text" class="form-control" id="txt_operator" placeholder="Operator" value="" required>
+                </div>
+            </div>
+      
+
+    </div>
+    <div class="bgc-white p-20 bd">
+        <h6 class="c-grey-900">Customer Details</h6>
+
+            <div class="row">
+                <div class="col-md-3 mb-3">
+                    <label for="validationCustom01">Customer Name</label>
+                    <input type="text" class="form-control" id="txt_CustomerName" placeholder="Customer Name" value="@ViewBag.CustomerName" required>
+
+                </div>
+                <div class="col-md-3 mb-3">
+                    <label for="validationCustom02"> Mobile </label>
+                    <input type="text" class="form-control" id="txt_Mobile" placeholder="Mobile Number" value="@ViewBag.MobileNo" required>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <label for="validationCustom02">Pincode</label>
+                    <input type="text" class="form-control" id="txt_pincode" onchange="getAddress()"   placeholder="pincode" value="@ViewBag.PinCode" required>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <label for="validationCustom02">Country</label>
+                    <select id="ddlcountry" class="form-control">
+                        <option value="1">-India-</option>
+                     
+                    </select>
+                </div>
+               
+                
+            </div>
+            <div class="row">
+                <div class="col-md-3 mb-3">
+                    <label for="validationCustom02">State</label>
+                    <select id="ddlstate" class="form-control">
+                        <option value="0">-Select-</option>
+                    </select>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <label for="validationCustom02">City</label>
+                    <select id="ddlcity" class="form-control">
+                        <option value="0">-Select-</option>
+                    </select>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <label for="validationCustom02">Division</label>
+                    <select id="ddlDivision" class="form-control">
+                        <option value="0">-Select-</option>
+                    </select>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <label for="validationCustom02">Area</label>
+                    <select id="ddlArea" class="form-control">
+                        <option value="0">-Select-</option>
+                    </select>
+                </div>
+              
+            </div>
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label for="validationCustom02">Address</label>
+                <input type="text" class="form-control" id="txt_address" placeholder="Adderss" value="@ViewBag.CategAddress" required>
+            </div>
+            
+           
+        </div>
+        
+    </div>
+    <div class="bgc-white p-20 bd">
+        <h6 class="c-grey-900">Documents Upload</h6>
+
+       
+            <div class="row">
+                <div class="col-md-4 mb-3">
+                    <label for="validationCustom01">Vehicle</label>
+                    <input type="file" class="form-control" id="file_vehicle" required>
+
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label for="validationCustom02"> RC </label>
+                    <input type="file" class="form-control" id="file_RC"  required>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label for="validationCustom02">Device</label>
+                    <input type="file" class="form-control" id="file_device"  required>
+                </div>
+                
+            </div>
+            
+            <button class="btn btn-primary" id="btn_submit" onclick="savedata()" type="button" >Submit </button>
+       
+
+    </div>
+ </form>
+    @*<script type="text/javascript">
+        ! function () {
+            "use strict";
+            window.addEventListener("load", function () {
+                var t = document.getElementById("needs-validation");
+                t.addEventListener("submit", function (e) {
+                    !1 === t.checkValidity() && (e.preventDefault(), e.stopPropagation()), t.classList.add("was-validated")
+                    
+                }, !1)
+            }, !1)
+        }()
+       
+    </script>*@
+    <script>
+        
+        $(document).ready(function () {
+            $('#fitmentDate').bootstrapMaterialDatePicker
+               ({
+                
+                   format: 'MM/DD/YYYY',
+                   time: false,
+                   clearButton: true
+
+               });
+            $('#Install_Date').bootstrapMaterialDatePicker
+             ({
+               
+                 format: 'MM/DD/YYYY',
+                 time: false,
+                 clearButton: true
+
+             });
+            $('#Renew_Date').bootstrapMaterialDatePicker
+             ({
+               
+                 format: 'MM/DD/YYYY',
+                 time: false,
+                 clearButton: true
+
+             });
+            $('#Reg_Date').bootstrapMaterialDatePicker
+            ({
+
+                format: 'MM/DD/YYYY',
+                time: false,
+                clearButton: true
+
+            });
+
+            getAddress();
+        });
+        function bindsates() {
+            if ($("#ddlcountry").val() != '0') {
+                var ID = $("#ddlcountry").val();
+                $.post("/Home/getstate", { "CountryID": ID }, function (data) {
+
+                    var dataT = data['data'];
+                    var opt = "<option value='0'>-Select-</option>";
+                    for (var i = 0; i < dataT.length; i++) {
+                        opt += "<option value='" + dataT[i].STATE_ID + "'>" + dataT[i].STATE_NAME + "</option>";
+                    }
+                    $("#ddlstate").text("");
+                    $('#ddlstate').append(opt);
+                });
+            }
+        }
+        function bindcity() {
+            if ($("#ddlstate").val() != '0') {
+                var ID = $("#ddlstate").val();
+                $.post("/Home/getcity", { "StateID": ID }, function (data) {
+
+                    var dataT = data['data'];
+                    var opt = "<option value='0'>-Select-</option>";
+                    for (var i = 0; i < dataT.length; i++) {
+                        opt += "<option value='" + dataT[i].CITY_CITYID + "'>" + dataT[i].CITY_NAME + "</option>";
+                    }
+                    $("#ddlcity").text("");
+                    $('#ddlcity').append(opt);
+                });
+            }
+        }
+        function getAddress()
+        {
+           
+            var pincode=$('#txt_pincode').val();
+
+            $.post("/Home/getAddressByPincode", { "Pincode": pincode }, function (data) {
+                var opt="",opt1="",opt2="",opt3="";
+
+                var dataT = data['data'];
+                //bind Area Dropdown
+                var opt = "<option value='0'>-Select-</option>";
+                if (dataT.length > 0) {
+                    for (var i = 0; i < dataT.length; i++) {
+                        opt += "<option value='" + dataT[i].area_id + "'>" + dataT[i].area_name + "</option>";
+                    }
+                    $("#ddlArea").text("");
+                    $('#ddlArea').append(opt);
+
+                    //bind Country dropdown
+
+                    opt1 += "<option value='0'>-Select-</option>";
+                    opt1 += "<option value='" + dataT[0].country_id + "' selected>" + dataT[0].country_name + "</option>";
+                    $("#ddlcountry").text("");
+                    $('#ddlcountry').append(opt1);
+
+                    //bind States
+                    opt2 += "<option value='0'>-Select-</option>";
+                    opt2 += "<option value='" + dataT[0].state_id + "' selected>" + dataT[0].state_name + "</option>";
+                    $("#ddlstate").text("");
+                    $('#ddlstate').append(opt2);
+
+                    //bind Cities
+                    opt3 += "<option value='0'>-Select-</option>";
+                    opt3 += "<option value='" + dataT[0].city_id + "' selected>" + dataT[0].city_name + "</option>";
+                    $("#ddlcity").text("");
+                    $('#ddlcity').append(opt3);
+
+                    //bind Divisions
+                    var state_id = dataT[0].state_id;
+                    $.post("/Home/getDivisions", { "StateId": state_id }, function (data) {
+                        var opt4 = "";
+
+                        var dataT = data['data'];
+                        var opt4 = "<option value='0'>-Select-</option>";
+                        for (var i = 0; i < dataT.length; i++) {
+                            opt4 += "<option value='" + dataT[i].ID + "'>" + dataT[i].DIVISION_NAME + "</option>";
+                        }
+                        $("#ddlDivision").text("");
+                        $('#ddlDivision').append(opt4);
+                    });
+                }
+                else
+                {
+                    alert("Invalid Pincode");
+                }
+            });
+        }
+        function Save() {
+
+            
+            var result = validateForm();
+            if(result==true)
+            {
+                alert("Valid")
+            }
+            else {
+                alert("Invalid");
+            }
+                //var isValid = true;
+                // $('input[type="text"]').each(function () {
+                //    if ($.trim($(this).val()) == '') {
+                //        isValid = false;
+                //        $(this).css({
+                //            "border": "1px solid red",
+                           
+                //        });
+                //    }
+                //    else {
+                //        $(this).css({
+                //            "border": "",
+                //            "background": ""
+                //        });
+                //    }
+                //});
+                // if (isValid == false)
+                // {
+                //     e.preventDefault();
+                // }
+                    
+                // else {
+                //     alert('Thank you for submitting');
+            // }
+
+            
+            }
+        function validateForm() {
+            
+            var isValid = true;
+            $("input").each(function () {
+                var element = $(this);
+                if (element.val() == "") {
+                    $(this).css({
+                              "border": "1px solid blue",
+                           
+                     });
+                    isValid = false;
+                }
+                else {
+                    $(this).css({
+                        "border": "",
+
+                    });
+                }
+            });
+            return isValid;
+        }
+        function savedata()
+        {
+            
+            var formData = new FormData();
+         
+            var veh_file = document.getElementById("file_vehicle").files[0];
+
+      
+            formData.append("Vehicle_image", veh_file);
+
+            var rc_file = document.getElementById("file_RC").files[0];
+            formData.append("RC_image", rc_file);
+
+            var device_file = document.getElementById("file_device").files[0];
+            formData.append("Device_image", device_file);
+
+
+
+
+            formData.append("RENEW_TYPE", $("#drp_type").val());
+            formData.append("fitment_date", $("#fitmentDate").val());
+            formData.append("installDate", $("#Install_Date").val());
+            formData.append("Renew_Date", $("#Renew_Date").val());
+            formData.append("ChassisNumber", $('#txt_chassisNumber').val());
+            formData.append("EngineNumber", $("#txt_engineNumber").val());
+            formData.append("VehType", $("#drp_vehtype Option:selected").text());
+            formData.append("VehMaker", $("#txt_vehicleMaker").val());
+            formData.append("VehModel", $("#txt_model").val());
+            formData.append("RegDate", $("#Reg_Date").val());
+            formData.append("year", $("#txt_year").val());
+            formData.append("DeviceName", $("#txt_deviceName").val());
+            formData.append("DeviceIMEI", $("#txt_IMEI").val());
+            formData.append("SimNumber", $("#txt_simnumber").val());
+            formData.append("Operator", $("#txt_operator").val());
+            formData.append("CustomerName", $("#txt_CustomerName").val());
+            formData.append("MobileNumber", $("#txt_Mobile").val());
+
+           // var address = $("#txt_address Option:selected").text() + "," + $("#ddlArea Option:selected").text() + "," + $("#ddlDivision Option:selected").text() + "," + $("#ddlcity Option:selected").text() + "," + $("#ddlstate Option:selected").text() +
+           //     "," + $("#ddlcountry Option:selected").text() + "," + $("#txt_pincode Option:selected").text();
+
+            formData.append("Address", $("#txt_address").val());
+            formData.append("pincode", $("#txt_pincode").val());
+            formData.append("division", $("#ddlDivision Option:selected").text());
+            formData.append("state", $("#ddlstate Option:selected").text());
+            formData.append("DeviceId", $("#hid_deviceid").val());
+            formData.append("Veh_reg", $("#txt_vehicleRegNum").val());
+            $.ajax({
+                url: "/Home/Save_RenewalData",
+                type: 'POST',
+                cache: false,
+                contentType: false,
+                processData: false,
+                data: formData,
+                success: function (data) {
+                    var dataT = data['data']
+                  //  alert(dataT);
+                    if (dataT == "true") {
+                        alert("Saved Successfully");
+                        location.href = "/Home/generateCertificate?DeviceId=" + $("#hid_deviceid").val() + "";
+                    }
+                    else if (dataT == "false") {
+                        alert("Failed");
+                    }
+                    else {
+                        alert(dataT);
+                    }
+                }
+            });
+        }
+        
+    </script>
+</div>

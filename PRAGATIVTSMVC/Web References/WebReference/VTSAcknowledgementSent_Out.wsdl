@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:p2="http://bajajauto.com/VTS/IB/Acknowledgement" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy" xmlns:p1="http://bajajauto.co.in/VTS/IB/Acknowledgement" name="VTSAcknowledgementSent_Out" targetNamespace="http://bajajauto.co.in/VTS/IB/Acknowledgement" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:documentation />
+  <wsp:UsingPolicy wsdl:required="true" />
+  <wsp:Policy wsu:Id="OP_VTSAcknowledgementSent_Out" />
+  <wsdl:types>
+    <xsd:schema xmlns="http://bajajauto.co.in/VTS/IB/Acknowledgement" targetNamespace="http://bajajauto.co.in/VTS/IB/Acknowledgement" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+      <xsd:complexType name="VTSAcknowledgementSent">
+        <xsd:annotation>
+          <xsd:appinfo source="http://sap.com/xi/VersionID">8bd00456204311e78109000000179b8e</xsd:appinfo>
+        </xsd:annotation>
+        <xsd:sequence>
+          <xsd:element minOccurs="0" maxOccurs="unbounded" name="Records">
+            <xsd:annotation>
+              <xsd:appinfo source="http://sap.com/xi/TextID">ef13940ec28d11e6c878ba8a6070166a</xsd:appinfo>
+            </xsd:annotation>
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element minOccurs="0" name="COSIGNMENT_ID" type="xsd:string">
+                  <xsd:annotation>
+                    <xsd:appinfo source="http://sap.com/xi/TextID">db23b9ffc28d11e681e2ba8a6070166a</xsd:appinfo>
+                  </xsd:annotation>
+                </xsd:element>
+                <xsd:element minOccurs="0" name="Status" type="xsd:string">
+                  <xsd:annotation>
+                    <xsd:appinfo source="http://sap.com/xi/TextID">81413a77c28111e69b918cdcd441da9c</xsd:appinfo>
+                  </xsd:annotation>
+                </xsd:element>
+                <xsd:element minOccurs="0" name="Message" type="xsd:string">
+                  <xsd:annotation>
+                    <xsd:appinfo source="http://sap.com/xi/TextID">81413a78c28111e696278cdcd441da9c</xsd:appinfo>
+                  </xsd:annotation>
+                </xsd:element>
+                <xsd:element minOccurs="0" name="timestamp" type="xsd:string">
+                  <xsd:annotation>
+                    <xsd:appinfo source="http://sap.com/xi/TextID">81413a79c28111e6827b8cdcd441da9c</xsd:appinfo>
+                  </xsd:annotation>
+                </xsd:element>
+              </xsd:sequence>
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:sequence>
+      </xsd:complexType>
+    </xsd:schema>
+    <xsd:schema xmlns="http://bajajauto.com/VTS/IB/Acknowledgement" targetNamespace="http://bajajauto.com/VTS/IB/Acknowledgement" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+      <xsd:import namespace="http://bajajauto.co.in/VTS/IB/Acknowledgement" />
+      <xsd:element name="VTSAcknowledgementSent" type="p1:VTSAcknowledgementSent" />
+    </xsd:schema>
+  </wsdl:types>
+  <wsdl:message name="VTSAcknowledgementSent">
+    <wsdl:documentation />
+    <wsdl:part name="VTSAcknowledgementSent" element="p2:VTSAcknowledgementSent" />
+  </wsdl:message>
+  <wsdl:portType name="VTSAcknowledgementSent_Out">
+    <wsdl:documentation />
+    <wsdl:operation name="VTSAcknowledgementSent_Out">
+      <wsdl:documentation />
+      <wsp:Policy>
+        <wsp:PolicyReference URI="#OP_VTSAcknowledgementSent_Out" />
+      </wsp:Policy>
+      <wsdl:input message="p1:VTSAcknowledgementSent" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="VTSAcknowledgementSent_OutBinding" type="p1:VTSAcknowledgementSent_Out">
+    <binding transport="http://schemas.xmlsoap.org/soap/http" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+    <wsdl:operation name="VTSAcknowledgementSent_Out">
+      <operation soapAction="http://sap.com/xi/WebService/soap1.1" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      <wsdl:input>
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </wsdl:input>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="VTSAcknowledgementSent_OutService">
+    <wsdl:port name="HTTP_Port" binding="p1:VTSAcknowledgementSent_OutBinding">
+      <address location="http://agni.bajajauto.co.in:9095/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_VTS&amp;receiverParty=&amp;receiverService=&amp;interface=VTSAcknowledgementSent_Out&amp;interfaceNamespace=http%3A%2F%2Fbajajauto.co.in%2FVTS%2FIB%2FAcknowledgement" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+    </wsdl:port>
+    <wsdl:port name="HTTPS_Port" binding="p1:VTSAcknowledgementSent_OutBinding">
+      <address location="https://podev.bajajauto.co.in:50001/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_VTS&amp;receiverParty=&amp;receiverService=&amp;interface=VTSAcknowledgementSent_Out&amp;interfaceNamespace=http%3A%2F%2Fbajajauto.co.in%2FVTS%2FIB%2FAcknowledgement" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

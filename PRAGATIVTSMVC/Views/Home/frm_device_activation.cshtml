@@ -1,0 +1,294 @@
+﻿@{
+    ViewBag.Title = "frm_device_activation";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    .select2 {
+        width: 100% !important;
+    }
+</style>
+
+<div class="container-fluid">
+    <div class="row page-titles">
+        <div class="col-md-5 col-8 align-self-center">
+            <h3 class="text-themecolor m-b-0 m-t-0">Vehicle Data Entry</h3>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/Home/frm_GridTrack_Distance">Home</a></li>
+                <li class="breadcrumb-item active">Vehicle Data Entry</li>
+            </ol>
+        </div>
+    </div>
+    <div class="row" style="margin-bottom:23px">
+        <div class="col-lg-6">
+            <b>INSTALLATION TYPE:</b> <select class="form-control" id="ddlinstallation" onchange="installationchange()">
+                <option value="1">New Installation</option>
+                <option value="2">Update/Replace</option>
+            </select>
+        </div>
+    </div>
+    <div class="row" id="divrow">
+        <div class="col-lg-6">
+            CLIENT :<select class="form-control search-box" id="ddlcategs" onchange="binddevices()">
+                <option value="0">-Select-</option>
+                @foreach (var item in ViewBag.categs)
+                {
+                    <option value="@item.CATEG_ID">@item.CATEG_NAME</option>
+                }
+            </select>
+            DEVICE ID :<select class="form-control search-box" id="ddldevice">
+                <option value="0">-Select-</option>
+            </select>
+            DRIVER NAME:<input type="text" class="form-control" id="txtdrivername" />
+        </div>
+        <div class="col-lg-6">
+            <div id="divvehicle">
+                VEHICLE NO:<select class="form-control search-box" onchange="bindvehicledetails()" id="ddlvehicle">
+                    <option value="0">-Select-</option>
+                </select>
+            </div>
+            <div id="divtxtvehicle">
+                VEHICLE NO:<input type="text" class="form-control" id="txtvehicle" />
+            </div>
+            SIM NO: <input type="checkbox" id="chksim" onchange="checksim()"> CHECK IF CUSTOMER SIM<span id="spnsims">
+    <select class="form-control search-box" id="ddlsims">
+        <option value="0">-Select-</option>
+    </select>
+</span>
+            <input type="text" id="txtcustomersim" style="display:none" class="form-control" />
+            DRIVER NUMBER:<input type="text" class="form-control" id="txtdrivernumber" />
+        </div>
+        <div style="margin-top: 23px; margin-bottom: 16px;">
+            <input type="button" id="btnsave" class="btn btn-success" onclick="Save()" value="Submit" />
+            <input type="button" id="btnupdate" class="btn btn-success" onclick="Update()" value="Update" />
+        </div>
+    </div>
+</div>
+<script>
+    window.onload = function () {
+
+        $("#btnupdate").hide();
+        $("#ddlcategs").select2({
+            minimumInputLength: 2
+        });
+        $("#divvehicle").hide();
+
+
+
+    }
+
+    function installationchange() {
+
+        if ($("#ddlinstallation").val() == "2") {
+
+            $("#btnsave").hide();
+            $("#divtxtvehicle").hide();
+            $("#btnupdate").show();
+            $("#divvehicle").show();
+
+        }
+        else {
+            $("#btnupdate").hide();
+            $("#divvehicle").hide();
+            $("#btnsave").show();
+            $("#divtxtvehicle").show();
+        }
+        binddevices();
+        bindsims();
+    }
+
+    function checksim()
+    {
+        if ($("#chksim").is(':checked', true)) {
+          
+          //  $("#ddlsims").css('display', 'none');
+           // $("#ddlsims").hide();
+            $("#spnsims").hide();
+            $("#txtcustomersim").css('display', 'block');
+        }
+        else {
+            $("#spnsims").show();
+            $("#txtcustomersim").css('display', 'none');    
+        }
+    }
+
+
+    function binddevices() {
+
+        var type = "";
+        
+        if ($("#ddlinstallation").val() == "2") {
+            type = "ALL_DEVICES";
+        }
+        else {
+           
+            type = "FREE_DEVICES";
+        }
+       // alert(type);
+        if ($("#ddlcategs").val() !='0'){
+        $.post("/Home/" + type + "", { "CATEGID": $("#ddlcategs").val(), "CATEG_NAME": $("#ddlcategs Option:selected").text() }, function (data) {
+
+            $("#ddldevice").empty();
+            var dataT = data['data'];
+            $("#ddldevice").empty();
+            var opt = "<option value='0'>-Select-</option>";
+            for (var i = 0; i < dataT.length; i++) {
+                opt += "<option value='" + dataT[i].DEVICE_ID + "'>" + dataT[i].DEVICE_NAME + "</option>";
+            }
+            $("#ddldevice").text("");
+            $('#ddldevice').append(opt);
+            $("#ddldevice").select2({
+                minimumInputLength: 2
+            });
+        });
+        }
+        allvehicles();
+        bindsims();
+    }
+
+
+
+    function allvehicles() {
+        if ($("#ddlcategs").val() != '0')
+        {
+            $.post("/Home/allvehicles_categ", { "CATEG_ID": $("#ddlcategs").val(), "CATEGNAME": $("#ddlcategs Option:selected").text() }, function (data) {
+                var dataT = data['data'];
+                $("#ddlvehicle").empty();
+                var opt = "<option value='0'>-Select-</option>";
+                for (var i = 0; i < dataT.length; i++) {
+                    opt += "<option value='" + dataT[i].VEHICLES_ID + "'>" + dataT[i].VEHICLES_REGNUMBER + "</option>";
+                }
+                $("#ddlvehicle").text("");
+                $('#ddlvehicle').append(opt);
+                $("#ddlvehicle").select2({
+                    minimumInputLength: 2
+                });
+            })
+        }
+       
+    }
+
+    function bindsims() {
+
+
+        var type = "";
+
+        if ($("#ddlinstallation").val() == "2") {
+            type = "ALL_SIMS";
+        }
+        else {
+            type = "FREE_SIMS";
+        }
+
+
+
+        $.post("/Home/" + type + "", function (data) {
+
+            $("#ddlsims").empty();
+            var dataT = data['data'];
+
+            //  $("#ddlsims").empty();
+            var opt = "<option value='0'>-Select-</option>";
+            for (var i = 0; i < dataT.length; i++) {
+                opt += "<option value='" + dataT[i].SIM_MNO + "'>" + dataT[i].SIM_SNO + "(" + dataT[i].SIM_MNO + ")" + "</option>";
+            }
+            $("#ddlsims").text("");
+            $('#ddlsims').append(opt);
+            $("#ddlsims").select2({
+                minimumInputLength: 2
+            });
+        });
+
+
+    }
+
+
+    function Save() {
+
+        var simno = "";
+        var stype="";
+        if ($("#chksim").is(':checked', true)) {
+            simno= $("#txtcustomersim").val()
+            stype="CUSTOMER";
+        }
+        else {
+            simno= $("#ddlsims").val()
+        }
+
+
+
+
+        $.post("/Home/SAVE_DATAENTRY", {
+            "CATEGID": $("#ddlcategs").val(), "CATEGNAME": $("#ddlcategs Option:selected").text(),
+            "DEVICEID": $("#ddldevice").val(), "VNO": $("#txtvehicle").val(), "SIMNO": simno,"SIMTYPE":stype,
+            "DRIVERNAME": $("#txtdrivername").val(), "DRIVERNUMBER": $("#txtdrivernumber").val()
+        }, function (data) {
+            var dataT = data['data'];
+
+            if (dataT == 'true') {
+                alert("insert successfully");
+                location.reload();
+            }
+            else {
+                alert(dataT);
+            }
+
+        });
+    }
+
+
+
+
+
+
+    function bindvehicledetails() {
+        $.post("/Home/GETVEHICLEDETAILS_VNO", { "CATEGID": $("#ddlcategs").val(), "CATEGNAME": $("#ddlcategs Option:selected").text(), "VNO": $("#ddlvehicle Option:selected").text() }, function (data) {
+
+          //  console.log(data)
+            var dataT = data['data'];
+        //    alert(dataT[0].DEVICE_ID);
+            $("#ddldevice").val(dataT[0].DEVICE_ID).trigger('change');
+            $("#txtdrivername").val(dataT[0].DRIVER_NAME);
+            $("#txtdrivernumber").val(dataT[0].DRIVERNUMBER);
+            $('#ddlsims').val(dataT[0].SIM_MNO).trigger('change');
+
+            localStorage.setItem("DRIVER_ID", dataT[0].DRIVER_ID);
+
+            localStorage.setItem("DEVICE_SIM_ID", dataT[0].DEVICE_SIM_ID)
+            localStorage.setItem("MODEL", dataT[0].MODEL);
+            localStorage.setItem("RVOLUME", dataT[0].VEHICLES_RESERVEVOLUME);
+        });
+    }
+
+
+
+
+    function Update() {
+       
+        var DRIVER_ID = localStorage.getItem("DRIVER_ID")
+        var  SIM_ID= localStorage.getItem("DEVICE_SIM_ID")
+        var model = localStorage.getItem("MODEL");
+        if (model == null || model == '' || model == 'null')
+        {
+            model = '0';
+        }
+        
+        var rvolume= localStorage.getItem("RVOLUME");
+        $.post("/Home/UPDATE_DATAENTRY", {
+            "CATEGID": $("#ddlcategs").val(), "CATEGNAME": $("#ddlcategs Option:selected").text(), "VNO": $("#ddlvehicle Option:selected").text(), "VID": $("#ddlvehicle").val(),
+            "SIMID": SIM_ID, "SIMNO": $("#ddlsims").val(), "DEVICEID": $("#ddldevice").val(), "DEVICENAME": $("#ddldevice Option:selected").text(),
+            "DRIVERID": DRIVER_ID, "DRIVERNUMBER": $("#txtdrivernumber").val(), "DRIVERNAME": $("#txtdrivername").val(),"MODEL":model,"RVOULME":rvolume
+        }, function (data) {
+
+            var dataT = data['data'];
+            if (dataT == 'true') {
+                alert("updated successfully");
+                location.reload();
+            }
+            else {
+                alert(dataT);
+            }
+        });
+    }
+
+</script>

@@ -1,0 +1,189 @@
+﻿
+@{
+    ViewBag.Title = "Route_Planning";
+    Layout = "~/Views/Shared/_NewLayout.cshtml";
+}
+<style>
+    .route{
+        width:200px;
+    }
+</style>
+<div class="row" id="divrow">
+    <div class="col-lg-12">
+        Select Vehicle:<select id="ddlVehicle" class="form-control route" >
+            <option value="0">-Select-</option>
+            @foreach (var item in ViewBag.Vehicles)
+            {
+                <option value="@item.VEHICLES_DEVICE_ID">@item.VEHICLES_REGNUMBER</option>
+            }
+
+        </select>
+        Route Name:<select class="form-control route" id="ddlRoute">
+            <option value="0">-Select-</option>
+            @*@foreach (var item in ViewBag.categ)
+                {
+                    <option value="@item.CATEG_ID">@item.CATEG_NAME</option>
+                }*@
+
+        </select>
+
+        Start Time: <input type="text" class="form-control route" id="txtstarttime" />
+
+        End Time : <input type="text" class="form-control route" id="txtendtime" />
+
+        Status: <select id="txtstatus" class="form-control route route">
+        <option value="0">Select Status</option>
+            <option value="1">Active</option>
+            <option value="0">Inactive</option><option value="2">Completed</option></select>
+
+        Weight : <input type="text" class="form-control route" id="txtweight" />
+
+        Trip NO : <input type="text" class="form-control route" id="txttripno" />
+        Trip Allowed Days : <input type="text" class="form-control route" id="txttripdays" />
+        Last Trip Completed Date : <input type="text" class="form-control route" id="txtcompleteddate" />
+    </div>
+    <div class="row"  style="margin-top:10px;">
+
+
+        <input type="button" id="btnsave" class="btn btn-success" style="margin-left:20px;" onclick="Save()" value="Submit" />
+        <input type="button" id="btnupdate" class="btn btn-success" onclick="Save('update')" style="margin-left:20px;" value="Update" />
+        <input type="button" value="BACK" style="margin-left:20px;" id="btnback" onclick="Back()" class="btn btn-danger" />
+    </div>
+</div>
+<div class="card card-box">
+    <div class="card-head">
+        <header>Route Planning</header>
+        <div class="tools">
+            <a class="fa fa-repeat btn-color box-refresh" href="javascript:;"></a>
+            <a class="t-collapse btn-color fa fa-chevron-down" href="javascript:;"></a>
+            <a class="t-close btn-color fa fa-times" href="javascript:;"></a>
+        </div>
+    </div>
+    <div class="card-body ">
+        <div>
+            <input type="button" id="btnadd" class="btn btn-success" onclick="showrow()" style="width:153px;margin-top:10px" value="ADD" />
+        </div>
+        <div class="table-scrollable">
+            <table id="tbldevices" border="1" style="width: 100%" class="mdl-data-table">
+                <thead>
+                    <tr>
+                        <th class="center">S.no</th>
+                        <th class="center">Vehicle RegNumber</th>
+                        <th class="center">Route Name</th>
+                        <th class="center">Route StartDate</th>
+                        <th class="center">Route EndDate</th>
+                    </tr>
+                </thead>
+                <tbody id="tbldevicebody"></tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        getallData();
+    });
+    window.onload = function () {
+        $("#divrow").hide();
+
+        $('#txtstarttime').bootstrapMaterialDatePicker
+       ({
+           format: 'MM/DD/YYYY',
+           time: false,
+           switchOnClick: true,
+       });
+        $('#txtendtime').bootstrapMaterialDatePicker
+      ({
+          format: 'MM/DD/YYYY',
+          time: false,
+          switchOnClick: true,
+      });
+
+        $('#txtcompleteddate').bootstrapMaterialDatePicker
+     ({
+         format: 'MM/DD/YYYY',
+         time: false,
+         switchOnClick: true,
+     });
+    }
+
+    function showrow() {
+        $("#divrow").show();
+
+    }
+
+    function Back() {
+        $("#divrow").hide();
+    }
+    
+    function Save()
+    {
+       
+
+            $.post("/Home/Save_RoutePlanning", { "VehilceNo": $("#ddlVehicle").val(), "RouteName": $("#ddlRoute").val(), "StartDate": $("#txtstarttime").val(), "EndDate": $("#txtendtime").val(), "Status": $("#txtstatus").val(), "Weight": $("#txtweight").val(), "TripNo": $("#txttripno").val(), "CompletedDate": $("#txtcompleteddate").val(), "NumDays": $("#txttripdays").val() }, function (data) {
+                //  console.log(data);
+                
+                var datat = data['data'];
+
+                if (datat == true) {
+
+                    alert("successfully inserted..");
+                    $("#divrow").hide();
+                    location.reload();
+                }
+                else {
+                    alert("this trip is already existed for this vehicle");
+                }
+
+            })
+       
+    }
+    function getallData() {
+        // $("#load").show();
+        $.post("/Home/Get_RoutePlanningData", function (data) {
+            //console.log(dataT);
+            var dataT = data['data'];
+            var arr = [];
+            for (var i = 0; i < dataT.length; i++) {
+
+                arr.push([i + 1, dataT[i].VEHICLES_REGNUMBER, dataT[i].ROUTE_NAME, dataT[i].STARTDATE, dataT[i].ENDDATE])
+                // tr = $('<tr/>');
+
+                //tr.append("<td>" + (i + 1) + "</td>");
+                //tr.append("<td>" + dataT[i].DEVICE_NAME + "</td>");
+                //tr.append("<td>" + dataT[i].DEVICE_ID + "</td>");
+                //tr.append("<td>" + dataT[i].CLIENT_NAME + "</td>");
+                //tr.append("<td>" + dataT[i].DEVICE_SERIALNUMBER + "</td>");
+                //tr.append("<td>" + dataT[i].SIM_NUMBER + "</td>");
+                //tr.append("<td>" + dataT[i].DEVICE_CALLNUMBER1 + "</td>");
+                //tr.append("<td>" + dataT[i].DEVICE_STATUS + "</td>");
+                //tr.append("<td><a href='#' onclick='EDIT(" + dataT[i].DEVICE_ID + ")' class='btn btn-tbl-edit btn-xs'><i class='fa fa-pencil'></i></a></td>");
+                //$("#tbldevices").append(tr);
+            }
+            $('#tbldevices').DataTable({
+                dom: 'Bfrtip',
+                buttons: [
+                    //'copy', 'csv', 'excel', 'pdf', 'print'
+                    'excel', 'pdf', 'print'
+                ],
+                data: arr,
+                deferRender: true,
+                // scrollY:        200,
+                scrollCollapse: true,
+                scroller: true,
+                processing: true,
+                columnDefs: [
+      { targets: 'no-sort', orderable: false }
+                ],
+                language: {
+                    'loadingRecords': '&nbsp;',
+                    'processing': 'Loading...'
+                }
+            });
+            // $("#load").hide();
+        });
+
+    }
+</script>
+
+

@@ -1,0 +1,24 @@
+<?xml version="1.0"?><!--Commentss: Vehicle Images-->
+<Items>
+  <Item Text="Auto" Value="1" ImageUrl="~/IMAGES/VEHICLEMODEL/Auto_Green.png" />
+  <Item Text="Bus" Value="2" ImageUrl="~/IMAGES/VEHICLEMODEL/bus_green.png" />
+  <Item Text="Cargo" Value="3" ImageUrl="~/IMAGES/VEHICLEMODEL/Cargo_Green_Truck.png" />
+  <Item Text="Car" Value="4" ImageUrl="~/IMAGES/VEHICLEMODEL/car_green.png" />
+  <Item Text="Debris" Value="5" ImageUrl="~/IMAGES/VEHICLEMODEL/Debris_green_truck.png" />
+  <Item Text="Fireescape" Value="6" ImageUrl="~/IMAGES/VEHICLEMODEL/fireescape_green.png" />
+  <Item Text="Fire" Value="7" ImageUrl="~/IMAGES/VEHICLEMODEL/Fire_Green_Truck.png" />
+  <Item Text="Roller" Value="8" ImageUrl="~/IMAGES/VEHICLEMODEL/Roller_green_truck.png" />
+  <Item Text="School_bus" Value="9" ImageUrl="~/IMAGES/VEHICLEMODEL/school_bus_green.png" />
+  <Item Text="Tanker" Value="10" ImageUrl="~/IMAGES/VEHICLEMODEL/Tanker_Green_Truck.png" />
+  <Item Text="Tractor" Value="12" ImageUrl="~/IMAGES/VEHICLEMODEL/Indian_Tractor_Green.png" />
+  <Item Text="Bulldozer" Value="13" ImageUrl="~/IMAGES/VEHICLEMODEL/Bulldozer_Green.png" />
+  <Item Text="Tipper" Value="14" ImageUrl="~/IMAGES/VEHICLEMODEL/tipper_green.png" />
+  <Item Text="Tipper" Value="15" ImageUrl="~/IMAGES/VEHICLEMODEL/solidWaste_green.png" />
+  <Item Text="Oil Tanker" Value="16" ImageUrl="~/IMAGES/VEHICLEMODEL/Oil_Tanker_Green.png" />
+  <Item Text="Scooter" Value="17" ImageUrl="~/IMAGES/VEHICLEMODEL/Scooter_Green.png" />
+  <Item Text="Student" Value="18" ImageUrl="~/IMAGES/VEHICLEMODEL/white_person.png" />
+  <!--<Item Text="Student" Value="19" ImageUrl="~/IMAGES/VEHICLEMODEL/ylw-per.png" />
+  <Item Text="Student" Value="20" ImageUrl="~/IMAGES/VEHICLEMODEL/red-per.png" />-->
+  <!--<Item Text="Student" Value="21" ImageUrl="~/IMAGES/VEHICLEMODEL/grn-per.png" />-->
+ 
+</Items>

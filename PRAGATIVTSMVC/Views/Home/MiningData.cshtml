@@ -1,0 +1,306 @@
+﻿
+@{
+    ViewBag.Title = "MiningData";
+    Layout = "~/Views/Shared/Layout2.cshtml";
+}
+<div id="load" style="display:none;"></div>
+<div class="row" id="divrow">
+    <input type="hidden" id="txtdeviceid" value="" />
+    <div class="col-lg-6">
+        
+        <div id="div_distributors">
+            Select Distributor:<select id="ddldistributor" class="form-control" onchange="LoadDealers()" style="width:400px">
+                <option value='0' selected>-Select Distributor-</option>
+            </select>
+        </div>
+        <div id="div_dealers">
+            Select Dealer:<select id="ddldealer" class="form-control" onchange="LoadCustomers()" style="width:400px;">
+                <option value='0' selected>-Select Dealer-</option>
+            </select>
+        </div>
+
+
+        Select Customers:<select id="ddlCustomers" class="form-control" onchange="LoadVehicles()" style="width:400px;">
+            <option value='0' selected>-Select Customer-</option>
+        </select>
+        Select Vehicles :
+     <div id="div_vehicles">
+        
+     </div>
+
+        <input type="button" id="btnsave" class="btn btn-primary" onclick="Save('save')" style="margin-top:10px;" value="Submit" />
+
+        <input type="button" value="BACK" style="margin-top:10px;" id="btnback" onclick="Back()" class="btn btn-tbl-delete" />
+    </div>
+
+
+</div>
+<div class="card card-box" id="div_table" style="margin-top:10px;">
+    <div class="card-body">
+        <div class="row">
+          
+            <label id="lbl_dist">Select Distributor:</label> <select id="drp_distributor" class="form-control" onchange="LoadDealersforData()" style="width:200px;"></select>
+
+            <label>Select Dealer:</label><select id="drp_dealer" class="form-control" onchange="LoadData()" style="width:200px;"></select>
+
+        </div>
+        <input type="button" class="btn btn-primary" onclick="showrow()" style="width:153px;margin-top:10px" value="ADD" />
+
+
+        <table id="tblminingData" class="table table-striped table-bordered" cellspacing="0" width="100%" style="margin-top:10px">
+            <thead>
+                <tr>
+                    <th class="center">ID</th>
+
+                    <th class="center">Account Name</th>
+
+                    <th class="center">Vehicle Number</th>
+                    <th class="center">Device Type</th>
+                    <th class="center">IMEI Number</th>
+                    <th class="center">Associate Date</th>
+                    <th class="center">Last Sync</th>
+                    <th class="center">Time Difference</th>
+                    <th class="center">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+               
+            </tbody>
+        </table>
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        // $("#load").show();
+        LoadDistributors();
+        $("#divrow").hide();
+    });
+    function showrow() {
+        $("#divrow").show();
+        $("#div_table").hide();
+    }
+    function Back() {
+        location.reload();
+    }
+    //Load Distributors
+    function LoadDistributors() {
+        d_ID = $("#ddlcategory").val();
+        $.post("/Home/getDistributors", { "CategID": 1 }, function (data) {
+
+            var dataT = data['data'];
+            var opt = "<option value='0'>-Select Distributor-</option>";
+            for (var i = 0; i < dataT.length; i++) {
+                opt += "<option value='" + dataT[i].CATEG_ID + "'>" + dataT[i].CATEG_NAME + "</option>";
+            }
+            $("#ddldistributor").text("");
+            $('#ddldistributor').append(opt);
+            $("#drp_distributor").text("");
+            $('#drp_distributor').append(opt);
+            var opt1 = "<option value='0'>-Select Dealer-</option>";
+            $('#drp_dealer').append(opt1);
+        });
+    }
+
+    //Load Dealers
+    function LoadDealers() {
+        d_ID = $("#ddldistributor").val();
+        $.post("/Home/getDealers", { "CategID": d_ID }, function (data) {
+
+            var dataT = data['data'];
+            var opt = "<option value='0' selected>-Select Dealer-</option>";
+            for (var i = 0; i < dataT.length; i++) {
+                opt += "<option value='" + dataT[i].CATEG_ID + "'>" + dataT[i].CATEG_NAME + "</option>";
+            }
+            $("#ddldealer").text("");
+            $('#ddldealer').append(opt);
+        });
+
+        //Load Distrubutor Customers
+
+
+        $.post("/Home/getCustomers", { "CategID": d_ID }, function (data) {
+
+            var dataT = data['data'];
+            var opt = "<option value='0'>-Select Customer-</option>";
+            for (var i = 0; i < dataT.length; i++) {
+                opt += "<option value='" + dataT[i].CATEG_ID + "'>" + dataT[i].CATEG_NAME + "</option>";
+            }
+            $("#ddlCustomers").text("");
+            $('#ddlCustomers').append(opt);
+        });
+
+
+    }
+
+    //Load Customers
+
+    function LoadCustomers() {
+        
+
+        if ($("#ddldistributor").val() != 0 && $("#ddldealer").val() != 0) {
+            d_ID = $("#ddldealer").val();
+        }
+        else if ($("#ddldistributor").val() != 0 && $("#ddldealer").val() == 0) {
+            d_ID = $("#ddldistributor").val();
+        }
+        else {
+            d_ID = localStorage.getItem("USERS_CATEG_ID");
+            $("#div_distributors").hide();
+            $("#div_dealers").hide();
+        }
+        $.post("/Home/getCustomers", { "CategID": d_ID }, function (data) {
+
+            var dataT = data['data'];
+            var opt = "<option value='0'>-Select Customer-</option>";
+            for (var i = 0; i < dataT.length; i++) {
+                opt += "<option value='" + dataT[i].CATEG_ID + "'>" + dataT[i].CATEG_NAME + "</option>";
+            }
+            $("#ddlCustomers").text("");
+            $('#ddlCustomers').append(opt);
+        });
+
+
+    }
+
+    function LoadDealersforData() {
+        d_ID = $("#drp_distributor").val();
+        $.post("/Home/getDealers", { "CategID": d_ID }, function (data) {
+
+            var dataT = data['data'];
+            var opt = "<option value='0' selected>-Select Dealer-</option>";
+            for (var i = 0; i < dataT.length; i++) {
+                opt += "<option value='" + dataT[i].CATEG_ID + "'>" + dataT[i].CATEG_NAME + "</option>";
+            }
+            $("#drp_dealer").text("");
+            $('#drp_dealer').append(opt);
+        });
+        LoadData();
+    }
+ var   arrform = [];
+    function LoadVehicles() {
+       
+
+        var ID = $("#ddlCustomers").val();
+        $('#div_vehicles').empty();
+        if (ID != '0') {
+            $.post("/Home/LoadVehicles", { "CATEG_ID": ID }, function (data) {
+                var dataT = data['data'];
+                var opt = "";
+               
+                for (var i = 0; i < dataT.length; i++) {
+                    arrform.push(dataT[i].DEVICE_ID);
+                    opt += "<span>" + dataT[i].DEVICE_NAME + "</span><input type='checkbox' style='margin-top:-21px;margin-left:60px' class='form-control'  id=chk_" + dataT[i].DEVICE_ID + "  />";
+                }
+              
+                $('#div_vehicles').append(opt);
+            });
+        }
+    }
+    function Save()
+    {
+        
+        var length = arrform.length;
+
+        var arr1 = [];
+     
+        for (var i = 0; i < length; i++) {
+
+            var chk = arrform[i];
+
+            if ($("#chk_" + chk).is(':checked') == true) {
+
+                arr1.push(chk);
+            }
+        }
+
+        var vehcleid = localStorage.setItem("vehID", arr1);
+
+        var frmids = localStorage.getItem("vehID");
+
+        $.post("/Home/AddMahaMiningAssociation", { "distID": $('#ddldistributor').val(), "dealerID": $('#ddldealer').val(), "custId": $('#ddlCustomers').val(), "VehicleId": frmids }, function (data) {
+            var dataT = data['data'];
+            if(dataT=true)
+            {
+                alert("Association Added successfully");
+                location.reload();
+            }
+            else {
+                alert("Failed");
+            }
+        });
+    }
+
+    function Delete(id)
+    {
+        var x = confirm("Are you sure you want to delete?");
+        if (x)
+            $.post("/Home/DeleteMahaMiningAssociation", { "ID": id }, function (data) {
+                var dataT = data['data'];
+                if(dataT==true)
+                {
+                    alert("Association deleted successfully");
+                    location.reload();
+                }
+                else
+                {
+                    alert('failed');
+                }
+            });
+        else
+            return false;
+       
+    }
+    function LoadData() {
+        var today = new Date();
+        var dd = String(today.getDate()).padStart(2, '0');
+        var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+        var yyyy = today.getFullYear();
+        today = mm + '/' + dd + '/' + yyyy;
+        var currentdate = new Date();
+
+        if ($('#drp_distributor').val() != 0) {
+            $("#load").show();
+            $.post("/Home/LoadMahaMiningData", { "distID": $('#drp_distributor').val(), "dealerID": $('#drp_dealer').val() }, function (data) {
+                
+                var dataT = JSON.parse(data);
+                $('#tblminingData tbody > tr').remove();
+                if (dataT != null) {
+
+                    if (dataT.length > 0) {
+                        for (var i = 0; i < dataT.length; i++) {
+                            var expdate = new Date(dataT[i].ORDER_EXPDATE);
+
+                            tr = $('<tr/>');
+
+                            tr.append("<td>" + (i + 1) + "</td>");
+                            tr.append("<td>" + dataT[i].CATEG_NAME + "</td>");
+                            tr.append("<td>" + dataT[i].VEHICLES_REGNUMBER + "</td>");
+                            tr.append("<td>" + dataT[i].DEVICE_NAME + "</td>");
+                            tr.append("<td>" + dataT[i].DEVICE_SERIALNUMBER + "</td>");
+                            tr.append("<td>" + dataT[i].DATE + "</td>");
+                            tr.append("<td>" + dataT[i].LAST_SYNCDATE + "</td>");
+                            tr.append("<td></td>");
+                            if (expdate > currentdate) {
+                                tr.append("<td><a href='#' onclick='Delete(" + dataT[i].ID + ")' class='btn btn-tbl-edit btn-xs'><i class='fa fa-trash'></i></a></td>");
+                            } else {
+                                tr.append("<td><a href='#' onclick='Delete(" + dataT[i].ID + ")' class='btn btn-tbl-edit btn-danger'><i class='fa fa-trash'></i></a></td>");
+                            }
+                            $("#tblminingData").append(tr);
+                        }
+                    }
+                    else {
+                        alert("No data Available");
+                    }
+                }
+                else {
+                    alert("No data Available");
+                }
+                $("#load").hide();
+            });
+        }
+        else {
+            alert("Please Select Account");
+        }
+    }
+
+</script>

@@ -1,0 +1,329 @@
+﻿
+@{
+    ViewBag.Title = "frm_Drivers";
+    Layout = "~/Views/Shared/Layout2.cshtml";
+}
+
+<style>
+    .dt-buttons {
+        float: left;
+    }
+
+    .table td {
+        padding: 5px;
+        vertical-align: middle;
+         font-size:12px!important;
+    }
+        .table th {
+       font-weight:500;
+       font-size:13px!important;
+    }
+</style>
+     
+    <div class="row" id="divrow">
+
+        <div class="col-lg-12" style="margin-bottom:25px">
+            PHOTO : <input type="file" id="FileUpload" name="FileUpload" onchange="readURL1(this)" style="width:60%;" />
+            <img id="ImgEmployeeProfile" style=" width: 212px; height: 165px;" />
+          
+            </div>
+
+        <div class="col-lg-6">
+           DRIVER NAME: <input type="text" id="txtname" class="form-control" placeholder="" />
+            FORMAN: <input type="text" id="txtforman" class="form-control" placeholder="" />
+            ADDRESS: <input type="text" id="txtaddress" class="form-control" placeholder="" />
+            LICENSE ISSUE DATE : <input type="text" id="txtlicenseissuedate" class="form-control" placeholder="" />
+
+            
+            LANGUAGES KNOWN: <input type="text" id="txtlanguage" class="form-control" placeholder="" />
+        </div>
+        <div class="col-lg-6">
+            DESCRIPTION : <input type="text" id="txtdescription" class="form-control" placeholder="" />
+            DRIVER MOBILENO : <input type="text" id="txtmobileno" class="form-control" placeholder="" />
+            LICENSE NO : <input type="text" id="txtlicenseno" class="form-control" placeholder="" />
+            
+            LICENSE EXPIRY DATE	:  <input type="text" id="txtlicenseexpirydate" class="form-control" placeholder="" />
+
+            BLOOD GROUP : <input type="text" id="txtbloodgroup" class="form-control" placeholder="" />
+            <div style="width:24px">
+                STATUS: <input type="checkbox" checked="checked" id="txtstatus" class="form-control" placeholder="" />
+            </div>
+        </div>
+        <input type="button" id="btnsave" class="btn btn-primary" onclick="Save('save')" style="margin-left:84%;margin-top:10px" value="Submit" />
+        <input type="button" id="btnupdate" class="btn btn-primary" onclick="Save('update')" style="margin-left:84%;margin-top:10px" value="Update" />
+<input type="button" value="BACK" style="margin-left:92%;margin-top:-38px" id="btnback" onclick="Back()" class=" btn btn-danger" />
+    </div>
+	<div class="row" style="margin-left:1px;">
+
+    @*<input type="button" class="btn btn-primary" onclick="showrow()" style="width:57px;margin-bottom:0px" value="ADD" />*@
+    <div class="card-head" style="text-align:center;">
+        <h4>Drivers</h4>
+
+    </div>
+</div>
+    <div class="card card-box" style="margin-top:5px;">
+                                
+         <div class="card-body">
+		 
+		<div class="table-scrollable">
+        <table id="tbldrivers" class="table table-striped table-bordered">
+		<thead>
+            <tr>
+                <th class="center">ID</th>
+                <th class="center">Vehicle RegNumber</th>
+                <th class="center">Name</th>
+                <th class="center">Image</th>
+                <th class="center">Mobile Number</th>
+                <th class="center">License No</th>
+                <th class="center"> License Issue Date</th>
+                <th class="center">License Expiry Date</th>
+                <th class="center">Blood Group</th>
+                <th class="center">Actions</th>
+            </tr>
+			</thead>
+			 <tbody>
+
+            </tbody>
+        </table>
+		 </div>
+    </div>
+ </div>
+
+<script>
+    
+    window.onload = function () {
+        $("#divrow").hide();
+        Binddates();
+        getalldrivers();
+    }
+    function showrow() {
+        $("#btnupdate").hide();
+        $("#divrow").show();
+		
+    }
+	function Back() {
+        $("#divrow").hide();
+    }
+    function Binddates(){
+    $('#txtlicenseissuedate').bootstrapMaterialDatePicker({
+        format: 'MM/DD/YYYY',
+        weekStart: 1,
+        time: false,
+        nowButton: true,
+        clearButton: false,
+        cancelText: 'Cancel',
+        okText: 'OK',
+        clearText: 'Clear',
+        switchOnClick: true,
+    });
+
+
+    $('#txtlicenseexpirydate').bootstrapMaterialDatePicker({
+        format: 'MM/DD/YYYY',
+        weekStart: 1,
+        time: false,
+        nowButton: true,
+        clearButton: false,
+        cancelText: 'Cancel',
+        okText: 'OK',
+        clearText: 'Clear',
+        switchOnClick: true,
+    });
+
+
+    }
+
+
+    function readURL1(input) {
+        
+
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+            reader.onload = function (e) {
+                $('#ImgEmployeeProfile').show();
+                $('#ImgEmployeeProfile').attr('src', e.target.result);
+            };
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+
+
+
+    function Save(id) {
+
+        var STM = "inserted";
+
+        var DID = "";
+        var btype = "BTN_SAVE";
+        if (id == "update") {
+            var did = localStorage.getItem("DID");
+            DID = did;
+            btype = "BTN_UPDATE";
+            STM = "updated";
+        }
+
+      
+
+
+
+        var data = new FormData();
+        var files = $("#FileUpload").get(0).files;
+      
+        if (files.length > 0) {
+           
+            data.append("MyImages", files[0]);
+            data.append("ImagePath", '');
+        }
+        else {
+            if (id == "update")
+            {
+                var path = localStorage.getItem("driverphoto");
+                data.append("MyImages", '');
+                data.append("ImagePath", path);
+            }
+         
+        }
+      
+        data.append("DRIVERNAME", $("#txtname").val());
+        data.append("FORMAN", $("#txtforman").val());
+        data.append("DRIVERMOBILENO", $("#txtmobileno").val());
+        data.append("DESCRIPTION", $("#txtdescription").val());
+        data.append("ADDRESS", $("#txtaddress").val());
+        data.append("LICENSENO", $("#txtlicenseno").val());
+        data.append("LICENSEEXPIRYDATE", $("#txtlicenseexpirydate").val());
+        data.append("LICENSEISSUEDATE", $("#txtlicenseissuedate").val());
+        data.append("LANGUAGESKNOWN", $("#txtlanguage").val());
+        data.append("BLOODGROUP", $("#txtbloodgroup").val());
+        data.append("DriverID", DID);
+        data.append("btn", btype);
+        
+        
+        if ($("#txtstatus").is(':checked') == true)
+        {
+            data.append("STATUS", "true");
+        }
+        else {
+            data.append("STATUS", "false");
+        }
+        if ($("#txtname").val() != "") {
+            $.ajax({
+                url: "/Home/_frn_drivers",
+                type: "POST",
+                processData: false,
+                contentType: false,
+                data: data,
+                // data: { "USERNAME": $("#txtusername").val(),"PASSWORD": },
+                success: function (data) {
+                    console.log(data);
+
+                    dataT = data['data'];
+                    //  alert(dataT);
+                    if (dataT = true) {
+                        alert("" + STM + " successfully..")
+                        location.reload();
+                    }
+                    else {
+                        alert(dataT);
+                    }
+
+                }
+            });
+
+        }
+        else
+        {
+            if($("#txtname").val()=="")
+            {
+                alert("Please Enter Driver Name");
+            }
+        }
+
+    }
+
+    function Edit(DID) {
+       
+        $("#btnsave").hide();
+
+        $("body").scrollTop(0);
+
+        localStorage.setItem("DID", DID);
+        $.post("/Home/Edit_drivers", { "DriverID": DID }, function (data) {
+            $("#divrow").show();
+
+            var DataT = data['data'];
+
+
+
+            $("#txtname").val(DataT[0].DRIVER_NAME);
+            $("#txtdescription").val(DataT[0].DRIVER_DESC);
+            $("#txtforman").val(DataT[0].DRIVER_FORMAN);
+            $("#txtmobileno").val(DataT[0].DRIVER_MOBILENO);
+            $("#txtaddress").val(DataT[0].DRIVER_ADDRESS);
+            $("#txtlicenseno").val(DataT[0].DRIVER_LICENSENO);
+
+            $("#txtlicenseissuedate").val(DataT[0].DRIVER_LICENSE_ISSUEDATE);
+            $("#txtlicenseexpirydate").val(DataT[0].DRIVER_LICENSE_EXPIRYDATE);
+            $("#txtlanguage").val(DataT[0].DRIVER_LANGUAGES);
+
+            $("#txtbloodgroup").val(DataT[0].DRIVER_BLOODGROUP);
+            
+            if (DataT[0].DRIVERSTATUS == "True") {
+
+                $("#txtstatus").prop('checked', true);
+            }
+
+           // $("#ImgEmployeeProfile").css('display', 'block');
+
+
+
+            $('#ImgEmployeeProfile').attr('src', "/IMAGES/DRIVERS/" + DataT[0].DRIVER_PHOTO_PATH + "");
+
+            localStorage.setItem("driverphoto", DataT[0].DRIVER_PHOTO_PATH);
+
+          //  $('#ImgEmployeeProfile').append("<img  src='/IMAGES/DRIVERS/" + DataT[0].DRIVER_PHOTO_PATH + "' height='150px' width='150px'/>");
+
+
+        });
+    }
+
+
+    function getalldrivers() {
+        $.post("/Home/frm_getdrivers", function (data) {
+            //console.log(dataT);
+            var dataT = data['data'];
+            for (var i = 0; i < dataT.length; i++) {
+                tr = $('<tr/>');
+                tr.append("<td>" + (i + 1) + "</td>");
+                tr.append("<td>" + dataT[i].VEHICLE_NUMBER + "</td>");
+                tr.append("<td>" + dataT[i].DRIVER_NAME + "</td>");
+              
+
+                if (dataT[i].DRIVER_PHOTO_PATH == "" || dataT[i].DRIVER_PHOTO_PATH == 'null')
+                {
+                    tr.append("<td><img style='height:40px' src='/IMAGES/profile.png' /></td>");
+                }
+              
+                else {
+                    tr.append("<td><img style='height:40px' src='/IMAGES/DRIVERS/" + dataT[i].DRIVER_PHOTO_PATH + "' /></td>");
+                }
+                
+                tr.append("<td>" + dataT[i].DRIVER_MOBILENO + "</td>");
+                tr.append("<td>" + dataT[i].DRIVER_LICENSENO + "</td>");
+                tr.append("<td>" + dataT[i].DRIVER_LICENSE_ISSUEDATE + "</td>");
+                tr.append("<td>" + dataT[i].DRIVER_LICENSE_EXPIRYDATE + "</td>");
+                tr.append("<td>" + dataT[i].DRIVER_BLOODGROUP + "</td>");
+                tr.append("<td><a href='#' onclick='Edit(" + dataT[i].DRIVER_ID + ")' class='btn btn-tbl-edit btn-xs'><i class='fa fa-pencil'></i></a></td>");
+                $("#tbldrivers").append(tr);
+            }
+			$('#tbldrivers').DataTable({
+                dom: 'Bfrtip',
+                buttons: [
+                    'excel', 'pdf', 'print'
+                ]
+            });
+        });
+    }
+
+
+</script>

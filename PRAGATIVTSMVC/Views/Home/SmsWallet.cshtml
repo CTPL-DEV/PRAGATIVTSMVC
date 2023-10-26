@@ -1,0 +1,178 @@
+﻿
+@{
+    ViewBag.Title = "SmsWallet";
+    Layout = "~/Views/Shared/Layout2.cshtml";
+}
+
+<div class="row" id="divrow">
+    <input type="hidden" id="txtdeviceid" value="" />
+    <input type="hidden" id="hid_categID" value="" />
+    <div class="col-lg-6">
+
+        <div id="div_distributors">
+            Select Distributor:<select id="ddldistributor" class="form-control" onchange="LoadDealers()" style="width:400px">
+                <option value='0' selected>-Select Distributor-</option>
+            </select>
+        </div>
+        <div id="div_dealers">
+            Select Dealer:<select id="ddldealer" class="form-control" onchange="LoadCustomers()" style="width:400px;">
+                <option value='0' selected>-Select Dealer-</option>
+            </select>
+        </div>
+        Select Customers:<select id="ddlCustomers" class="form-control" onchange="getSMS()"  style="width:400px;">
+            <option value='0' selected>-Select Customer-</option>
+        </select>
+        No.of Sms:<input type="text" id="txt_sms" class="form-control" style="width:400px" />
+
+
+        <input type="button" id="btnsave" class="btn btn-primary" onclick="Save()" style="margin-top:10px;" value="Recharge" />
+
+        <input type="button" value="BACK" style="margin-top:10px;" id="btnback" onclick="Back()" class="btn btn-danger" />
+    </div>
+   
+
+</div>
+<div class="card card-box" id="div_table" style="margin-top:10px;">
+    <div class="card-body">
+        <table id="tbl_smswallet" class="table table-striped table-bordered" cellspacing="0" width="100%" style="margin-top:10px">
+            <thead>
+                <tr>
+                    <th class="center">ID</th>
+
+                    <th class="center">Name</th>
+                    <th class="center">Available</th>
+                    <th class="center">Used</th>
+                    <th class="center">Total</th>
+                    <th class="center">LastRecharge</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        // $("#load").show();
+        LoadDistributors();
+        //LoadDealers();
+        //LoadCustomers();
+        //LoadVehicles();
+
+    });
+    function LoadDistributors() {
+        d_ID = $("#ddlcategory").val();
+        $.post("/Home/getDistributors", { "CategID": 1 }, function (data) {
+
+            var dataT = data['data'];
+            var opt = "<option value='0'>-Select Distributor-</option>";
+            for (var i = 0; i < dataT.length; i++) {
+                opt += "<option value='" + dataT[i].CATEG_ID + "'>" + dataT[i].CATEG_NAME + "</option>";
+            }
+            $("#ddldistributor").text("");
+            $('#ddldistributor').append(opt);
+            $("#drp_distributor").text("");
+            $('#drp_distributor').append(opt);
+            var opt1 = "<option value='0'>-Select Dealer-</option>";
+            $('#drp_dealer').append(opt1);
+        });
+    }
+
+    //Load Dealers
+    function LoadDealers() {
+        d_ID = $("#ddldistributor").val();
+        $.post("/Home/getDealers", { "CategID": d_ID }, function (data) {
+
+            var dataT = data['data'];
+            var opt = "<option value='0' selected>-Select Dealer-</option>";
+            for (var i = 0; i < dataT.length; i++) {
+                opt += "<option value='" + dataT[i].CATEG_ID + "'>" + dataT[i].CATEG_NAME + "</option>";
+            }
+            $("#ddldealer").text("");
+            $('#ddldealer').append(opt);
+        });
+
+        //Load Distrubutor Customers
+
+
+        $.post("/Home/getCustomers", { "CategID": d_ID }, function (data) {
+
+            var dataT = data['data'];
+            var opt = "<option value='0'>-Select Customer-</option>";
+            for (var i = 0; i < dataT.length; i++) {
+                opt += "<option value='" + dataT[i].CATEG_ID + "'>" + dataT[i].CATEG_NAME + "</option>";
+            }
+            $("#ddlCustomers").text("");
+            $('#ddlCustomers').append(opt);
+        });
+
+
+    }
+
+    //Load Customers
+
+    function LoadCustomers() {
+        
+
+        if ($("#ddldistributor").val() != 0 && $("#ddldealer").val() != 0) {
+            d_ID = $("#ddldealer").val();
+        }
+        else if ($("#ddldistributor").val() != 0 && $("#ddldealer").val() == 0) {
+            d_ID = $("#ddldistributor").val();
+        }
+        else {
+            d_ID = localStorage.getItem("USERS_CATEG_ID");
+            $("#div_distributors").hide();
+            $("#div_dealers").hide();
+        }
+        $.post("/Home/getCustomers", { "CategID": d_ID }, function (data) {
+
+            var dataT = data['data'];
+            var opt = "<option value='0'>-Select Customer-</option>";
+            for (var i = 0; i < dataT.length; i++) {
+                opt += "<option value='" + dataT[i].CATEG_ID + "'>" + dataT[i].CATEG_NAME + "</option>";
+            }
+            $("#ddlCustomers").text("");
+            $('#ddlCustomers').append(opt);
+        });
+
+
+    }
+    function getSMS()
+    {
+        
+        var Id = $("#ddlCustomers").val();
+        $.post("/Home/getSMSwallet", { "categ_id": Id }, function (data) {
+            
+            var dataT = data['data'];
+            $('#tbl_smswallet tbody > tr').remove();
+            for (var i = 0; i < dataT.length; i++) {
+
+              
+                tr = $('<tr/>');
+
+                tr.append("<td>" + (i + 1) + "</td>");
+                tr.append("<td>" + dataT[i].customerName + "</td>");
+                tr.append("<td>" + dataT[i].available + "</td>");
+                tr.append("<td>" + dataT[i].used + "</td>");
+                tr.append("<td>" + dataT[i].total + "</td>");
+                tr.append("<td>" + dataT[i].rechargeDate + "</td>");
+                $("#tbl_smswallet").append(tr);
+            }
+        });
+       
+    }
+    function Save()
+    {
+        var Id = $("#ddlCustomers").val();
+        var num_of_sms = $("#txt_sms").val();
+        $.post("/Home/rechargeSMSwallet", { "categ_id": Id, "count": num_of_sms }, function (data) {
+            
+            var dataT = data['data'];
+            if(dataT==true)
+            {
+                alert("SMS wallet recharged successfully");
+            }
+            
+        });
+    }
+</script>

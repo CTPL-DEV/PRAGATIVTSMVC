@@ -1,0 +1,327 @@
+﻿
+@{
+    ViewBag.Title = "Students";
+    Layout = "~/Views/Shared/Layout2.cshtml";
+}
+
+<h6>Students</h6>
+<link href="~/Content/multi-select/css/multi-select.css" rel="stylesheet" />
+<script src="~/Content/multi-select/js/bundle.min.js"></script>
+<div class="container-fluid" id="divrow" style="display:none;">
+    <input type="hidden" id="hid_stuid" value="" />
+    <div class="row">
+        <div class="col-md-3 mb-3">
+            <label for="validationCustom02">ID</label>
+            <input type="text" id="txt_ID" class="form-control" />
+        </div>
+        <div class="col-md-3 mb-3">
+            <label for="validationCustom02">Name</label>
+            <input type="text" id="txt_name" class="form-control" />
+        </div>
+        <div class="col-md-3 mb-3">
+            <label for="validationCustom02">DOB</label>
+            <input type="text" id="txt_dob" class="form-control" />
+        </div>
+        <div class="col-md-3 mb-3">
+            <label for="validationCustom02">Class</label>
+            <input type="text" id="txt_class" class="form-control" />
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-3 mb-3">
+            <label for="validationCustom02">Parent1 Name</label>
+            <input type="text" id="txt_parent1_name" class="form-control" />
+        </div>
+        <div class="col-md-3 mb-3">
+            <label for="validationCustom02">Parent1 Mobile</label>
+            <input type="text" id="txt_parent1_mobile" class="form-control" />
+        </div>
+        <div class="col-md-3 mb-3">
+            <label for="validationCustom02">Parent1 Email</label>
+            <input type="text" id="txt_parent1_email" class="form-control" />
+        </div>
+        <div class="col-md-3 mb-3">
+            <label for="validationCustom02">Parent2 Name</label>
+            <input type="text" id="txt_parent2_name" class="form-control" />
+        </div>
+
+    </div>
+    <div class="row">
+        <div class="col-md-3 mb-3">
+            <label for="validationCustom02">Parent2 Mobile</label>
+            <input type="text" id="txt_parent2_mobile" class="form-control" />
+        </div>
+
+        <div class="col-md-4 mb-3">
+            <label for="validationCustom02">Select Route</label>
+            <select class="form-control" id="ddlroute">
+                <option value="0">-Select-</option>
+                @foreach (var item in ViewBag.routes00)
+                {
+                    <option value="@item.ROUTES_ID">@item.ROUTES_NAME (@item.ROUTES_CODE)</option>
+                }
+            </select>
+        </div>
+    </div>
+    <div>
+        <input type="button" id="btnsave" style="margin-left:18px;margin-top:10px" onclick="save()" class="btn btn-success" value="Submit" />
+        <input type="button" id="btnupdate" style="margin-left:18px;margin-top:10px" onclick="update()" class="btn btn-success" value="Update" />
+    </div>
+</div>
+<div style="margin-top:10px">
+    <input type="button" class="btn btn-primary" id="btnadd" value="ADD" onclick="show()" />
+</div>
+
+<div>
+
+    <table id="tblscheduler" style="font-size:14px;margin-top:10px" class="display nowrap table table-hover table-striped table-bordered" cellspacing="0" width="100%">
+        @*<table id="tblpassanger" style="font-size:11px;margin-top:10px" class="display nowrap table table-hover table-striped table-bordered" cellspacing="0" width="100%">*@
+        <thead>
+            <tr>
+                <th>S.no</th>
+                <th>Student ID</th>
+                <th>Student Name</th>
+                <th>Parent1 Name</th>
+                <th>Parent1 Mobile</th>
+                <th>Parent1 Username/Email</th>
+                <th>Parent2 Name</th>
+                <th>Parent2 Mobile</th>
+                <th>ROUTES CODE</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+</div>
+
+<script>
+    window.onload = function () {
+        debugger;
+        getall();
+        $("#divrow").hide();
+        $("#btnupdate").hide();
+
+        //$('#txt_dob').({
+
+        //            format: 'MM/DD/YYYY',
+        //            time: false,
+        //            clearButton: true
+
+        //        });
+
+    }
+
+    function show() {
+        $("#btnadd").hide();
+        $("#divrow").show();
+    }
+
+
+
+
+    //function getall() {
+
+
+    //    $.post("/Home/get_students1", function (data) {
+    //        debugger;
+    //        var dataT = data['data'];
+
+
+    //        for (var i = 0; i < dataT.length; i++) {
+
+    //            var tr = $('<tr/>');
+
+    //            tr.append("<td>" + (i + 1) + "</td>");
+    //            tr.append("<td>" + dataT[i].STUDENT_ID + "</td>");
+    //            tr.append("<td>" + dataT[i].STUDENT_NAME + "</td>");
+    //            tr.append("<td>" + dataT[i].PARENT1_NAME + "</td>");
+    //            tr.append("<td>" + dataT[i].PARENT1_MOBILE + "</td>");
+    //            tr.append("<td>" + dataT[i].PARENT1_EMAIL + "</td>")
+    //            tr.append("<td>" + dataT[i].PARENT2_NAME + "</td>");
+    //            tr.append("<td>" + dataT[i].PARENT2_MOBILE + "</td>");
+    //            tr.append("<td>" + dataT[i].ROUTES_CODE + "</td>");
+    //            tr.append("<td><input type='button' value='EDIT' class='btn btn-primary' onclick='EDIT(" + dataT[i].ID + ")'  /></td>");
+    //            $("#tblscheduler").append(tr);
+    //        }
+
+
+    //    });
+
+
+
+    //}
+
+
+    function getall() {
+        $("#load").show();
+        debugger;
+        $.post("/Home/get_students1", function (data) {
+            var dataT = data['data'];
+            $("#load").hide();
+            for (var i = 0; i < dataT.length; i++) {
+
+                var tr = $('<tr/>');
+
+                tr.append("<td>" + (i + 1) + "</td>");
+                tr.append("<td>" + dataT[i].STUDENT_ID + "</td>");
+                tr.append("<td>" + dataT[i].STUDENT_NAME + "</td>");
+                tr.append("<td>" + dataT[i].PARENT1_NAME + "</td>");
+                tr.append("<td>" + dataT[i].PARENT1_MOBILE + "</td>");
+                tr.append("<td>" + dataT[i].PARENT1_EMAIL + "</td>")
+                tr.append("<td>" + dataT[i].PARENT2_NAME + "</td>");
+                tr.append("<td>" + dataT[i].PARENT2_MOBILE + "</td>");
+                tr.append("<td>" + dataT[i].ROUTES_CODE + "</td>");
+                tr.append("<td><input type='button' value='EDIT' class='btn btn-primary' onclick='EDIT(" + dataT[i].ID + ")'  /></td>");
+                $("#tblscheduler").append(tr);
+            }
+            //$('#tblscheduler').DataTable({
+            //    dom: 'Bfrtip',
+            //    buttons: [
+            //        //'copy', 'csv', 'excel', 'pdf', 'print'
+            //        'excel', 'pdf', 'print'
+            //    ]
+            //});
+
+        });
+    }
+
+
+    $(document).ready(function () {
+        $('#tblscheduler').DataTable({
+            pageLength: 25,
+            responsive: true,
+            dom: '<"html5buttons"B>lTfgitp',
+            buttons: [
+                { extend: 'copy' },
+                { extend: 'csv' },
+                { extend: 'excel', title: 'ExampleFile' },
+                { extend: 'pdf', title: 'ExampleFile' },
+
+                {
+                    extend: 'print',
+                    customize: function (win) {
+                        debugger;
+                        $(win.document.body).addClass('white-bg');
+                        $(win.document.body).css('font-size', '10px');
+
+                        $(win.document.body).find('table')
+                            .addClass('compact')
+                            .css('font-size', 'inherit');
+                    }
+                }
+            ]
+
+        });
+    });
+
+
+
+    function save() {
+
+
+        if ($("#txt_name").val() != '' && $("#parent1_name").val() != '' && $("#parent1_mobile").val() != '') {
+            var categ_name = localStorage.getItem("orgname");
+            $.post("/Home/student_insert", {
+                "student_id": $("#txt_ID").val(), "student_name": $("#txt_name").val(), "student_dob": $("#txt_dob").val(), "student_class": $("#txt_class").val(),
+                "parent1_name": $("#txt_parent1_name").val(), "parent1_mobile": $("#txt_parent1_mobile").val(), "parent2_name": $("#txt_parent2_name").val(),
+                "parent2_mobile": $("#txt_parent2_mobile").val(), "parent1_email": $("#txt_parent1_email").val(), "categName": categ_name
+            },
+                function (data) {
+
+                    if (data = true) {
+
+                        alert("successfully insert..");
+                        $("#divrow").hide();
+                        location.reload();
+                    }
+                    else {
+                        alert("Failed");
+                    }
+                });
+        }
+        else {
+            if ($("#txt_name").val() == '') {
+                alert("enter name..")
+                $("#txtname").focus();
+            }
+            else if ($("#parent1_name").val() == '') {
+                alert("enter parent name..")
+                $("#parent1_name").focus();
+            }
+            else if ($("#parent_name").val() == '') {
+                alert("enter parent mobile..")
+                $("#parent1_mobile").focus();
+            }
+        }
+
+    }
+
+
+    function EDIT(ID) {
+        debugger;
+        $("#hid_stuid").val(ID);
+
+        $.post("/Home/get_students_by_id", { "id": ID }, function (data) {
+            var dataT = data['data'];
+            $("#btnsave").hide();
+            $("#btnupdate").show();
+            $("#btnadd").hide();
+            $("#divrow").show();
+            for (var i = 0; i < dataT.length; i++) {
+                $("#txt_ID").val(dataT[i].STUDENT_ID);
+
+                $("#txt_name").val(dataT[i].STUDENT_NAME);
+
+                $("#txt_class").val(dataT[i].STUDENT_CLASS);
+                $("#txt_parent1_name").val(dataT[i].PARENT1_NAME);
+                $("#txt_parent1_mobile").val(dataT[i].PARENT1_MOBILE);
+                $("#txt_parent2_name").val(dataT[i].PARENT2_NAME);
+                $("#txt_parent2_mobile").val(dataT[i].PARENT2_MOBILE);
+                $("#txt_parent2_mobile").val(dataT[i].PARENT2_MOBILE);
+                $("#ddlroute").val(dataT[i].ROUTES_CODE).trigger('change');
+
+                var dob_date = dataT[i].dob.split(" ")[0];
+                $("#txt_dob").val(dob_date.split("-")[1] + "/" + dob_date.split("-")[2] + "/" + dob_date.split("-")[0]);
+            }
+        });
+    }
+
+    function update() {
+
+        if ($("#txt_name").val() != '' && $("#parent1_name").val() != '' && $("#parent1_mobile").val() != '') {
+
+            $.post("/Home/student_update", {
+                "student_id": $("#txt_ID").val(), "student_name": $("#txt_name").val(), "student_dob": $("#txt_dob").val(), "student_class": $("#txt_class").val(),
+                "parent1_name": $("#txt_parent1_name").val(), "parent1_mobile": $("#txt_parent1_mobile").val(), "parent2_name": $("#txt_parent2_name").val(),
+                "parent2_mobile": $("#txt_parent2_mobile").val(), "ID": $("#hid_stuid").val()
+            },
+                function (data) {
+
+                    if (data = true) {
+
+                        alert("successfully insert..");
+                        $("#divrow").hide();
+                        location.reload();
+                    }
+                    else {
+                        alert("Failed");
+                    }
+                });
+        }
+        else {
+            if ($("#txt_name").val() == '') {
+                alert("enter name..")
+                $("#txtname").focus();
+            }
+            else if ($("#parent1_name").val() == '') {
+                alert("enter parent name..")
+                $("#parent1_name").focus();
+            }
+            else if ($("#parent_name").val() == '') {
+                alert("enter parent mobile..")
+                $("#parent1_mobile").focus();
+            }
+        }
+
+
+    }
+</script>

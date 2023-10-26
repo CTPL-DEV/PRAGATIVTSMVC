@@ -1,0 +1,196 @@
+﻿
+@{
+    ViewBag.Title = "AssignedGeofence";
+    Layout = "~/Views/Shared/Layout2.cshtml";
+}
+<style>
+    input[type="checkbox"]
+{
+    vertical-align:middle;
+}
+    .table td {
+        padding: 5px;
+        vertical-align: middle;
+         font-size:12px!important;
+    }
+       .table th {
+       font-weight:500;
+       font-size:13px!important;
+    }
+</style>
+<div id="divrow">
+    <h4>SMS Configuration</h4>
+    
+    <div class="row" style="margin-top:10px;">
+      
+            Select Landmarks:<select id="ddlLandmarks" class="form-control" style="width:200px;margin-left:35px;">
+    <option value="0" selected>-Select-</option>
+    @foreach (var item in ViewBag.landmarks)
+    {
+
+        <option value="@item.LANDMARKS_ID">@item.LANDMARKS_ADDRESS</option>
+
+    }
+</select>
+        Mobile Numbers:<label>
+            <input id="txt_mobilenumbers" type="text" value=""  style="margin-left:55px;" />
+        </label>
+        </div>
+    <div id="div_vehicles"  style="margin-left:50px;">
+        <h4>Select Vehicles</h4>
+                           
+
+
+    </div>
+    <input type="button" id="btn_save" onclick="SaveConfig()" style="width:100px;margin-top:30px;" value="Save" class="btn btn-primary" />
+    <input type="button" value="BACK"  id="btnback" style="width:100px;margin-top:30px;" onclick="location.reload()" class="btn btn-primary" />
+        </div>
+<div class="row">
+    <div class="col-md-2">
+        <div>
+            <input type="button" id="btnadd" class="btn btn-primary" onclick="showrow()" style="width:153px;margin-top:10px" value="ADD" />
+        </div>
+    </div>
+    <div class="col-md-10">
+        <div class="card-head" style="text-align:center;">
+            <header>Geofence Configuration</header>
+        </div>
+    </div>
+</div>
+<div class="card card-box" id="div_table" style="margin-top:10px;">
+    
+    <div class="card-body ">
+        
+        <div class="table-scrollable">
+            <table id="tblgeofence" border="1" style="width: 100%" class="table table-striped table-bordered">
+                <thead>
+                    <tr>
+                        <th class="center">S.no</th>
+                        <th class="center">Vehicles</th>
+                        <th class="center">LandMark</th>
+                        <th class="center">Mobile Number</th>
+
+                    </tr>
+                </thead>
+                <tbody id="tbldevicebody"></tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        $("#divrow").hide();
+        Loadvehicles();
+        getAll();
+
+
+    });
+    function showrow() {
+       
+        $("#divrow").show();
+
+    }
+
+    function Back() {
+        $("#divrow").hide();
+    }
+    var arrvehicles = [];
+    function Loadvehicles() {
+
+        $.post("/Home/getVehicles", function (data) {
+            
+            var dataT = data['data'];
+          
+            for (var i = 0; i < dataT.length; i++) {
+                arrvehicles.push(dataT[i].VEHICLES_ID);
+
+                tap = "<div class='row'><div class='col-md-3'><lable for='vehicles'>" + dataT[i].VEHICLES_REGNUMBER + " <input type='checkbox' name='vehicles' style='float: left;margin-left:40px;margin-top:-18px;' class='form-control'   id=chk_" + dataT[i].VEHICLES_ID + "  /></lable></div></div>";
+                $("#div_vehicles").append(tap);
+            }
+           
+        });
+       
+    }
+
+
+
+    function SaveConfig()
+    {
+        
+        var chkvehicles = [];
+        var length = arrvehicles.length;
+        var chkvehicles = "";
+        for(var i=0;i<length;i++)
+        {
+            var chk = arrvehicles[i];
+            if ($("#chk_" + chk).is(':checked') == true)
+            {
+                if(chkvehicles=="")
+                {
+                    chkvehicles = arrvehicles[i];
+                }
+                else {
+                    chkvehicles = chkvehicles + "," + arrvehicles[i];
+                }
+            }
+            //if ($("#chk" + chk).is(':checked') == true) {
+
+            //    arr1.push(chk);
+            //}
+        }
+     
+       
+        if (arrvehicles.length > 0 && $("#ddlLandmarks").val() != 0 && $("#txt_mobilenumbers").val() != "") {
+            var mobilenum = $("#txt_mobilenumbers").val();
+            var landmark = $("#ddlLandmarks").val();
+            $.post("/Home/Saveconfig", { "chkedvehicles": chkvehicles, "mobileNumbers": mobilenum, "LandMark": landmark }, function (data) {
+
+                var dataT = data['data'];
+                if (dataT == "true") {
+                    alert("Configuration Saved Successfully");
+                    location.reload();
+                }
+                else {
+                    alert(dataT);
+                }
+
+            });
+        }
+        else
+        {
+            if(chkvehicles.length==0)
+            {
+                alert("Please Select Vehicle");
+            }
+            else if($("#ddlLandmarks").val()==0)
+            {
+                alert("Please Select Landmark");
+            }
+            else if($("#txt_mobilenumbers").val()=="")
+            {
+                alert("Please Enter Mobile Numbers");
+            }
+        }
+    }
+
+    function getAll()
+    {
+        $.post("/Home/getAllGeofenceData", function (data) {
+            
+            var dataT = data['data'];
+
+            for (var i = 0; i < dataT.length; i++) {
+              
+                tr = $('<tr/>');
+
+                tr.append("<td>" + (i + 1) + "</td>");
+                tr.append("<td>" + dataT[i].VehicleNumbers + "</td>");
+                tr.append("<td>" + dataT[i].LandMark + "</td>");
+                tr.append("<td>" + dataT[i].ASSIGNGEOFENCE_SIMS + "</td>");
+               
+                $("#tblgeofence").append(tr);
+            }
+
+        });
+    }
+</script>

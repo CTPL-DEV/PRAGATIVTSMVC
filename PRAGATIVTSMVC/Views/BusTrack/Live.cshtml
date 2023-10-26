@@ -1,0 +1,325 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>TranoPro Parents Tracking App</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!--===============================================================================================-->
+    <link rel="icon" type="image/png" href="images/icons/favicon.ico" />
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css" href="~/Content/LoginCss/vendor/bootstrap/css/bootstrap.min.css">
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css" href="~/Content/LoginCss/fonts/font-awesome-4.7.0/css/font-awesome.min.css">
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css" href="~/Content/LoginCss/fonts/iconic/css/material-design-iconic-font.min.css">
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css" href="~/Content/LoginCss/vendor/animate/animate.css">
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css" href="~/Content/LoginCss/vendor/css-hamburgers/hamburgers.min.css">
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css" href="~/Content/LoginCss/vendor/animsition/css/animsition.min.css">
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css" href="~/Content/LoginCss/vendor/select2/select2.min.css">
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css" href="~/Content/LoginCss/vendor/daterangepicker/daterangepicker.css">
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css" href="~/Content/LoginCss/css/util.css">
+    <link rel="stylesheet" type="text/css" href="~/Content/LoginCss/css/main.css">
+    <!--===============================================================================================-->
+
+    <style style="text/css">
+        .scroll-left {
+            height: 50px;
+            overflow: hidden;
+            position: relative;
+        }
+
+            .scroll-left p {
+                position: absolute;
+                width: 100%;
+                height: 100%;
+                margin: 0;
+                line-height: 50px;
+                text-align: center;
+                /* Starting position */
+                -moz-transform: translateX(100%);
+                -webkit-transform: translateX(100%);
+                transform: translateX(100%);
+                /* Apply animation to this element */
+                -moz-animation: scroll-left 10s linear infinite;
+                -webkit-animation: scroll-left 10s linear infinite;
+                animation: scroll-left 25s linear infinite;
+            }
+        /* Move it (define the animation) */
+        @@-moz-keyframes scroll-left {
+            0% {
+                -moz-transform: translateX(100%);
+            }
+
+            100% {
+                -moz-transform: translateX(-100%);
+            }
+        }
+
+        @@-webkit-keyframes scroll-left {
+            0% {
+                -webkit-transform: translateX(100%);
+            }
+
+            100% {
+                -webkit-transform: translateX(-100%);
+            }
+        }
+
+        @@keyframes scroll-left {
+            0% {
+                -moz-transform: translateX(100%); /* Browser bug fix */
+                -webkit-transform: translateX(100%); /* Browser bug fix */
+                transform: translateX(100%);
+            }
+
+            100% {
+                -moz-transform: translateX(-100%); /* Browser bug fix */
+                -webkit-transform: translateX(-100%); /* Browser bug fix */
+                transform: translateX(-100%);
+            }
+        }
+    </style>
+
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head>
+<body>
+    <div class="scroll-left">
+        <p>For demo Call: 9100777440, Email: info@containe.in  </p>
+    </div>
+    <div class="limiter">
+        <div class="container-login100">
+            <div class="wrap-login100 p-t-85 p-b-20">
+                <form class="login100-form validate-form">
+                    @*<span class="login100-form-title p-b-70">
+                            Welcome
+                        </span>*@
+                    <span class="login100-form-avatar">
+
+                        <img src="~/IMAGES/Logos/Tranopro.png" />
+                        
+
+                    </span>
+
+                    <div class="wrap-input100 validate-input m-t-85 m-b-35" data-validate="Enter MobileNo">
+                        <input class="input100" type="text" name="username" id="txtUserName">
+                        <span class="focus-input100" data-placeholder="MobileNo"></span>
+                    </div>
+
+                    @* <div class="wrap-input100 validate-input m-b-50" data-validate="Enter password">
+                            <input class="input100" type="password" name="pass" id="txtPassword">
+                            <span class="focus-input100" data-placeholder="Password"></span>
+                        </div>*@
+
+                    <div class="container-login100-form-btn">
+                        @*<button class="login100-form-btn" onclick="Login()">
+                                Login
+                            </button>*@
+                        @*<input type="button" name="submit" value="Login" onclick="Login()" id="btnSignin" class="login100-form-btn">*@
+                        <a href="#" onclick="Login()" class="login100-form-btn">Continue</a>
+                    </div>
+                    @*<div class="login-more p-t-10">
+                            <img src="~/IMAGES/Logos/128x128.png" alt="">
+                            <img src="~/IMAGES/Logos/app_store_128x128.png" style="margin-left:50px;" />
+
+                        </div>*@
+                    <div class="login-more p-t-30">
+                        <footer>
+                            <span>Copyright © 2022  <a href="https://containe.in/" target="_blank" title="Containe">Containe Technologies  Ltd</a>.<br /> All rights reserved.</span>
+                        </footer>
+                    </div>
+
+                    <ul class="login-more p-t-190">
+                        @*<li class="m-b-8">
+
+                            </li>*@
+
+                        @*<li>
+                                <span class="txt1">
+                                    Don’t have an account?
+                                </span>
+
+                                <a href="#" class="txt2">
+                                    Sign up
+                                </a>
+                            </li>*@
+                    </ul>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+    <div id="dropDownSelect1"></div>
+    <script>
+
+        @*$(document).ready(function () {
+            var url=@ViewBag.url;
+            alert(url);
+        });*@
+    window.onload = function () {
+        localStorage.clear();
+        $('#txtPassword').keyup(function () {
+            if (event.keyCode == 13) {
+
+                Login();
+                //   $("#btnSignin").click();
+            }
+        });
+    }
+
+    function Login() {
+
+
+        var USERNAME = $("#txtUserName").val();
+
+
+        location.href = "/Reports/Live_Tracking?apikey=" + USERNAME;
+
+
+    }
+
+
+ @*   function Login() {
+
+        var ChkBox = "off";
+        if ($("#checkbox-signup").is(':checked') == true) {
+            ChkBox = "on";
+        }
+        if ($("#txtOrgname").val() != '') {
+
+            var ORGNAME = "";
+            var USERNAME = "";
+            var PASSWORD = "";
+
+            if ($("#txtOrgname").val() == "MASSENTERPRISES" || $("#txtOrgname").val() == "WAJEED")
+            {
+                ORGNAME = 'pipl';
+            }
+            else {
+                ORGNAME = $("#txtOrgname").val()
+            }
+            if ($("#txtUserName").val() == "MASSENTERPRISES" || $("#txtOrgname").val() == "WAJEED") {
+                USERNAME = 'suresh';
+            }
+            else {
+                USERNAME = $("#txtUserName").val()
+            }
+            if ($("#txtPassword").val() == "mas@123" || $("#txtOrgname").val() == "WAJEED") {
+                PASSWORD = 'admin';
+
+            }
+            else {
+                PASSWORD = $("#txtPassword").val()
+            }
+            $.post("/Home/__DBNAME", { "ORGNAME": ORGNAME }, function (data) {
+
+                var data = data['data'];
+
+                if (data != null) {
+
+                    if ($("#txtUserName").val() != "" && $("#txtPassword").val() != "") {
+                        $.post("/Home/get_User", { "CompanyName": ORGNAME, "UserName": USERNAME, "rememberChkBox": ChkBox, "Password": PASSWORD }, function (data) {
+
+
+                            var dataM = data['dataM'];
+
+                            if (dataM == "true") {
+
+
+                                var data = data['data'];
+
+                                //  console.log(data);
+                                var varValue = data.USERS_MENUITEMS;
+                              //  alert(varValue);
+                              //  console.log(data);
+                              //  alert(USERS_USERNAME);
+                              //  alert(varValue);
+                                localStorage.setItem("USERS_CATEG_ID", data.USERS_CATEGORY_ID)
+
+                                localStorage.setItem("USERNAME", data.USERS_USERNAME);
+
+                                localStorage.setItem("password", $("#txtPassword").val());
+
+                                localStorage.setItem("orgname", $("#txtOrgname").val());
+
+                              //  alert(data.USERS_USERNAME);
+
+
+
+                                if (data.USERS_USERNAME == "BAJAJ" || data.USERS_USERNAME == "JLPL" || data.USERS_USERNAME == "OMKAR IB" || data.USERS_USERNAME == "Satish" || data.USERS_USERNAME == "Bafna" || data.USERS_USERNAME == "shreenathji ib" || data.USERS_USERNAME == "AUTOMOBILE ENGINEERS")
+                                {
+                                    location.href = "/BAJAJIB/frm_GridTrack_CAB";
+                                }
+                                else if ($("#txtUserName").val() == "MASSENTERPRISES")
+                                {
+                                    location.href = "/REPORTS/Verification_certificate";
+                                }
+                                else if ($("#txtUserName").val() == "WAJEED")
+                                {
+                                    location.href = "/REPORTS/Payments_invoice";
+                                }
+
+                                else {
+                                    location.href = "/Home/frm_GridTrack_Distance";
+                                }
+                            }
+                            else {
+                                alert("invalid Password..");
+                            }
+                        });
+                    }
+                    else {
+                        if ($("#txtUserName").val() == "") {
+                            alert("please enter username..");
+                            $("#txtUserName").focus();
+                        }
+                        else if ($("#txtPassword").val() == "") {
+                            alert("please enter password..");
+                            $("#txtPassword").focus();
+                        }
+                    }
+                }
+                else {
+                    alert("Invalid organization name..");
+                }
+            });
+        }
+        else {
+            alert("enter organization name..")
+            $("#txtOrgname").focus();
+        }
+
+
+    }*@
+    </script>
+    <!--===============================================================================================-->
+    <script src="~/Content/LoginCss/vendor/jquery/jquery-3.2.1.min.js"></script>
+    <!--===============================================================================================-->
+    <script src="~/Content/LoginCss/vendor/animsition/js/animsition.min.js"></script>
+    <!--===============================================================================================-->
+    <script src="~/Content/LoginCss/vendor/bootstrap/js/popper.js"></script>
+    <script src="~/Content/LoginCss/vendor/bootstrap/js/bootstrap.min.js"></script>
+    <!--===============================================================================================-->
+    <script src="~/Content/LoginCss/vendor/select2/select2.min.js"></script>
+    <!--===============================================================================================-->
+    <script src="~/Content/LoginCss/vendor/daterangepicker/moment.min.js"></script>
+    <script src="~/Content/LoginCss/vendor/daterangepicker/daterangepicker.js"></script>
+    <!--===============================================================================================-->
+    <script src="~/Content/LoginCss/vendor/countdowntime/countdowntime.js"></script>
+    <!--===============================================================================================-->
+    <script src="~/Content/LoginCss/js/main.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,128 @@
+﻿
+@{
+    ViewBag.Title = "Device_Report";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="container-fluid">
+    <div class="row page-titles">
+        <div class="col-md-5 col-8 align-self-center">
+            <h3 class="text-themecolor m-b-0 m-t-0">Device Reports</h3>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/Home/frm_GridTrack_Distance">Home</a></li>
+                <li class="breadcrumb-item active">Device Reports</li>
+            </ol>
+        </div>
+    </div>
+    <div class="row">
+        End Date <input type="text" style="width:180px;" id="txtdate" class="form-control" />
+        <input type="button" style="margin-left:10px" onclick="Search()" value="Search" />
+    </div>
+    <div style=" overflow-y: auto;">
+        <table id="tblschedulerreports" style="margin-top:30px;font-size:14px" class="display nowrap table table-hover table-striped table-bordered" cellspacing="0" width="100%">
+
+            <thead>
+                <tr id="Columns"></tr>
+            </thead>
+            <tbody id="tbldata" style="background:green;"></tbody>
+        </table>
+    </div>
+</div>
+<script>
+    window.onload = function () {
+        $('#txtdate').bootstrapMaterialDatePicker
+     ({
+         format: 'MM/DD/YYYY',
+         time: false,
+     });
+    }
+
+
+    function Search() {
+
+        if ($("#txtdate").val() != '') {
+
+
+
+            $.post("/Home/_summaryreport", { "Enddate": $("#txtdate").val() }, function (data) {
+               console.log(data);
+                //alert(data["Report"].length);
+               if (data["Report"].length > 0) {
+
+
+                   if ($.fn.dataTable.isDataTable('#tblschedulerreports')) {
+                       $('#tblschedulerreports').DataTable().destroy();
+                   }
+                    
+                    $('#tblschedulerreports tbody').remove();
+                    var data1 = data["Report"];
+                    var columnsIn = data1[0];
+                    console.log(columnsIn);
+                    var Columnsdata = "";
+                    var Columnsvalues;
+                    var count = 0;
+                    $("#Columns").empty();
+                    var columnsdata = "<th>VEHICLES_NO</th>";
+                    var Columnsvalues = "";
+                    for (var key in columnsIn) {
+                        count++;
+                    }
+
+                    ////alert(count);
+                    for (var i = 0; i < (count - 1) ; i++) {
+                        var d = i + 1;
+                        columnsdata = columnsdata + '<th>' + d + '</th>';
+                    }
+
+                    var _ViaSt = data["Report"].map(function (lom, i) {
+                        Columnsvalues = Columnsvalues + "<tr>";
+                        Columnsvalues = Columnsvalues + '<td>' + lom["REPORT_VEHICLENO"] + '</td>';
+                        //    Columnsvalues = Columnsvalues + '<td>' + lom["REPORT_VEHICLENO"] + '</td>';
+                        //    //Columnsvalues = Columnsvalues + '<td>' + lom["VEHICLE_NAME"] + '</td>';
+                        //    //Columnsvalues = Columnsvalues + '<td>' + lom["DRIVER_NAME"] + '</td>'
+
+                        for (var i = 1; i < count ; i++) {
+                            //        //
+                            var d;
+                            //if (i < 10)
+                            //    d = '0' + i;
+                            //else
+                            d = i;
+                            //  alert(lom[d]);
+                            if (lom[d] == null || lom[d] == 'null') {
+                                lom[d] = 'NA';
+                            }
+                            if (lom[d] > 500) {
+                                lom[d] = 'NA';
+                            }
+                            Columnsvalues = Columnsvalues + '<td>' + lom[d] + '</td>';
+                            //        //Columnsvalues = Columnsvalues + '<td onclick="Trip_Details(' + d + ',' + lom["VEHICLES_NO"] + ')">' + lom[d] + '</td>';
+                            //      //  Columnsvalues = Columnsvalues + '<td onclick="Trip_Details(\'' + d + '\',\'' + lom["REPORT_VEHICLENO"] + '\')">' + lom[d] + '</td>';
+
+                        }
+
+                        Columnsvalues = Columnsvalues + "</tr>";
+                    });
+                }
+                $("#Columns").append(columnsdata);
+                $("#tblschedulerreports").append(Columnsvalues);
+                $('#tblschedulerreports').DataTable({
+                    dom: 'Bfrtip',
+                    "paging": false,
+                    buttons: [
+                        //'copy', 'csv', 'excel', 'pdf', 'print'
+                        'excel', 'pdf', 'print',
+
+                    ]
+                });
+
+            });
+            //tr = $('<tr/>');
+
+            //tr.append('<td><img src="/NumberMarkers/marker' + (i + 1) + '.png"  onclick="movemarker000(\'' + dataT[i].LATITUDE + '\',\'' + dataT[i].LONGITUDE + '\',' + (i + 1) + ')"></ img></td>');
+            //tr.append("<td>" + dataT[i].PLACE + "</td>");
+            //tr.append("<td>" + dataT[i].TRIPDATAT_SPEED + "</td>");
+            //tr.append("<td>" + dataT[i].ODOMETER + "</td>");
+            //$('#tblhistory').append(tr);
+        }
+    }
+</script>

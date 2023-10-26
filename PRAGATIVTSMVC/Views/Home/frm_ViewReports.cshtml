@@ -1,0 +1,747 @@
+﻿@{
+    ViewBag.Title = "frm_ViewReports";
+    Layout = "~/Views/Shared/Layout2.cshtml";
+}
+<style>
+    .table td {
+        padding: 5px;
+        vertical-align: middle;
+        font-size:12px!important;
+    }
+       .table th {
+       font-weight:500;
+       font-size:13px!important;
+    }
+</style>
+<div id="load"></div>
+<div class="container-fluid">
+    <!--<div class="row page-titles">
+        <div class="col-md-5 col-8 align-self-center">
+            <h3 class="text-themecolor m-b-0 m-t-0">@ViewBag.ptype Report</h3>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/Home/frm_GridTrack_Distance">Home</a></li>
+                <li class="breadcrumb-item active">@ViewBag.ptype Report</li>
+            </ol>
+        </div>
+    </div>-->
+    <input type="hidden" id="hiddenvalue" value="@ViewBag.ptype" />
+    <div class="row" id="divrow">
+        <div class="col-lg-3">
+            @{
+
+                if (ViewBag.ptype == "Trip" || ViewBag.ptype == "Violation" || ViewBag.ptype == "Landmark" || ViewBag.ptype == "Stoppage" || ViewBag.ptype == "Specifictimezone")
+                {
+                    <label>Vehicles </label> <select class="form-control" id="ddlvehicles">
+                        <option value="0">-Select Vehicle-</option>
+                        @foreach (var item in ViewBag.vehicles)
+                        {
+                            <option value="@item.DEVICE_ID">@item.DEVICE_NAME</option>
+                        }
+                    </select>
+                }
+                if (ViewBag.ptype == "Geofence")
+                {
+                    <label>Landmarks </label> <select class="form-control" id="ddllandmarks">
+                        <option value="-1">All Landmarks</option>
+                        @foreach (var item in ViewBag.landmarks)
+                        {
+                            <option value="@item.LANDMARKS_ID">@item.LANDMARKS_ADDRESS</option>
+                        }
+                    </select>
+                }
+            }
+        </div>
+        <div class="col-lg-3">
+
+            @{
+                if (ViewBag.ptype == "Trip" || ViewBag.ptype == "Violation" || ViewBag.ptype == "Landmark" || ViewBag.ptype == "Geofence" || ViewBag.ptype == "Stoppage" || ViewBag.ptype == "Specifictimezone" || ViewBag.ptype == "24hoursrunanalysis")
+                {
+                    <label>Start Date </label> <input type="text" id="txtstartdate" placeholder="Select StartDate" class="form-control" />
+                }
+            }
+        </div>
+        <div class="col-lg-3">
+
+            @{
+
+                if (ViewBag.ptype == "Violation" || ViewBag.ptype == "Landmark" || ViewBag.ptype == "Geofence" || ViewBag.ptype == "Stoppage" || ViewBag.ptype == "Specifictimezone" || ViewBag.ptype == "24hoursrunanalysis")
+                {
+                    <label> End Date </label>  <input type="text" id="txtenddate" placeholder="Select EndDate" class="form-control" />
+
+                }
+                if (ViewBag.ptype == "Trip")
+                {
+                    <label> End Date </label>  <input type="text" id="txtenddate" placeholder="Select EndDate" class="form-control" />
+                    
+                }
+            }
+        </div>
+        <div class="col-lg-3">
+            @{
+                if (ViewBag.ptype == "Trip")
+                {
+
+                    <input type="button" style="margin-top:32px" class="btn btn-primary" value="Search" onclick="Search()" />
+                }
+
+            }
+           
+        </div>
+            <div class="col-lg-2">
+                @{
+                    if (ViewBag.ptype == "Violation" || ViewBag.ptype == "Landmark" || ViewBag.ptype == "Stoppage" || ViewBag.ptype == "Specifictimezone" || ViewBag.ptype == "24hoursrunanalysis")
+                    {
+                        <input type="button" style="margin-top:32px" class="btn btn-primary" value="Search" onclick="Violation()" />
+                    }
+                    if (ViewBag.ptype == "Geofence")
+                    {
+                        <input type="button" style="margin-top:32px" class="btn btn-primary" value="Search" onclick="Geofence()" />
+                    }
+
+                }
+
+            </div>
+            <div class="col-lg-2" style="margin-top:15px">
+                @{
+                    if (ViewBag.ptype == "Geofence")
+                    {
+                        <label>Vehicles within geofence </label> <input type="checkbox" id="chkwithinlandmark" />
+                        <label> Interval:</label> <select id="ddlgeofenceinterval" class="form-control">
+                            <option value="0">Select Interval</option>
+                            <option value="60">1 Hour</option>
+                            <option value="120">2 Hour</option>
+                            <option value="180">3 Hour</option>
+                            <option value="240">4 Hour</option>
+                            <option value="720">12 Hour</option>
+                            <option value="1440">1 Day</option>
+                            <option value="10080">1 Week</option>
+                        </select>
+                        <input type="button" style="margin-top:32px" class="btn btn-primary" value="TripCount" onclick="getTripCount()" />
+                    }
+                    if (ViewBag.ptype == "Stoppage")
+                    {
+                        <label> Interval:</label> <select id="ddlinterval" class="form-control">
+                            <option value="-1">Select Interval</option>
+                            <option value="60">1 Hour</option>
+                            <option value="120">2 Hour</option>
+                            <option value="180">3 Hour</option>
+                            <option value="240">4 Hour</option>
+                            <option value="720">12 Hour</option>
+                            <option value="1440">1 Day</option>
+                            <option value="10080">1 Week</option>
+                        </select>
+                    }
+                }
+
+            </div>
+            <div class="col-lg-2" style="margin-top:45px">
+                @{
+                    if (ViewBag.ptype == "Stoppage")
+                    {
+                        <label>Show geofence only </label> <input type="checkbox" id="chkgeofence" />
+                    }
+                }
+
+            </div>
+            <div class="col-lg-2" style="margin-top:45px">
+                @{
+                    if (ViewBag.ptype == "Stoppage")
+                    {
+                        <label>Show Last Record  </label> <input type="checkbox" id="chklastrecord" />
+                    }
+                }
+
+            </div>
+        </div>
+	<div class="card card-box" style="margin-top:5px;">
+                          <div class="card-body">
+    <div style="margin-top:20px">
+        <table id="tbldashboardreport"  border="1" style="font-size:13px" class="table table-striped table-bordered">
+            <thead>
+                <tr id="trdashboard"></tr>
+            </thead>
+            <tbody id="tbodydashboard"></tbody>
+        </table>
+        <table id="tblviolation" border="1" style="font-size:13px;display:none" class="table table-striped table-bordered">
+            <thead>
+                <tr id="trviolation"></tr>
+            </thead>
+            <tbody id="tbodyviolation"></tbody>
+        </table>
+		 </div>
+	  </div>
+    </div>
+</div>
+
+
+<script>
+    
+
+    window.onload = function () {
+
+        $("#load").hide();
+
+        if ($("#hiddenvalue").val() == "Violation" || $("#hiddenvalue").val() == "Landmark" || $("#hiddenvalue").val() == "Stoppage" || $("#hiddenvalue").val() == "Specifictimezone" || $("#hiddenvalue").val() == "24hoursrunanalysis") {
+
+            $("#tbldashboardreport").css('display', 'none');
+            $("#tblviolation").css('display', 'block');
+        }
+        if ($("#hiddenvalue").val() == "VehicleDetails") {
+            GetallVehicleDetailedReport();
+        }
+
+        $("#ddlvehicles").select3();
+
+        //$('#date').bootstrapMaterialDatePicker({ weekStart: 0, time: false });
+
+        $('#txtstartdate').bootstrapMaterialDatePicker
+             ({
+                 format: 'MM/DD/YYYY',
+                 weekStart: 1,
+                 time: false,
+                 nowButton: true,
+                 clearButton: false,
+                 cancelText: 'Cancel',
+                 switchOnClick: false,
+                 twelvehour: false
+
+             });
+
+       
+        $('#txtenddate').bootstrapMaterialDatePicker
+           ({
+               format: 'MM/DD/YYYY',
+               weekStart: 1,
+               time: false,
+               nowButton: true,
+               clearButton: false,
+               cancelText: 'Cancel',
+               switchOnClick: false,
+               okbutton:false,
+               twelvehour: false
+
+           });
+        curentdateandtime();
+        var dt = new Date();
+        if ($("#hiddenvalue").val() == "Dashboard") {
+
+            Getall();
+        }
+
+    }
+
+
+    function curentdateandtime() {
+        var date = new Date();
+        var dd = date.getDate();
+        var mm = date.getMonth() + 1;
+        var yy = date.getFullYear();
+        var hours = date.getHours();
+        var minutes = date.getMinutes();
+        var ampm = hours >= 12 ? 'PM' : 'AM';
+        hours = hours % 12;
+        hours = hours ? hours : 12; // the hour '0' should be '12'
+        minutes = minutes < 10 ? '0' + minutes : minutes;
+
+        var strTime = hours + ':' + minutes + ' ' + ampm;
+
+        var fdt = mm + "/" + dd + "/" + yy + " " + hours + ":" + minutes + " " + ampm;
+        $('#txtenddate').val(fdt);
+        if (dd == "1" || dd == "01") {
+
+        }
+        else {
+            dd = (dd - 1);
+        }
+        var sdt = mm + "/" + dd + "/" + yy + " " + hours + ":" + minutes + " " + ampm;
+        $('#txtstartdate').val(sdt);
+    }
+
+    function Getall() {
+
+        $("#load").show();
+        $.post("/Home/_frm_ViewReports", function (data) {
+            $("#load").hide();
+            if ($.fn.dataTable.isDataTable('#tbldashboardreport')) {
+                $('#tbldashboardreport').DataTable().destroy();
+            }
+           // $('#tbldashboardreport tbody').remove();
+            var thead = " <th>SNO</th><th>STATUS</th><th>SPEED</th><th>VEHICLE NUMBER</th><th>VEHICLE TYPE</th><th>NEAREST LANDMARKS</th><th>LAST RECORD(D&T)</th><th>ODOMETER (KM)</th><th>DRIVER NAME</th><th>DRIVER NUMBER</th><th>DURATION(DAYS:HRS:MINS)</th>";
+            $("#trdashboard").append(thead);
+
+            var dataT = data['data'];
+
+            for (var i = 0; i < dataT.length; i++) {
+                tr = $('<tr/>');
+                tr.append("<td>" + (i + 1) + "</td>");
+                tr.append("<td>" + (dataT[i].COLORSTATUS) + "</td>");
+                tr.append("<td>" + (dataT[i].SPEED) + "</td>");
+                tr.append("<td>" + (dataT[i].VEHICLENUMBER) + "</td>");
+                tr.append("<td>" + (dataT[i].VehicleType) + "</td>");
+                tr.append("<td>" + (dataT[i].PLACE) + "</td>");
+                tr.append("<td>" + (dataT[i].TRIPDATA_TRIPDATE) + "</td>");
+                tr.append("<td>" + (dataT[i].ODOMETER) + "</td>");
+                tr.append("<td>" + (dataT[i].DRIVER_NAME) + "</td>");
+                tr.append("<td>" + (dataT[i].DRIVERNUMBER) + "</td>");
+                tr.append("<td>" + (dataT[i].TRIPDATAT_SPEED) + "</td>");
+
+                $("#tbldashboardreport").append(tr);
+            }
+            $('#tbldashboardreport').DataTable({
+                dom: 'Bfrtip',
+                "paging": false,
+                "scrollX": true,
+                buttons: [
+                    //'copy', 'csv', 'excel', 'pdf', 'print'
+                    'excel', 'pdf', 'print'
+                ],
+                "columnDefs": [{
+                    "targets": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+                    "orderable": false,
+                    classname: 'dt[-head|-body]-compact'
+                }]
+            });
+
+
+
+
+        });
+    }
+
+    function Search() {
+        if ($("#ddlvehicles").val() != '0')
+        {
+
+        
+        $("#load").show();
+        $.post("/Home/_view_tripreport", { "VNO": $("#ddlvehicles").val() , "startdate": $("#txtstartdate").val(), "Enddate": $("#txtenddate").val() }, function (data) {
+            $("#load").hide();
+            if ($.fn.dataTable.isDataTable('#tbldashboardreport')) {
+                $('#tbldashboardreport').DataTable().destroy();
+            }
+        //    $('#tbldashboardreport tbody').remove();
+            var thead = " <th>SNO</th><th>STATUS</th><th>SPEED</th><th>VEHICLE NUMBER</th><th>NEAREST LANDMARKS</th><th>LAST RECORD(D&T)</th><th>ODOMETER (KM)</th><th>DRIVER NAME</th><th>DRIVER NUMBER</th><th>DURATION(DAYS:HRS:MINS)</th>";
+
+
+
+            $("#trdashboard").empty();
+            $("#trdashboard").append(thead);
+        //    $('#tbldashboardreport tbody').remove();
+
+
+            if ($.fn.dataTable.isDataTable('#tbldashboardreport')) {
+                $('#tbldashboardreport').DataTable().destroy();
+            }
+         //   $('#tbldashboardreport tbody').remove();
+
+            var dataT = data['data'];
+            for (var i = 0; i < dataT.length; i++) {
+                tr = $('<tr/>');
+                tr.append("<td>" + (i + 1) + "</td>");
+                tr.append("<td>" + (dataT[i].COLORSTATUS) + "</td>");
+                tr.append("<td>" + (dataT[i].SPEED) + "</td>");
+                tr.append("<td>" + (dataT[i].VEHICLENUMBER) + "</td>");
+                tr.append("<td>" + (dataT[i].PLACE) + "</td>");
+                tr.append("<td>" + (dataT[i].TRIPDATA_TRIPDATE) + "</td>");
+                tr.append("<td>" + (dataT[i].ODOMETER) + "</td>");
+                tr.append("<td>" + (dataT[i].DRIVER_NAME) + "</td>");
+                tr.append("<td>" + (dataT[i].DRIVERNUMBER) + "</td>");
+                tr.append("<td>" + (dataT[i].TRIPDATAT_SPEED) + "</td>");
+
+                $("#tbldashboardreport").append(tr);
+            }
+            $('#tbldashboardreport').DataTable({
+                dom: 'Bfrtip',
+                "paging": false,
+                "scrollX": true,
+                buttons: [
+                    //'copy', 'csv', 'excel', 'pdf', 'print'
+                    'excel', 'pdf', 'print'
+                ]
+            });
+        });
+        }
+        else {
+            alert("select vehicle number..");
+        }
+    }
+
+
+
+    function Violation() {
+        if ($("#ddlvehicles").val() != '0')
+        {
+
+
+        $("#load").show();
+
+        var thead = "";
+        var strOperation = "";
+        if ($("#hiddenvalue").val() == "Violation") {
+            strOperation = "1";
+            thead = "<th>SNO</th><th>VEHICLE NUMBER</th><th>DATE & TIME (MM/DD/YYYY HH:MM:SS)</th><th>MAX PERMISSIBLE SPEED(KM/HR)</th><th>AVERAGE SPEED(KM/HR)</th><th>TRIP MAX SPEED(KM/HR)</th><th>NEAREST LANDMARKS</th>";
+        }
+        else if ($("#hiddenvalue").val() == "Landmark") {
+            strOperation = "4";
+            thead = "<th>SNO</th><th>VEHICLE NUMBER</th><th>DATE(MM/DD/YYYY)</th><th>TIME(HH:MM:SS)</th><th>SPEED(KM/HR)</th><th>NEAREST LANDMARKS</th>";
+        }
+        else if ($("#hiddenvalue").val() == "Stoppage") {
+          
+            strOperation = "12";
+            thead = "<th>SNO</th><th>VEHICLE NUMBER</th><th>START DATE(MM/DD/YYYY HH:MM:SS)</th><th>END DATE(MM/DD/YYYY HH:MM:SS)</th><th>TIME DIFFERENCE(HH:MM)</th><th>LANDMARKS ADDRESS</th>";
+        }
+        else if ($("#hiddenvalue").val() == "Specifictimezone") {
+
+            strOperation = "15";
+            thead = "<th>SNO</th><th>VEHICLE NUMBER</th><th>FROM TIME(HH:MM:SS)</th><th>TO TIME(HH:MM:SS)</th><th>TIME DIFFERENCE(HH:MM)</th><th>STATUS</th><th>NEARSET LANDMARKS</th>";
+        }
+
+        else if ($("#hiddenvalue").val() == "24hoursrunanalysis") {
+
+            strOperation = "25";
+            thead = "<th>SNO</th><th>VEHICLE NUMBER</th><th>START LOCATION</th><th>END LOCATION</th><th>RUNNING TIME(HH:MM:SS)</th><th>DAY RUN TIME(HH:MM:SS)</th><th>NIGHT RUN TIME(HH:MM:SS)</th><th>STOPPAGE TIME(HH:MM:SS)</th><th>DAY STOP TIME(HH:MM:SS)</th><th>NIGHT STOP TIME(HH:MM:SS)</th><th>ACTUAL (KMS)</th><th>IDEAL KM(S)</th><th>AVERAGE RUNNINGE SPEED (KM/HR)</th></th><th>AVERAGE SPEED (KM/HR)</th><th>OS</th><th>RA</th><th>RD</th><th>ND</th><th>CD</th><th>STOPPAGE(DRIVERS HOME)</th><th>STOPPAGE(SERVICE TIME)</th><th>STOPPAGE(LOADING TIME)</th>";
+        }
+
+        $.post("/Home/_view_Violation", { "VNO": $("#ddlvehicles").val(), "FRMDATE": $("#txtstartdate").val(), "TODATE": $("#txtenddate").val(), "strOperation": strOperation }, function (data) {
+          
+            
+            $("#load").hide();
+          
+            var arr = [];
+
+            $("#trviolation").empty();
+            $("#trviolation").append(thead);
+            $('#tbodyviolation').empty();
+          //  $('#tblviolation tbody').remove();
+
+
+            if ($.fn.dataTable.isDataTable('#tblviolation')) {
+                $('#tblviolation').DataTable().destroy();
+            }
+           // $('#tblviolation tbody').remove();
+            $('#tblviolation tbody > tr').remove();
+
+            var dataT = data['data'];
+            if (strOperation == "1") {
+                for (var i = 0; i < dataT.length; i++) {
+                    tr = $('<tr/>');
+                    tr.append("<td>" + (i + 1) + "</td>");
+                    tr.append("<td>" + (dataT[i].VEHICLENUMBER) + "</td>");
+                    tr.append("<td>" + (dataT[i].TRIPDATA_TRIPDATE) + "</td>");
+                    tr.append("<td>" + (dataT[i].MAXSPEED) + "</td>");
+                    tr.append("<td>" + (dataT[i].AVGSPEED) + "</td>");
+                    tr.append("<td>" + (dataT[i].OVERSPEED) + "</td>");
+                    tr.append("<td>" + (dataT[i].PLACE) + "</td>");
+
+                    $("#tblviolation").append(tr);
+                   // arr.push([(i + 1), dataT[i].VEHICLENUMBER, dataT[i].TRIPDATA_TRIPDATE, dataT[i].MAXSPEED, dataT[i].AVGSPEED, dataT[i].OVERSPEED, dataT[i].PLACE]);
+                }
+            }
+            else if (strOperation == "4") {
+                for (var i = 0; i < dataT.length; i++) {
+                    tr = $('<tr/>');
+                    tr.append("<td>" + (i + 1) + "</td>");
+                    tr.append("<td>" + (dataT[i].VEHICLENUMBER) + "</td>");
+                    tr.append("<td>" + (dataT[i].TRIPDATA_TRIPDATE) + "</td>");
+                    tr.append("<td>" + (dataT[i].TIME) + "</td>");
+                    tr.append("<td>" + (dataT[i].SPEED) + "</td>");
+                    tr.append("<td>" + (dataT[i].PLACE) + "</td>");
+                    $("#tblviolation").append(tr);
+                }
+            }
+            else if (strOperation == "12") {
+               
+                for (var i = 0; i < dataT.length; i++) {
+                    tr = $('<tr/>');
+                    tr.append("<td>" + (i + 1) + "</td>");
+                    tr.append("<td>" + (dataT[i].VEHICLENUMBER) + "</td>");
+                    tr.append("<td>" + (dataT[i].st_date) + "</td>");
+                    tr.append("<td>" + (dataT[i].ed_date) + "</td>");
+                    tr.append("<td>" + (dataT[i].TIME) + "</td>");
+                    tr.append("<td>" + (dataT[i].PLACE) + "</td>");
+                    $("#tbodyviolation").append(tr);
+                  //  arr.push([(i + 1), dataT[i].VEHICLENUMBER, dataT[i].st_date, dataT[i].ed_date, dataT[i].TIME, dataT[i].PLACE]);
+                }
+               
+            }
+            else if (strOperation == "15") {
+
+                for (var i = 0; i < dataT.length; i++) {
+                    tr = $('<tr/>');
+                    tr.append("<td>" + (i + 1) + "</td>");
+                    tr.append("<td>" + (dataT[i].VEHICLENUMBER) + "</td>");
+                    tr.append("<td>" + (dataT[i].st_date) + "</td>");
+                    tr.append("<td>" + (dataT[i].ed_date) + "</td>");
+                    tr.append("<td>" + (dataT[i].TIME) + "</td>");
+                    tr.append("<td>" + (dataT[i].VEHSTATUS) + "</td>");
+                    tr.append("<td>" + (dataT[i].PLACE) + "</td>");
+                    $("#tblviolation").append(tr);
+                }
+
+            }
+            else if (strOperation == "25") {
+
+                for (var i = 0; i < dataT.length; i++) {
+                    tr = $('<tr/>');
+                    tr.append("<td>" + (i + 1) + "</td>");
+                    
+                    tr.append("<td>" + (dataT[i].VEHICLENUMBER) + "</td>");
+                    tr.append("<td>" + (dataT[i].STARTLOCATION) + "</td>");
+                    tr.append("<td>" + (dataT[i].ENDLOCATION) + "</td>");
+
+                    tr.append("<td>" + (dataT[i].TOTALRUNNINGTIME) + "</td>");
+                    tr.append("<td>" + (dataT[i].DAYRUN) + "</td>");
+                    tr.append("<td>" + (dataT[i].NIGHTRUN) + "</td>");
+
+                    tr.append("<td>" + (dataT[i].TOTALSTOPTIME) + "</td>");
+                    tr.append("<td>" + (dataT[i].DAYSTOPS) + "</td>");
+                    tr.append("<td>" + (dataT[i].NIGHTSTOPTIME) + "</td>");
+
+                    tr.append("<td>" + (dataT[i].ACTUALKMS) + "</td>");
+                    tr.append("<td>" + (dataT[i].IDLEKMS) + "</td>");
+                    tr.append("<td>" + (dataT[i].ACERAGE_RUNNNING_SPEED) + "</td>");
+                    tr.append("<td>" + (dataT[i].ACERAGE_SPEED) + "</td>");
+                    tr.append("<td>" + (dataT[i].OS) + "</td>");
+                    tr.append("<td>" + (dataT[i].RA) + "</td>");
+                    tr.append("<td>" + (dataT[i].RD) + "</td>");
+                    tr.append("<td>" + (dataT[i].ND) + "</td>");
+                    tr.append("<td>" + (dataT[i].CD) + "</td>");
+
+                    tr.append("<td>" + (dataT[i].driverhome_stop) + "</td>");
+                    tr.append("<td>" + (dataT[i].servicetime_stop) + "</td>");
+                    tr.append("<td>" + (dataT[i].loadingtime_stop) + "</td>");
+                    $("#tblviolation").append(tr);
+                }
+
+            }
+            $('#tblviolation').DataTable({
+                dom: 'Bfrtip',
+                "paging": false,
+                "scrollX": true,
+
+                buttons: [
+                    //'copy', 'csv', 'excel', 'pdf', 'print'
+                    'excel', 'pdf', 'print'
+                ]
+               
+            });
+        });
+        }
+        else {
+            alert("select vehicle number..");
+        }
+    }
+
+
+    function GetallVehicleDetailedReport() {
+        if ($("#ddlvehicles").val() != '0') {
+
+            $("#load").show();
+            $.post("/Home/_view_Violation", { "VNO": $("#ddlvehicles").val(), "FRMDATE": '', "TODATE": '', "strOperation": 11 }, function (data) {
+                $("#load").hide();
+                if ($.fn.dataTable.isDataTable('#tbldashboardreport')) {
+                    $('#tbldashboardreport').DataTable().destroy();
+                }
+                //     $('#tbldashboardreport tbody').remove();
+                $('#tbldashboardreport tbody > tr').remove();
+                var thead = " <th>SNO</th><th>VEHICLE NUMBER</th><th>VEHICLE MODEL NAME</th><th>MAKE</th><th>YEAR OF MODEL</th><th>TANK CAPACITY(LITRE)</th><th>MAX SPEDD (KM/HR)</th>";
+                $("#trdashboard").append(thead);
+
+                var dataT = data['data'];
+
+                for (var i = 0; i < dataT.length; i++) {
+                    tr = $('<tr/>');
+                    tr.append("<td>" + (i + 1) + "</td>");
+                    tr.append("<td>" + (dataT[i].VEHICLENUMBER) + "</td>");
+                    tr.append("<td>" + (dataT[i].VEHICLEMFG) + "</td>");
+                    tr.append("<td>" + (dataT[i].MODEL) + "</td>");
+                    tr.append("<td>" + (dataT[i].TYPE) + "</td>");
+                    tr.append("<td>" + (dataT[i].TANKCAPACITY) + "</td>");
+                    tr.append("<td>" + (dataT[i].MAXSPEED) + "</td>");
+
+                    $("#tbldashboardreport").append(tr);
+                }
+                //$('#tbldashboardreport').DataTable({
+                //    dom: 'Bfrtip',
+                //    "paging": false,
+                //    "scrollX": true,
+                //    buttons: [
+                //        //'copy', 'csv', 'excel', 'pdf', 'print'
+                //        'excel', 'pdf', 'print'
+                //    ]
+                //});
+
+                if ($.fn.dataTable.isDataTable('#tbldashboardreport')) {
+                    table = $('#tbldashboardreport').DataTable();
+                }
+                else {
+                    table = $('#tbldashboardreport').DataTable({
+                        dom: 'Bfrtip',
+                        "paging": false,
+                        "scrollX": true,
+                        buttons: [
+                            //'copy', 'csv', 'excel', 'pdf', 'print'
+                            'excel', 'pdf', 'print'
+                        ]
+                    });
+                }
+
+
+            });
+        }
+        else {
+            alert("select vehicle number..");
+        }
+    }
+
+
+    function Geofence() {
+        if ($("#ddlvehicles").val() != '0') { 
+        $("#load").show();
+        var thead = "";
+        var chec = false;
+        if ($("#chkwithinlandmark").is(":checked") == true) {
+            chec = true;
+            thead = "<th>SNO</th><th>VEHICLE NUMBER</th><th>IN TIME</th><th>OUT TIME</th><th>TIME SPENT(HH:MM)</th>";
+        }
+        else {
+            thead = "<th>SNO</th><th>VEHICLE NUMBER</th><th>IN TIME</th><th>OUT TIME</th><th>TIME SPENT(HH:MM)</th><th>GEOFENCE TYPE</th>";
+        }
+
+        $.post("/Home/_geofence", { "checkgeofenceonly": chec, "frmdate": $("#txtstartdate").val(), "todate": $("#txtenddate").val(), "landmarkid": $("#ddllandmarks").val(), "interval": $("#ddlgeofenceinterval").val() }, function (data) {
+            $("#load").hide();
+            //  $('#tbodydashboard').empty();
+            // $("#trdashboard").empty();
+
+
+
+            $("#trdashboard").empty();
+            $("#trdashboard").append(thead);
+        //    $('#tbldashboardreport tbody').remove();
+
+
+            //if ($.fn.dataTable.isDataTable('#tbldashboardreport')) {
+            //    $('#tbldashboardreport').DataTable().destroy();
+            //}
+           $('#tbldashboardreport tbody').remove();
+
+
+
+            var dataT = data['data'];
+            if (chec == true) {
+
+                for (var i = 0; i < dataT.length > 0; i++) {
+                    tr = $('<tr/>');
+                    tr.append("<td>" + (i + 1) + "</td>");
+                    tr.append("<td>" + (dataT[i].VEHICLE_NUMBER) + "</td>");
+                    tr.append("<td>" + (dataT[i].IN_DATE) + "</td>");
+                    tr.append("<td>" + (dataT[i].OUT_DATE) + "</td>");
+                    tr.append("<td>" + (dataT[i].DURATION) + "</td>");
+                    $("#tbldashboardreport").append(tr);
+                }
+            }
+            else {
+
+                for (var i = 0; i < dataT.length > 0; i++) {
+                    tr = $('<tr/>');
+                    tr.append("<td>" + (i + 1) + "</td>");
+                    tr.append("<td>" + (dataT[i].VEHICLE_NUMBER) + "</td>");
+                    tr.append("<td>" + (dataT[i].IN_DATE) + "</td>");
+                    tr.append("<td>" + (dataT[i].OUT_DATE) + "</td>");
+                    tr.append("<td>" + (dataT[i].DURATION) + "</td>");
+                    tr.append("<td>" + (dataT[i].LOCATIONTYPE) + "</td>");
+                    $("#tbldashboardreport").append(tr);
+                }
+            }
+
+            $('#tbldashboardreport').DataTable({
+                dom: 'Bfrtip',
+                "paging": false,
+                "scrollX": true,
+                buttons: [
+                    //'copy', 'csv', 'excel', 'pdf', 'print'
+                    'excel', 'pdf', 'print'
+                ]
+            });
+
+
+
+
+        });
+        }
+        else {
+            alert("select vehicle number..");
+        }
+    }
+
+    function getTripCount()
+        {
+        if ($("#ddlvehicles").val() != '0') {
+            $("#load").show();
+            var chec = false;
+            var thead = "";
+          
+            
+                thead = "<th>SNO</th><th>DATE</th><th>Trip Count</th><th>VEHICLE NUMBER</th><th>LOCATION</th>";
+            
+
+                $.post("/Home/_GetgeofenceTripcount", { "checkgeofenceonly": chec, "frmdate": $("#txtstartdate").val(), "todate": $("#txtenddate").val(), "landmarkid": $("#ddllandmarks").val(), "interval": $("#ddlgeofenceinterval").val() }, function (data) {
+                $("#load").hide();
+                //  $('#tbodydashboard').empty();
+                // $("#trdashboard").empty();
+
+
+
+                $("#trdashboard").empty();
+                $("#trdashboard").append(thead);
+                //    $('#tbldashboardreport tbody').remove();
+
+
+                //if ($.fn.dataTable.isDataTable('#tbldashboardreport')) {
+                //    $('#tbldashboardreport').DataTable().destroy();
+                //}
+                $('#tbldashboardreport tbody').remove();
+
+
+
+                var dataT = data['data'];
+                
+               
+
+                    for (var i = 0; i < dataT.length > 0; i++) {
+                        tr = $('<tr/>');
+                        tr.append("<td>" + (i + 1) + "</td>");
+                        tr.append("<td>" + (dataT[i].IN_DATE) + "</td>");
+                        tr.append("<td>" + (dataT[i].TRIPCOUNT) + "</td>");
+                        tr.append("<td>" + (dataT[i].VEHICLE_NUMBER) + "</td>");
+                        tr.append("<td>" + (dataT[i].LANDMARKS_ADDRESS) + "</td>");
+                      
+                        $("#tbldashboardreport").append(tr);
+                    }
+                
+
+                //$('#tbldashboardreport').DataTable({
+                //    dom: 'Bfrtip',
+                //    "paging": false,
+                //    "scrollX": true,
+                //    buttons: [
+                //        //'copy', 'csv', 'excel', 'pdf', 'print'
+                //        'excel', 'pdf', 'print'
+                //    ]
+                //});
+
+
+
+
+            });
+        }
+        else {
+            alert("select vehicle number..");
+        }
+  }
+
+
+
+
+
+</script>

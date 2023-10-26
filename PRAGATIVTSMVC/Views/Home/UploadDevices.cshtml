@@ -1,0 +1,67 @@
+﻿
+@{
+    ViewBag.Title = "UploadDevices";
+    Layout = "~/Views/Shared/Layout2.cshtml";
+}
+
+<div class="masonry-item col-md-6">
+    <div class="bgc-white p-20 bd">
+
+        <div class="mT-30">
+            <form class="container" id="needs-validation" novalidate>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="validationCustom03">Upload Excel</label>
+                        <input type="file" class="form-control" id="upload_excel" required>
+
+                    </div>
+                    
+                </div>
+                <button type="button" id="btn_submit" onclick="Submit()" class="btn btn-primary">Submit</button>
+            </form>
+
+        </div>
+    </div>
+</div>
+<script>
+    function Submit() {
+
+        var formdata = new FormData();
+        var files = $("#upload_excel").get(0).files;
+
+        if (files.length > 0) {
+            formdata.append("UploadedExcel", files[0]);
+
+
+            $.ajax({
+                url: "/UploadInstallations.ashx",
+                type: 'POST',
+                async: false,
+                processData: false,
+                cache: false,
+                contentType: false,
+                data: formdata,
+                success: function (data) {
+                    
+                    var value = data;
+                    if (data) {
+
+                        alert(data);
+                    }
+                    else {
+                        alert("Failed to upload file");
+                    }
+                },
+                error: function (err) {
+
+                }
+
+            });
+        }
+        else
+        {
+            alert("Please Upload File");
+        }
+    }
+</script>

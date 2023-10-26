@@ -1,0 +1,947 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title></title>
+    <style>
+            #load {
+        width: 100%;
+        height: 100%;
+        position: fixed;
+        z-index: 9999;
+        background: url("/IMAGES/loader5.gif") no-repeat center center rgba(0,0,0,0.25);
+    }
+        #loader {
+            transition: all .3s ease-in-out;
+            opacity: 1;
+            visibility: visible;
+            position: fixed;
+            height: 100vh;
+            width: 100%;
+            background: #fff;
+            z-index: 90000
+        }
+
+        #loader.fadeOut {
+            opacity: 0;
+            visibility: hidden
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            position: absolute;
+            top: calc(50% - 20px);
+            left: calc(50% - 20px);
+            background-color: #333;
+            border-radius: 100%;
+            -webkit-animation: sk-scaleout 1s infinite ease-in-out;
+            animation: sk-scaleout 1s infinite ease-in-out
+        }
+
+        @@-webkit-keyframes sk-scaleout {
+            0% {
+                -webkit-transform: scale(0)
+            }
+            100% {
+                -webkit-transform: scale(1);
+                opacity: 0
+            }
+        }
+
+        @@keyframes sk-scaleout {
+            0% {
+                -webkit-transform: scale(0);
+                transform: scale(0)
+            }
+            100% {
+                -webkit-transform: scale(1);
+                transform: scale(1);
+                opacity: 0
+            }
+        }
+      .sidebar-menu>li>a {
+   
+    font-size: 13px!important;
+    font-weight: 400!important;
+  
+  
+}
+      .table td {
+        padding: 5px;
+        vertical-align: middle;
+    }
+        .dataTables_wrapper{
+      overflow:auto!important;
+  }
+      /*table {
+        display: block;
+        overflow-x: auto;
+       
+    }*/
+    </style>
+    <!-- google font -->
+    <link rel="icon" type="image/png" href="~/IMAGES/Logos/Trano-Pro-App-Icon small.png">
+   
+    <link href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700" rel="stylesheet" type="text/css" />
+    <link href="~/assets/plugins/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+    <link href="~/assets/style.css" rel="stylesheet">
+    <link rel="stylesheet" href="~/assets/plugins/material/material.min.css">
+    <link rel="stylesheet" href="~/assets/css/material_style.css">
+    <link href="~/CSS/bootstrap-material-datetimepicker.css" rel="stylesheet" />
+    <link href="~/CSS/select3.min.css" rel="stylesheet" />
+    <!--Date picker-->
+    <link href="~/CSS/bootstrap-material-datetimepicker.css" rel="stylesheet" />
+    <link href="~/CSS/bootstrap-datepicker.min.css" rel="stylesheet" />
+    <script type="text/javascript" charset="utf8" src="//code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="https://code.jquery.com/jquery-1.12.3.min.js" integrity="sha256-aaODHAgvwQW1bFOGXMeX+pC4PZIPsvn2h1sArYOhgXQ=" crossorigin="anonymous"></script>
+
+    <link href="~/Content/multi-select/css/multi-select.css" rel="stylesheet" />
+
+</head>
+<body class="app is-collapsed">
+    <div id="loader">
+        <div class="spinner"></div>
+    </div>
+    <script type="text/javascript">
+        window.addEventListener('load', () => {
+            const loader = document.getElementById('loader');
+            setTimeout(() => {
+                loader.classList.add('fadeOut');
+            }, 300);
+        });
+    </script>
+    <div>
+        <div class="sidebar">
+            <div class="sidebar-inner">
+                <div class="sidebar-logo">
+                    <div class="peers ai-c fxw-nw">
+                        <div class="peer peer-greed">
+                            <a class="sidebar-link td-n" href="#" class="td-n">
+                                <div class="peers ai-c fxw-nw">
+                                    <div class="peer">
+                                        <div class="logo"><img src="~/IMAGES/Logos/Tranopro.png" id="header_logo" style="width:200%" alt=""></div>
+                                    </div>
+                                    @*<div class="peer peer-greed">
+                                            <h5 class="lh-1 mB-0 logo-text">Administrator</h5>
+                                        </div>*@
+                                </div>
+                            </a>
+                        </div>
+                        <div class="peer">
+                            <div class="mobile-toggle sidebar-toggle">
+                                <a href="#" class="td-n"><i class="ti-arrow-circle-left"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <ul class="sidebar-menu scrollable pos-r">
+                    <li class="nav-item mT-30 active">
+                        <a class="sidebar-link" href="/Home/Tracksmart" default>
+                            <span class="icon-holder">
+                                <i class="c-blue-500 ti-home"></i>
+                            </span><span class="title">Home</span>
+                        </a>
+                    </li>
+                    @*<li class="nav-item"><a class="sidebar-link" href="/HOME/frm_GridTrack_Distance"><span class="icon-holder"><i class="c-brown-500 ti-dashboard"></i> </span><span class="title">Dashboard</span></a></li>*@
+                    <li class="nav-item dropdown">
+                        <a class="dropdown-toggle" href="javascript:void(0);"><span class="icon-holder"><i class="c-brown-500 ti-dashboard"></i> </span><span class="title">Dashboard</span> <span class="arrow"><i class="ti-angle-right"></i></span></a>
+                        <ul class="dropdown-menu">
+                            <li><a class="sidebar-link" href="/HOME/frm_GridTrack_Distance">Dashboard</a></li>
+                            <li id="li_device_dashboard" style="display:none;"><a class="sidebar-link" href="/HOME/TrackingHistory">Device Dashboard</a></li>
+                            <li id="li_renew_dashboard" style="display:none; "><a class="sidebar-link" href="/HOME/Renew_Rpt">Renewal Dashboard</a></li>
+
+                        </ul>
+                    </li>
+                    <li class="nav-item" id="li_search" style="display:none;"><a class="sidebar-link" href="/HOME/frm_search"><span class="icon-holder"><i class="c-brown-500 ti-search"></i> </span><span class="title">Search</span></a></li>
+                    <li class="nav-item dropdown">
+                        <a class="dropdown-toggle" href="javascript:void(0);"><span class="icon-holder"><i class="c-deep-orange-500 ti-location-pin"></i> </span><span class="title">Track</span> <span class="arrow"><i class="ti-angle-right"></i></span></a>
+                        <ul class="dropdown-menu">
+                            <li><a class="sidebar-link" href="/HOME/Tracking">Live Tracking</a></li>
+                            <li><a class="sidebar-link" href="/HOME/TrackingHistory">Track History</a></li>
+                            <li><a class="sidebar-link" href="/HOME/frm_TrackingNearestVehicles">Track Nearest Vehicles</a></li>
+                        </ul>
+                    </li>
+
+                    <li class="nav-item dropdown" id="liadmin" style="display:none;">
+                        <a class="dropdown-toggle" href="javascript:void(0);"><span class="icon-holder"><i class="c-teal-500 ti-panel"></i> </span><span class="title">Admin</span> <span class="arrow"><i class="ti-angle-right"></i></span></a>
+                        <ul class="dropdown-menu" id="admin_li_list">
+                            <li id="li_partners" style="display:none;"><a class="sidebar-link" href="/HOME/frm_Categories?ID=PARTNERS">Partners (Distributors)</a></li>
+                            <li id="li_clients"><a class="sidebar-link" href="/HOME/frm_Categories?ID=CLIENTS">Clients (Dealers)</a></li>
+                            <li id="li_users"><a class="sidebar-link" href="/HOME/frm_Users">Users (Customers)</a></li>
+                            <li id="li_roles"><a class="sidebar-link" href="/HOME/frm_Roles">Roles</a></li>
+
+                        </ul>
+                    </li>
+                    <li class="nav-item dropdown" id="limasters" style="display:block">
+
+                        <a class="dropdown-toggle" href="javascript:void(0);"><span class="icon-holder"><i class="c-deep-orange-500 ti-menu"></i> </span><span class="title">Masters</span> <span class="arrow"><i class="ti-angle-right"></i></span></a>
+                        <ul class="dropdown-menu" id="masters_list">
+                            <li id="li_deviceinstall" style="display:none;"><a class="sidebar-link" href="/HOME/DeviceWizard">Device Installation</a></li>
+                            <li id="liSims"><a class="sidebar-link" href="/HOME/Sims">Sims</a></li>
+                            <li id="lidevices"><a class="sidebar-link" href="/HOME/frm_Devices">Devices</a></li>
+                            <li id="livehiclemodels"><a class="sidebar-link" href="/HOME/frm_VehicleModel">VehicleModel</a></li>
+                            <li id="livehicledrivers"><a class="sidebar-link" href="/HOME/frm_Drivers">Drivers</a></li>
+                            <li id="livehicles"><a class="sidebar-link" href="/HOME/frm_vehicles">Vehicles</a></li>
+                            <li id="lischedulers"><a class="sidebar-link" href="/HOME/Scheduler">Schedulers</a></li>
+                            <li id="lischedulers"><a class="sidebar-link" href="/HOME/TracksmartSchool">TracksmartSchool</a></li>
+
+                            <li id="liRFID_Reader"><a class="sidebar-link" href="/HOME/RFID_READER">RFID_Reader</a></li>
+                            <li id="liroutes"><a class="sidebar-link" href="/HOME/Routes">Routes</a></li>
+                        </ul>
+                    </li>
+                    <li id="li_expinstallation" class="nav-item" style="display:none;"><a class="sidebar-link" href="/HOME/Installation"><span class="icon-holder"><i class="c-brown-500 ti-dashboard"></i> </span><span class="title">Express Installation</span></a></li>
+                    <li class="nav-item dropdown" id="li_installations" style="display:none;">
+                        <a class="dropdown-toggle" href="javascript:void(0);"><span class="icon-holder"><i class="c-deep-orange-500 ti-menu"></i> </span><span class="title">Installations Report</span> <span class="arrow"><i class="ti-stack-overflow"></i></span></a>
+                        <ul class="dropdown-menu" id="masters_list">
+
+                            <li id="li_instreport"><a class="sidebar-link" href="/HOME/InstallationReport">Expired Installation</a></li>
+                            <li id="li_instreport"><a class="sidebar-link" href="/HOME/RenewalReport">Renewed Installation</a></li>
+
+                        </ul>
+                    </li>
+
+                    <li class="nav-item dropdown" id="liRoutes" style="display:block">
+                        <a class="dropdown-toggle" href="javascript:void(0);"><span class="icon-holder"><i class="c-teal-500 ti-truck"></i> </span><span class="title">Routes</span> <span class="arrow"><i class="ti-angle-right"></i></span></a>
+                        <ul class="dropdown-menu" id="trans_list">
+                            <li><a class="sidebar-link" href="/HOME/Routes">Routes</a></li>
+                            <li><a class="sidebar-link" href="/HOME/RoutePlan">Route Planning</a></li>
+                            <li><a class="sidebar-link" href="/HOME/Landmarks">Landmarks</a></li>
+
+                        </ul>
+                    </li>
+                    <li class="nav-item dropdown" id="litransactions" style="display:block">
+                        <a class="dropdown-toggle" href="javascript:void(0);"><span class="icon-holder"><i class="c-deep-purple-500 ti-mobile"></i> </span><span class="title">Alerts</span> <span class="arrow"><i class="ti-angle-right"></i></span></a>
+                        <ul class="dropdown-menu" id="trans_list">
+
+                            @*<li><a class="sidebar-link" href="/Home/SMS_Configuration">SMS Configaration</a></li>*@
+                            <li><a class="sidebar-link" href="/Alerts/Index">Alerts Configuration</a></li>
+
+
+                        </ul>
+                    </li>
+                    <li id="li_broadcasting" class="nav-item" style="display:none;"><a class="sidebar-link" href="/HOME/SendMessages"><span class="icon-holder"><i class="c-brown-500 ti-email"></i> </span><span class="title">Broadcasting</span></a></li>
+                    <li class="nav-item dropdown" id="ligeofence" style="display:block">
+                        <a class="dropdown-toggle" href="javascript:void(0);"><span class="icon-holder"><i class="c-deep-purple-500 ti-alarm-clock"></i> </span><span class="title">Geofence</span> <span class="arrow"><i class="ti-angle-right"></i></span></a>
+                        <ul class="dropdown-menu" id="trans_list">
+
+
+                            <li><a class="sidebar-link" href="/Home/AssignedGeofence">Configure Vehicles</a></li>
+
+                        </ul>
+                    </li>
+                    <li class="nav-item dropdown" id="lireports" style="display:block">
+                        <a class="dropdown-toggle" href="javascript:void(0);"><span class="icon-holder"><i class="c-blue-500 ti-export"></i> </span><span class="title">Reports</span> <span class="arrow"><i class="ti-angle-right"></i></span></a>
+                        <ul class="dropdown-menu" id="reports_list">
+                            @*<li><a href="/HOME/Actual_Report" class="sidebar-link"><span class="title">Distance Report</span></a></li>*@
+                            <li><a href="/HOME/frm_ViewReports?RPT=Dashboard" class="sidebar-link"><span class="title">Dashboard Report</span></a></li>
+                            <li><a href="/HOME/frm_ViewReports?RPT=Trip" class="sidebar-link"><span class="title">Trip Report</span></a></li>
+                            <li><a href="/Reports/frm_fuelgraphs" class="sidebar-link"><span class="title">Fuel Report</span></a></li>
+                            <li><a href="/HOME/frm_ViewTripData" class="sidebar-link"><span class="title">Track Report</span></a></li>
+                            <li><a href="/HOME/frm_ViewReports?RPT=Violation" class="sidebar-link"><span class="title">Speed Violation Report</span></a></li>
+                            @*<li><a href="/HOME/frm_ViewReports?RPT=Landmark" class="sidebar-link"><span class="title">Landmark Report</span></a></li>*@
+                            <li><a href="/HOME/frm_ViewReports?RPT=Vdeatils" class="sidebar-link"><span class="title">Vehicles Detail Report</span></a></li>
+                            <li><a href="/HOME/frm_ViewReports?RPT=Geofence" class="sidebar-link"><span class="title">Geofence Report</span></a></li>
+                            <li><a href="/HOME/frm_ViewReports?RPT=Stoppage" class="sidebar-link"><span class="title">Stoppage Report</span></a></li>
+                            <li><a href="/HOME/frm_ViewReports?RPT=Timezone" class="sidebar-link"><span class="title">Specific Time Zone Report</span></a></li>
+                            <li><a href="/HOME/frm_ViewReports?RPT=24hoursrunanalysis" class="sidebar-link"><span class="title">24 Hours Run Analysis Report</span></a></li>
+                            <li><a href="/Reports/KMS_Monthly" class="sidebar-link"><span class="title">Monthly KMS Report</span></a></li>
+                            <li><a href="/Reports/IgnitionReport" class="sidebar-link"><span class="title">Ignition Report</span></a></li>
+                            <li><a href="/Reports/AcReport" class="sidebar-link"><span class="title">Ac Report</span></a></li>
+                            @*<li><a href="/HOME/frm_ViewReports?RPT=Consignment" class="sidebar-link"><span class="title">Consignment Detail Report</span></li>
+                                <li><a href="/HOME/frm_ViewReports?RPT=Tripdetailed" class="sidebar-link"><span class="title">Trip Detailed Report</span></a></li>
+
+                                <li><a href="/HOME/frm_ViewReports?RPT=24hoursanalysis" class="sidebar-link"><span class="title">24 Hour Analysis< Report</span></a></li>
+                                <li><a href="/HOME/frm_ViewReports?RPT=Archivestoppage" class="sidebar-link"><span class="title">Archive Stoppage Report</span></a></li>*@
+
+                        </ul>
+                    </li>
+                    <li class="nav-item dropdown" id="lisettings" style="display:block">
+                        <a class="dropdown-toggle" href="javascript:void(0);"><span class="icon-holder"><i class="c-deep-orange-500 ti-settings"></i> </span><span class="title">Settings</span> <span class="arrow"><i class="ti-angle-right"></i></span></a>
+                        <ul class="dropdown-menu" id="list_Settings">
+                            <li><a class="sidebar-link" href="/HOME/SubscriptionPackages">Subscriptions</a></li>
+                            <li><a class="sidebar-link" href="/HOME/AddOrders">Orders</a></li>
+                            <li><a class="sidebar-link" href="/HOME/DeviceWallet">Device Wallet</a></li>
+                            <li id="list_states" style="display:none;"><a class="sidebar-link" href="/HOME/frm_states">States</a></li>
+                            <li id="list_cities" style="display:none;"><a class="sidebar-link" href="/HOME/frm_cities">Cities</a></li>
+                            <li id="list_wallet" style="display:none;"><a class="sidebar-link" href="/HOME/SmsWallet">SMS wallet</a></li>
+                        </ul>
+                    </li>
+                    <li id="li_Logs" class="nav-item" style="display:none"><a class="sidebar-link" href="/HOME/DeviceTest"><span class="icon-holder"><i class="c-grey-500 ti-home"></i> </span><span class="title">Logs</span></a></li>
+                    <li id="li_mining" class="nav-item" style="display:none"><a class="sidebar-link" href="/HOME/MiningData"><span class="icon-holder"><i class="c-brown-500 ti-dashboard"></i> </span><span class="title">Mining Data</span></a></li>
+                    <li id="li_odisha" class="nav-item" style="display:none"><a class="sidebar-link" href="/HOME/OdishaMining"><span class="icon-holder"><i class="c-brown-500 ti-dashboard"></i> </span><span class="title">Odisha Mining</span></a></li>
+                    <li id="li_stock" class="nav-item" style="display:none"><a class="sidebar-link" href="/HOME/StockUpload"><span class="icon-holder"><i class="c-brown-500 ti-shopping-cart"></i> </span><span class="title">Stock Upload</span></a></li>
+                    <li id="li_allocate" class="nav-item" style="display:none"><a class="sidebar-link" href="/HOME/AllocateBarcode"><span class="icon-holder"><i class="c-brown-500 ti-arrow-circle-right"></i> </span><span class="title">Allocate</span></a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="page-container">
+            <div class="header navbar">
+                <div class="header-container">
+                    <ul class="nav-left">
+                        <li><a id="sidebar-toggle" class="sidebar-toggle" href="javascript:void(0);"><i class="ti-menu"></i></a></li>
+                        <li class="search-box"><a class="search-toggle no-pdd-right" href="javascript:void(0);"><i class="search-icon ti-search pdd-right-10"></i> <i class="search-icon-close ti-close pdd-right-10"></i></a></li>
+                        <li class="search-input">
+                            <input class="form-control" type="text" placeholder="Search...">
+                        </li>
+                    </ul>
+                    <ul class="nav-right">
+                        <li class="notifications dropdown">
+                            <span class="counter bgc-red" id="noti_count">0</span> <a href="#" class="dropdown-toggle no-after" data-toggle="dropdown"><i class="ti-bell"></i></a>
+                            <ul class="dropdown-menu">
+                                <li class="pX-20 pY-15 bdB"><i class="ti-bell pR-10"></i> <span class="fsz-sm fw-600 c-grey-900">Notifications</span></li>
+                                <li>
+                                    <ul class="ovY-a pos-r scrollable lis-n p-0 m-0 fsz-sm" id='notes'>
+                                    </ul>
+                                </li>
+                                <li class="pX-20 pY-15 ta-c bdT"><span><a href="#" class="c-grey-600 cH-blue fsz-sm td-n">View All Notifications <i class="ti-angle-right fsz-xs mL-10"></i></a></span></li>
+                            </ul>
+                        </li>
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle no-after peers" data-toggle="dropdown">
+                                @* <div class="peer mR-10"><img class="w-2r bdrs-50p" src="../../../randomuser.me/api/portraits/men/10.jpg" alt=""></div>*@
+                                <div class="peer"><span class="fsz-sm c-grey-900" id="spnprofilename"></span></div>
+                            </a>
+                            <ul class="dropdown-menu fsz-sm">
+                                <li><a href="#" class="d-b td-n pY-5 bgcH-grey-100 c-grey-700"><i class="ti-settings mR-10"></i> <span>Setting</span></a></li>
+                                <li><a href="#" class="d-b td-n pY-5 bgcH-grey-100 c-grey-700"><i class="ti-user mR-10"></i> <span>Profile</span></a></li>
+                                <li><a href="#" class="d-b td-n pY-5 bgcH-grey-100 c-grey-700"><i class="ti-email mR-10"></i> <span>Messages</span></a></li>
+                                <li role="separator" class="divider"></li>
+                                <li><a href="#" onclick="Logout()" class="d-b td-n pY-5 bgcH-grey-100 c-grey-700"><i class="ti-power-off mR-10"></i> <span>Logout</span></a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <main class="main-content bgc-grey-100">
+                <div id="mainContent">
+                    <div class="container-fluid">
+                        @RenderBody()
+                    </div>
+                </div>
+            </main>
+            <footer class="bdT ta-c p-30 lh-0 fsz-sm c-grey-600">
+                <span>Copyright © 2019  <a href="http://containe.in/" target="_blank" title="Containe">Containe Technologies Pvt Ltd</a>. All rights reserved.</span>
+                <script async src="https://www.googletagmanager.com/gtag/js?id=UA-23581568-13" type="d82f2e5175b7bb1f691b3a2a-text/javascript"></script>
+                <script type="d82f2e5175b7bb1f691b3a2a-text/javascript">
+                    window.dataLayer = window.dataLayer || [];
+
+                    function gtag() {
+                        dataLayer.push(arguments);
+                    }
+                    gtag('js', new Date());
+
+                    gtag('config', 'UA-23581568-13');
+                </script>
+            </footer>
+        </div>
+    </div>
+    <script src="~/Content/multi-select/js/multi-select.js"></script>
+    <script type="d82f2e5175b7bb1f691b3a2a-text/javascript" src="~/assets/vendor.js"></script>
+    <script type="d82f2e5175b7bb1f691b3a2a-text/javascript" src="~/assets/bundle.js"></script>
+    <script src="~/Scripts/select3.min.js"></script>
+    <script src="~/assets/plugins/datatables/jquery.dataTables.min.js"></script>
+    <script src="~/assets/plugins/datatables/plugins/bootstrap/dataTables.bootstrap4.min.js"></script>
+    <script src="~/assets/rocket-loader.min.js" data-cf-settings="d82f2e5175b7bb1f691b3a2a-|49" defer=""></script>
+    <script src="https://maps.google.com/maps/api/js?key=AIzaSyC-IAb9uB1CyJePm788tnMdXe0RxCbcuwU&libraries=places"></script>
+
+    <!-- material -->
+    <script src="~/assets/plugins/material/material.min.js"></script>
+    <script src="~/assets/plugins/material-datetimepicker/moment-with-locales.min.js"></script>
+    <script src="~/assets/plugins/material-datetimepicker/bootstrap-material-datetimepicker.js"></script>
+    <script src="~/assets/plugins/material-datetimepicker/datetimepicker.js"></script>
+    <!--date picker js-->
+    <script src="~/Scripts/bootstrap-material-datetimepicker.js"></script>
+    <script src="~/Scripts/bootstrap-datepicker.min.js"></script>
+
+    <script src="https://cdn.datatables.net/buttons/1.5.6/js/dataTables.buttons.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/1.5.6/js/buttons.flash.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
+    <script src="https://cdn.datatables.net/buttons/1.5.6/js/buttons.html5.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/1.5.6/js/buttons.print.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+
+
+            var imgurl = localStorage.getItem("Logo_Url");
+
+            document.getElementById("header_logo").src = imgurl;
+            BINDDATA();
+        });
+        var categid = localStorage.getItem("USERS_CATEG_ID");
+        var roleid = localStorage.getItem("USERS_ROLE_ID");
+        var username = localStorage.getItem("USERNAME")
+
+        var categType = localStorage.getItem("CATEG_TYPE_ID");
+
+        if (categType == 1 || categType == 2 || categType == 5 || categType == 6) {
+            $("#liadmin").css('display', 'block');
+            $("#li_deviceinstall").css('display', 'block');
+
+            if (categType == 1) {
+                $("#li_partners").css('display', 'block');
+                $("#list_states").css('display', 'block');
+                $("#list_cities").css('display', 'block');
+                $("#li_Logs").css('display', 'block');
+                $("#li_mining").css('display', 'block');
+                $("#li_odisha").css('display', 'block');
+                $("#li_installations").css('display', 'block');
+                $("#li_broadcasting").css('display', 'block');
+                $("#list_wallet").css('display', 'block');
+                $("#li_device_dashboard").css('display', 'block');
+                $("#li_renew_dashboard").css('display', 'block');
+                $("#li_expinstallation").css('display', 'block');
+                $("#li_stock").css('display', 'block');
+                $("#li_allocate").css('display', 'block');
+            }
+        }
+        else {
+            $("#lisettings").css('display', 'none');
+            $("#liSims").css('display', 'none');
+            $("#lidevices").css('display', 'none');
+        }
+        if (categType == 3) {
+            $("#liadmin").css('display', 'block');
+            $("#li_partners").css('display', 'none');
+            $("#li_users").css('display', 'block');
+            $("#li_roles").css('display', 'none');
+            $("#li_clients").css('display', 'none');
+        }
+        if (categType == 1 || categType == 6) {
+            $("#li_search").css('display', 'block');
+
+        }
+        if (roleid == 4) {
+            $("#liadmin").css('display', 'none');
+        }
+        $("#spnprofilename").text(username);
+
+        if (username == "Shrinath") {
+            $("#litransactions").show();
+            //  $("#licertificate").css('display', 'block');
+        }
+        if (username == "durga") {
+            $("#lireports_FUEL").css('display', 'block');
+            $("#lireports").css('display', 'none');
+        }
+        if (categid == 1) {
+            $("#lipemissions").css('display', 'block');
+            $("#livehicles").css('display', 'block');
+            $("#livehiclemodels").css('display', 'block');
+            $("#livehicledrivers").css('display', 'block');
+            $("#limasters").css('display', 'block');
+
+            //  $("#liadmin").css('display', 'block');
+
+            $("#linotworkingdevices").css('display', 'block');
+        }
+        else if (username == "BAJAJ" || username == "JLPL" || username == "OMKAR IB" || username == "Satish" || username == "Bafna" || username == "shreenathji ib" || username == "AUTOMOBILE ENGINEERS")
+        //   else if (categid == 91 || categid == 92 || categid == 93 || categid == 87 || categid == 94 || categid == 95 || categid == 96 )
+        {
+            $("#liworkorders").css('display', 'block');
+            $("#libajaj").css('display', 'block');
+            $("#litracksmart").css('display', 'none');
+            $("#litransactions").hide();
+        }
+        else if (categid == 29 || categid == 44) {
+            $("#litransactions").show();
+            $("#libusscheduler").css('display', 'none');
+            //  $("#licertificate").css('display', 'block');
+            $("#lireports").css('display', 'none');
+            $("#lireports_new").css('display', 'block');
+            $("#licontrolroom").css('display', 'block');
+            $("#lismarttrip").css('display', 'block');
+            $("#litollgate").css('display', 'block');
+            //  $("#litransactions").hide();
+            $("#liworkorders").css('display', 'none');
+            $("#libajaj").css('display', 'none');
+        }
+        else if (categid == 3) {
+            $("#litransactions").show();
+            $("#libusscheduler").css('display', 'none');
+            //  $("#licertificate").css('display', 'block');
+            $("#lireports").css('display', 'none');
+            $("#lireports_new").css('display', 'block');
+            $("#licontrolroom").css('display', 'none');
+            $("#lismarttrip").css('display', 'none');
+            $("#litollgate").css('display', 'block');
+            //  $("#litransactions").hide();
+            $("#liworkorders").css('display', 'none');
+            $("#libajaj").css('display', 'none');
+        }
+        else if (categid == 86) {
+            $("#litransactions").show();
+            $("#libusscheduler").css('display', 'none');
+            $("#licontrolroom").css('display', 'none');
+        }
+        else {
+            //  $("#lidevices").css('display', 'none');
+            $("#linotworkingdevices").css('display', 'none');
+            $("#livehicledataentry").css('display', 'none');
+        }
+
+
+        //   bindlayout_permissions();
+        // GetFormaByRole();
+        function bindlayout_permissions() {
+            var orgname = localStorage.getItem("orgname");
+
+            $.post("/Home/_pages_PERMISSIONS", { "CATEGNAME": orgname }, function (data) {
+
+                var Panels = data['data'];
+                var dataT = data['data1'];
+
+                var perlength = data['data1'].length;
+
+                for (var i = 0; i < perlength; i++) {
+                    if (dataT[i].PP_VIEW == 1) {
+                        if (dataT[i].PAGE_UNDER == "Individual") {
+                            if (dataT[i].PAGE_NAME == "frm_GridTrack_Distance" || dataT[i].PAGE_NAME == "frm_GridTrack_CAB") {
+                                $("#liDashboard").append('<a class="has-arrow waves-effect waves-dark" href=' + dataT[i].PAGE_PATH + ' aria-expanded="false"><i class="mdi mdi-truck"></i><span class="hide-menu">' + dataT[i].PAGE_DISPLAYNAME + '</span></a>');
+                            }
+                            if (dataT[i].PAGE_NAME == "Smarttrip") {
+                                $("#lismarttrip").append('<a class="has-arrow waves-effect waves-dark" href="javascript:void(0)" onclick="redirect()" aria-expanded="false"><i class="mdi mdi-reload"></i><span class="hide-menu">' + dataT[i].PAGE_DISPLAYNAME + '</span></a>');
+                            }
+                            if (dataT[i].PAGE_NAME == "frm_GeoZone_Dashboard") {
+                                $("#licontrolroom").append('<a class="has-arrow waves-effect waves-dark" href=' + dataT[i].PAGE_PATH + ' aria-expanded="false"><i class="mdi mdi-google-controller"></i><span class="hide-menu">' + dataT[i].PAGE_DISPLAYNAME + '</span></a>');
+                            }
+                            if (dataT[i].PAGE_NAME == "Reports_Vts") {
+                                $("#lireports_new").append('<a class="has-arrow waves-effect waves-dark" href=' + dataT[i].PAGE_PATH + ' aria-expanded="false"><i class="mdi mdi-database"></i><span class="hide-menu">' + dataT[i].PAGE_DISPLAYNAME + '</span></a>');
+                            }
+                            //lireports_FUEL
+                            if (dataT[i].PAGE_NAME == "frm_fuelgraphs") {
+                                $("#lireports_FUEL").append('<a class="has-arrow waves-effect waves-dark" href=' + dataT[i].PAGE_PATH + ' aria-expanded="false"><i class="mdi mdi-database"></i><span class="hide-menu">' + dataT[i].PAGE_DISPLAYNAME + '</span></a>');
+                            }
+                            //<a class="has-arrow waves-effect waves-dark" href="javascript:void(0)" onclick="redirect()" aria-expanded="false"><i class="mdi mdi-reload"></i><span class="hide-menu">Smarttrip</span></a>
+                        }
+                        //liGridtrack
+                        if (dataT[i].PAGE_UNDER == "GridTrack") {
+                            $("#liGridtrack1").append('<li><a href=' + dataT[i].PAGE_PATH + '>' + dataT[i].PAGE_DISPLAYNAME + '</a></li>')
+                        }
+
+                        if (dataT[i].PAGE_UNDER == "BUSSCHEDULER") {
+                            $("#libusscheduler1").append('<li><a href=' + dataT[i].PAGE_PATH + '>' + dataT[i].PAGE_DISPLAYNAME + '</a></li>')
+                        }
+                        if (dataT[i].PAGE_UNDER == "Transaction") {
+                            $("#licertificate").append('<a href=' + dataT[i].PAGE_PATH + '>' + dataT[i].PAGE_DISPLAYNAME + '</a>')
+                        }
+                        if (dataT[i].PAGE_UNDER == "Bajaj Workorder") {
+                            $("#liworkorders1").append('<li><a href=' + dataT[i].PAGE_PATH + '>' + dataT[i].PAGE_DISPLAYNAME + '</a></li>')
+                        }
+
+                    }
+                }
+
+            })
+        }
+
+        function redirect() {
+
+            //  location.href = "/BAJAJIB/Smarttriplogin";
+            //alert($("#hdnusername").val());
+            //var Username = $("#hdnusername").val();
+            //var Password = $("#hdnpassword").val();
+            //var Companyname = $("#hdncompanyname").val();
+
+            //alert(Username + "" + Password + "" + Companyname);
+            var username = localStorage.getItem("USERNAME");
+
+            var password = localStorage.getItem("password");
+            var orgname = localStorage.getItem("orgname");
+
+
+
+            location.href = "http://182.74.120.142:1502/Login/Index?Username=" + username + "&Password=" + password + "&Organization=" + orgname + "";
+        }
+
+        function GetFormaByRole() {
+            var categid = localStorage.getItem("USERS_CATEG_ID");
+            $.post("/Home/get_FormsBy_Category", { "CATEGID": categid }, function (data) {
+
+                var Panels = data['data'];
+                var forms = [];
+                forms = Panels.split(",");
+                for (var i = 0; i < forms.length; i++) {
+                    if (forms[i] == "30") {
+                        $("#admin_li_list").append('<li><a href="/HOME/frm_Categories?ID=PARTNERS" class="sidebar-link"><span class="title">Partners</span></a></li>');
+                    }
+                    if (forms[i] == "5") {
+                        $("#admin_li_list").append('<li><a href="/HOME/frm_Categories?ID=CLIENTS" class="sidebar-link"><span class="title">Clients</span></a></li>');
+                    }
+                    if (forms[i] == "6") {
+                        $("#admin_li_list").append('<li><a href="/HOME/frm_Users" class="sidebar-link"><span class="title">Users</span></a></li>');
+                    }
+                    if (forms[i] == "71") {
+                        $("#admin_li_list").append('<li><a href="/HOME/frm_Users" class="sidebar-link"><span class="title">Users</span></a></li>');
+                    }
+                    if (forms[i] == "7") {
+                        $("#masters_list").append('<li id="liSims"><a href="/HOME/Sims" class="sidebar-link"><span class="title">Sims</span></a></li>');
+                    }
+                    if (forms[i] == "8") {
+                        $("#masters_list").append('<li id="lidevices"><a href="/HOME/frm_Devices" class="sidebar-link"><span class="title">Devices</span></a></li>');
+                    }
+                    if (forms[i] == "11") {
+                        $("#masters_list").append('<li id="livehicledrivers"><a href="/HOME/frm_Drivers" class="sidebar-link"><span class="title">Drivers</span></a></li>');
+                    }
+                    if (forms[i] == "9") {
+                        $("#masters_list").append('<li id="livehiclemodels"><a href="/HOME/frm_VehicleModel" class="sidebar-link"><span class="title">VehicleModel</span></a></li>');
+                    }
+                    if (forms[i] == "10") {
+                        $("#masters_list").append('<li id="livehicles"><a href="/HOME/frm_vehicles" class="sidebar-link"><span class="title">Vehicles</span></a></li>');
+                    }
+                    if (forms[i] == "14") {
+                        $("#trans_list").append('<li><a href="/HOME/Routes" class="sidebar-link"><span class="title">Routes</span></a></li>');
+                    }
+                    if (forms[i] == "69") {
+                        $("#trans_list").append('<li><a href="/HOME/RoutePlan" class="sidebar-link"><span class="title">Routes Planning</span></a></li>');
+                    }
+                    if (forms[i] == "13") {
+                        $("#trans_list").append('<li><a href="/HOME/Landmarks" class="sidebar-link"><span class="title">Landmarks</span></a></li>');
+                    }
+                    if (forms[i] == "36") {
+                        $("#trans_list").append('<li><a href="/Home/SIM_Configuration" class="sidebar-link"><span class="title">SMS Configuration</span></a></li>');
+                    }
+                    if (forms[i] == "18") {
+                        $("#reports_list").append('<li><a href="/HOME/frm_ViewTripData" class="sidebar-link"><span class="title">Track Report</span></a></li>');
+                    }
+                    if (forms[i] == "31") {
+                        $("#reports_list").append('<li><a href="/HOME/frm_ViewReports?RPT=Violation" class="sidebar-link"><span class="title">Speed Violation Report</span></a></li>');
+                    }
+                    if (forms[i] == "21") {
+                        $("#reports_list").append('<li><a href="/Reports/frm_fuelgraphs" class="sidebar-link"><span class="title">Fuel Report</span></a></li>');
+                    }
+                    if (forms[i] == "23") {
+                        $("#reports_list").append('<li><a href="/HOME/frm_ViewReports?RPT=Vdeatils" class="sidebar-link"><span class="title">Vehicles Detail Report</span></a></li>');
+                    }
+                    if (forms[i] == "34") {
+                        $("#reports_list").append('<li><a href="/HOME/frm_ViewReports?RPT=Geofence" class="sidebar-link"><span class="title">Geofence Report</span></a></li>');
+                    }
+                    if (forms[i] == "43") {
+                        $("#reports_list").append('<li><a href="/HOME/frm_ViewReports?RPT=Trip" class="sidebar-link">ss<span class="title">Trip Report</span></a></li>');
+                    }
+                    if (forms[i] == "38") {
+                        $("#reports_list").append('<li><a href="/HOME/frm_ViewReports?RPT=Stoppage" class="sidebar-link"><span class="title">Stoppage Report</span></a></li>');
+                    }
+                    if (forms[i] == "70") {
+                        $("#reports_list").append('<li><a href="/HOME/frm_ViewReports?RPT=Dashboard" class="sidebar-link"><span class="title">Dashboard Report</span></a></li>');
+                    }
+                }
+            })
+        }
+
+        var CustomMapStyles = [
+            {
+                "featureType": "all",
+                "elementType": "labels.text.fill",
+                "stylers": [
+                    {
+                        "saturation": 36
+                    },
+                    {
+                        "color": "white"
+                    },
+                    {
+                        "lightness": 40
+                    }
+                ]
+            },
+            {
+                "featureType": "all",
+                "elementType": "labels.text.stroke",
+                "stylers": [
+                    {
+                        "visibility": "on"
+                    },
+                    {
+                        "color": "white"
+                    },
+                    {
+                        "lightness": 16
+                    }
+                ]
+            },
+            {
+                "featureType": "all",
+                "elementType": "labels.icon",
+                "stylers": [
+                    {
+                        "visibility": "off"
+                    }
+                ]
+            },
+            {
+                "featureType": "administrative",
+                "elementType": "geometry.fill",
+                "stylers": [
+                    {
+                        "color": "black"
+                    },
+                    {
+                        "lightness": 20
+                    }
+                ]
+            },
+            {
+                "featureType": "administrative",
+                "elementType": "geometry.stroke",
+                "stylers": [
+                    {
+                        "color": "white"
+                    },
+                    {
+                        "lightness": 17
+                    },
+                    {
+                        "weight": 1.2
+                    }
+                ]
+            },
+            {
+                "featureType": "landscape",
+                "elementType": "geometry",
+                "stylers": [
+                    {
+                        "color": "white"
+                    },
+                    {
+                        "lightness": 20
+                    }
+                ]
+            },
+            {
+                "featureType": "poi",
+                "elementType": "geometry",
+                "stylers": [
+                    {
+                        "color": "white"
+                    },
+                    {
+                        "lightness": 21
+                    }
+                ]
+            },
+            {
+                "featureType": "road.highway",
+                "elementType": "geometry.fill",
+                "stylers": [
+                    {
+                        "color": "black"
+                    },
+                    {
+                        "lightness": 17
+                    }
+                ]
+            },
+            {
+                "featureType": "road.highway",
+                "elementType": "geometry.stroke",
+                "stylers": [
+                    {
+                        "color": "black"
+                    },
+                    {
+                        "lightness": 29
+                    },
+                    {
+                        "weight": 0.2
+                    }
+                ]
+            },
+            {
+                "featureType": "road.arterial",
+                "elementType": "geometry",
+                "stylers": [
+                    {
+                        "color": "white"
+                    },
+                    {
+                        "lightness": 18
+                    }
+                ]
+            },
+            {
+                "featureType": "road.local",
+                "elementType": "geometry",
+                "stylers": [
+                    {
+                        "color": "white"
+                    },
+                    {
+                        "lightness": 16
+                    }
+                ]
+            },
+            {
+                "featureType": "transit",
+                "elementType": "geometry",
+                "stylers": [
+                    {
+                        "color": "white"
+                    },
+                    {
+                        "lightness": 19
+                    }
+                ]
+            },
+            {
+                "featureType": "water",
+                "elementType": "geometry",
+                "stylers": [
+                    {
+                        "color": "#1ad2e4"
+                    },
+                    {
+                        "lightness": 17
+                    }
+                ]
+            }
+        ];
+
+    </script>
+    <script>
+
+
+        var USERID = localStorage.getItem("USERID");
+        var USERNAME = localStorage.getItem("USERNAME");
+        var ROLEID = localStorage.getItem("ROLEID");
+
+
+
+
+        // $("#spnprofilename").text(USERNAME);
+
+
+        //setInterval(function () {
+        //    var dt = new Date();
+        //    var time = dt.getHours() + ":" + dt.getMinutes() + ":" + dt.getSeconds();
+        //    $("#spntime").text("Time " + time);
+        //}, 100)
+
+
+
+
+        function readURL(input) {
+            //$("#divProfileImage").css({ display: "none" });
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    $('#userprofileimage').show();
+                    $('#userprofileimage').attr('src', e.target.result);
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+        //  EDITPROFILE();
+
+        function EDITPROFILE() {
+
+            var ID = localStorage.getItem("USERID");
+
+            $.post("/Home/editusers", function (data) {
+                var dataT = data['data'];
+                for (var i = 0; i < dataT.length; i++) {
+                    if (dataT[i].USER_ID == ID) {
+                        $("#txtusername").val(dataT[i].USER_EMAILID);
+                        $("#txtpassword").val(dataT[i].USER_PASSWORD);
+                        $("#profileimg").attr('src', "/IMAGES/users/" + dataT[i].USER_IMAGE);
+                        $('#userprofileimage').css('display', 'block')
+                        $('#userprofileimage').attr('src', "/IMAGES/users/" + dataT[i].USER_IMAGE);
+
+
+                    }
+                }
+            });
+
+        }
+
+        $("#btnupdatesave").click(function (e) {
+            //$("#fileupload").file();
+
+            var data = new FormData();
+            var files = $("#fileupload").get(0).files;
+
+            if (files.length > 0) {
+
+                data.append("MyImages", files[0]);
+            }
+            else {
+                data.append("MyImages", '');
+            }
+
+
+            data.append("USERNAME", $("#txtusername").val());
+            data.append("PASSWORD", $("#txtpassword").val());
+
+            $.ajax({
+                url: "/Home/UPDATE_USERPROFILE",
+                type: "POST",
+                processData: false,
+                contentType: false,
+                data: data,
+                // data: { "USERNAME": $("#txtusername").val(),"PASSWORD": },
+                success: function (response) {
+                    alert("profile updated successfully..")
+                    location.reload();
+                }
+            });
+
+
+
+
+
+
+
+            //$.post("/Home/UPDATE_USERPROFILE" + $(e.currentTarget.form).serialize(), function () {
+
+
+            //});
+        });
+
+
+        function BINDDATA() {
+            $.post("/Reports/_Stoppage", function (data) {
+
+                var dataT = data['Report'];
+                //    alert(dataT.length);
+                if (dataT.length > 0) {
+                    var i;
+
+                    for (i = 0; i < dataT.length; i++) {
+                        $("#notes").append("<li> <a href='#' class='peers fxw-nw td-n p-20 bdB c-grey-800 cH-blue bgcH-grey-100'><div class='peer peer-greed'><span><span class='text-dark'>" + dataT[i].VNO + "  " + dataT[i].DATE + " stopped " + dataT[i].PLACE + " since " + dataT[i].DURATION + " </span></span></div></a></li>");
+                        //       $("#notes").append("<li id='liremove" + i + "' class='noteli'>" +
+                        //"<textarea class='note-title' placeholder='Stoppage  Alert' maxlength='15' />" +
+                        //"<textarea class='note-content' placeholder='" + dataT[i].VNO + "  " + dataT[i].DATE + " stopped " + dataT[i].PLACE + " since " + dataT[i].DURATION + "  '/>" +
+                        //"<img class='close back' onclick='fnclose(" + i + ")' src='http://www.iconninja.com/files/583/379/810/close-circular-button-of-interface-icon.png'/>" +
+                        //"</li>");
+                    }
+                    $("#noti_count").text(i);
+                }
+                $(".close").click(function () {
+                    // $(this).closest('li').css('display', 'none');
+                });
+
+            });
+        }
+
+
+
+
+        function Logout() {
+
+            // localStorage.clear();
+            location.href = "/Home/Logout";
+        }
+
+
+    </script>
+</body>
+
+</html>

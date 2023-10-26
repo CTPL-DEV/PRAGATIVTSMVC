@@ -1,0 +1,111 @@
+﻿
+@{
+    ViewBag.Title = "ORDERS";
+    Layout = "~/Views/Shared/_NewLayout.cshtml";
+}
+
+
+<div class="row" id="divrow">
+    <div class="col-lg-6">
+        Client Name:<select class="form-control" id="ddlcategory">
+            <option value="0">-Select-</option>
+            @foreach (var item in ViewBag.categ)
+            {
+                <option value="@item.CATEG_ID">@item.CATEG_NAME</option>
+            }
+
+        </select>
+
+        Amount: <input type="text" class="form-control" id="txt_amount" />
+
+        <input type="button" id="btnsave" class="btn btn-success" style="margin-top:10px;" onclick="Save('save')" value="Submit" />
+        <input type="button" value="BACK" style="margin-left:10%;" id="btnback" onclick="Back()" class="btn btn-danger" />
+    </div>
+   
+</div>
+
+<div class="card-body">
+    <input type="button" class="btn btn-success" onclick="showrow()" style="width:153px;margin-top:10px" value="ADD" />
+
+
+    <table id="tblorders" class="mdl-data-table ml-table-bordered mdl-js-data-table" cellspacing="0" width="100%" style="margin-top:10px">
+        <thead>
+            <tr>
+                <th class="center">ID</th>
+                
+                <th class="center">Client Name</th>
+             
+                <th class="center">Amount</th>
+                <th class="center">Date</th>
+                
+            </tr>
+        </thead>
+        <tbody>
+            @{
+                int i = 1;
+                foreach (var item in ViewBag.orders)
+                {
+                    <tr>
+                        <td>@i</td>
+                        <td>@item.ORDER_CATEGORY_NAME</td>
+                        <td>@item.ORDER_AMOUNT</td>
+                        <td>@item.ORDER_CREATEDDATE</td>
+                      
+                    </tr>
+                    i++;
+                }
+
+            }
+        </tbody>
+    </table>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $("#divrow").hide();
+        $("#tblorders").dataTable();
+
+    });
+    function showrow()
+    {
+        $("#divrow").show();
+    }
+    function Back()
+    {
+        location.reload();
+    }
+    function Save()
+    {
+        if ($("#ddlcategory").val() != 0 && $("#txt_amount").val() != "") {
+
+            var categName = $("#ddlcategory option:selected").text();
+            $.post("/Home/SaveOrders", {
+                "categId": $("#ddlcategory").val(), "categName": categName, "Amount": $("#txt_amount").val()
+            }, function (data) {
+
+                var dataT = data['data']
+
+                if (dataT == true) {
+                    alert("Saved successfully..");
+                    location.reload();
+                  
+                }
+                else {
+                    alert(dataT);
+                }
+            });
+        }
+        else
+        {
+            if($("#ddlcategory").val() == 0)
+            {
+                alert("Please Select Category");
+            }
+            else if($("#txt_amount").val() == "")
+            {
+                alert("Please Enter Amount");
+            }
+
+        }
+    }
+</script>

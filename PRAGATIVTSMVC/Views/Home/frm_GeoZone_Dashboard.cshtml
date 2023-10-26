@@ -1,0 +1,164 @@
+﻿@{
+    ViewBag.Title = "frm_GeoZone_Dashboard";
+    Layout = "~/Views/Shared/_NewLayout.cshtml";
+
+}
+<title id="title"> Control Room </title>
+<div class="container-fluid">
+
+    <!--<div class="row page-titles">
+        <div class="col-md-5 col-8 align-self-center">
+            <h3 class="text-themecolor m-b-0 m-t-0">Control Room</h3>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/Home/frm_GridTrack_Distance">Home</a></li>
+                <li class="breadcrumb-item active">Control Room</li>
+            </ol>
+        </div>
+    </div>-->
+    @*<div class="row" style="margin-bottom:23px">
+            <div class="col-lg-6">
+                <b>ASSOCIATE USERS :</b> <select class="form-control" id="ddlassociate">
+                    <option value="0">Tglobal</option>
+                    @foreach (var item in ViewBag.gpsdashboard)
+                    {
+                        <option value="@item.USERS_ID">@item.USERS_USERNAME</option>
+                    }
+
+                </select>
+            </div>
+        </div>*@
+    <div class="row" id="divrow">
+        <div class="col-lg-4">
+            <div class="box">
+                <a>
+                    <img src="~/IMAGES/associatevehicles.png" />
+                </a>
+            </div>
+
+        </div>
+        <div class="col-lg-8">
+            <div class="box">
+                <a onclick="exceltable()">
+                    <img src="~/IMAGES/Waluj.png" />
+                </a>
+
+            </div>
+        </div>
+
+    </div>
+    <div>
+        @*<input type="button" class="btn btn-primary" value="EXCEL" onclick="@Url.Action("", "Home")" />*@
+        @*<a href="/Home/EXCEL_asotriplezone"> EXCEL</a>
+            <input type="button" class="btn btn-primary" onclick="window.location.href='@Url.Action("EXCEL_asotriplezone", "Home")'" value="EXCEL" />*@
+    </div>
+    <div>
+        <table id="tblexcel1" border="1" style="width: 100%;font-size:13px" class="table table-bordered table-hover">
+            <thead>
+                <tr>
+                    <th>SNO</th>
+                    <th>KOLAR</th>
+                    <th>REMARK</th>
+                    <th>SNO</th>
+                    <th>CHAKAN</th>
+                    <th>REMARK</th>
+                    <th>SNO</th>
+                    <th>WALUJ PARKING</th>
+                    <th>REMARK</th>
+                    <th>SNO</th>
+                    <th>WALUJ PLANT</th>
+                    <th>REMARK</th>
+                </tr>
+            </thead>
+            <tbody id="tblexcelbody"></tbody>
+        </table>
+    </div>
+</div>
+<script>
+
+    window.onload = function () {
+        var d = new Date();
+        // alert(d.toLocaleString("en-US"));
+        var strDate = d.getDate() + "/" + (d.getMonth() + 1) + "/" + d.getFullYear();
+
+
+        var fdate = d.toLocaleDateString();
+
+        var hours = d.getHours();
+        var minutes = d.getMinutes();
+        var ampm = hours >= 12 ? 'PM' : 'AM';
+        hours = hours % 12;
+        hours = hours ? hours : 12; // the hour '0' should be '12'
+        minutes = minutes < 10 ? '0' + minutes : minutes;
+        var strTime = hours + ':' + minutes + ' ' + ampm;
+        //  return strTime;
+    //    alert(fdate + " " + strTime);
+
+        $("#title").text("CONTROL ROOM     " + strDate + " " + strTime);
+    };
+
+
+    function exceltable() {
+
+        $.post("/Home/frm_asotriplezone", { "NAME": $("#ddlassociate Option:selected").text(), "ID": $("#ddlassociate").val() }, function (data) {
+
+            $('#tblexcelbody').empty();
+            //   $("#tblexcel").empty();
+
+            var datat = data['data'];
+            var len = data['tno'];
+            //if ($.fn.dataTable.isDataTable('#tblexcel1')) {
+            //    $('#tblexcel1').DataTable().destroy();
+            //}
+            if ($.fn.dataTable.isDataTable('#tblexcel1')) {
+                $('#tblexcel1').DataTable().destroy();
+            }
+            $('#tblexcel1 tbody').remove();
+
+            for (var i = 0; i < len; i++) {
+                tr = $('<tr/>');
+
+                tr.append("<td>" + datat[i].SNOKOLAR0 + "</td>");
+                tr.append("<td>" + datat[i].KOLAR + "</td>");
+                tr.append("<td>" + datat[i].REMARK0 + "</td>");
+
+                tr.append("<td>" + datat[i].SNOCHAKAN3 + "</td>");
+                tr.append("<td>" + datat[i].CHAKAN + "</td>");
+                tr.append("<td>" + datat[i].REMARK1 + "</td>");
+
+                tr.append("<td>" + datat[i].SNOWALUJPARKING2 + "</td>");
+                tr.append("<td>" + datat[i].WALUJPARKING + "</td>");
+                tr.append("<td>" + datat[i].REMARK2 + "</td>");
+
+                tr.append("<td>" + datat[i].SNOWALUJPLANT1 + "</td>");
+                tr.append("<td>" + datat[i].WALUJPLANT + "</td>");
+                tr.append("<td>" + datat[i].REMARK3 + "</td>");
+
+                $("#tblexcel1").append(tr);
+            }
+            $('#tblexcel1').DataTable({
+                minWidth: 50,
+                resizeMode: 'fit',
+                dom: 'Bfrtip',
+                paging: false,
+                ordering: false,
+                columnDefs: [
+   { className: 'text-center', targets: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11] },
+                ],
+                buttons: [
+                    {
+                        extend: 'pdf',
+                        filename: 'Control Room',
+                        orientation: 'landscape',
+
+                        customize: function (doc) {
+                            doc.content[1].table.widths = ['3%', '6%', '18%', '3%', '6%', '18%', '3%', '6%', '18%', '3%', '6%', '18%'];
+                        }
+                    },
+                    //'copy', 'csv', 'excel', 'pdf', 'print'
+
+                ],
+
+            });
+        });
+    }
+</script>

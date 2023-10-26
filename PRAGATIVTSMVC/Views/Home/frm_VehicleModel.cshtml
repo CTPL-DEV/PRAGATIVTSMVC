@@ -1,0 +1,217 @@
+﻿@{
+    ViewBag.Title = "frm_VehicleModel";
+    Layout = "~/Views/Shared/Layout2.cshtml";
+}
+<style>
+    .dt-buttons {
+        float: left;
+    }
+
+    .table td {
+        padding: 5px;
+        vertical-align: middle;
+        font-size:12px!important;
+        
+    }
+       .table th {
+       font-weight:500;
+       font-size:13px!important;
+    }
+</style>
+               
+<div class="row" id="divrow">
+    <div class="col-lg-6">
+        NAME: <input type="text" id="txtname" class="form-control" placeholder="" />
+        MAKE: <input type="text" id="txtmake" class="form-control" placeholder="" />
+        VEHICLE TYPE:<select id="ddl_vehicletype"  class="form-control">
+        <option value="0" selected>--Select--</option>
+                         <option value="1">Auto</option>
+                         <option value="2">Bus</option>
+                         <option value="3">Cargo</option>
+                         <option value="4">Car</option>
+                         <option value="9">Schoolbus</option>
+                         <option value="10">Truck</option>
+                         <option value="12">Tractor</option>
+                         <option value="17">Scooter</option>
+                         <option value="18">Student</option>
+                         
+         </select>
+        NO OF TANK	:  <input type="number" id="txtnooftank" class="form-control" placeholder="" value="0" />
+        MEASURING UNIT: <input type="text" id="txtmeasuringunit" class="form-control" placeholder="" />
+    </div>
+    <div class="col-lg-6">
+        DESCRIPTION : <input type="text" id="txtdescription" class="form-control" placeholder="" />
+        MODEL : <input type="text" id="txtmodel" class="form-control" placeholder="" />
+        YEAR : <input type="number" id="txtyear" class="form-control" placeholder="" />
+        TANK CAPACITY : <input type="number" id="txttankcapacity" class="form-control" placeholder="" value="0" />
+
+    </div>
+    <input type="button" id="btnsave" class="btn btn-primary" onclick="SaveVehicleModel()" style="margin-left:84%;margin-top:10px" value="Submit" />
+    <input type="button" id="btnupdate" class="btn btn-primary" onclick="update()" style="margin-left:84%;margin-top:10px" value="Update" />
+<input type="button" value="BACK" style="margin-left:92%;margin-top:-38px" id="btnback" onclick="Back()" class="btn btn-danger" />
+</div>
+<div class="row" style="margin-left:1px;">
+
+    <input type="button" class="btn btn-primary" onclick="showrow()" style="width:57px;margin-bottom:0px" value="ADD" />
+    <div class="card-head" style="text-align:center;">
+        <h4>Vehicle Models</h4>
+
+    </div>
+</div>
+<div class="card card-box" style="margin-top:5px;">
+                                
+         <div class="card-body ">
+   
+    <table id="tblvehiclemodels" class="table table-striped table-bordered">
+        <thead>
+            <tr>
+                <th>S.no</th>
+                <th>Vehicle RegNumber</th>
+                <th>Name</th>
+                <th>Description</th>
+                <th>Make</th>
+                <th>Model</th>
+                <th>Year</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+
+        </tbody>
+    </table>
+</div>
+</div>
+ 
+
+<script>
+   
+    window.onload=function()
+    {
+       
+        $("#divrow").hide();
+        getallvehiclemodel();
+
+    }
+function Back() {
+        $("#divrow").hide();
+    }
+function showrow() {
+        $("#btnupdate").hide();
+        $("#divrow").show();
+		 
+    }
+    function getallvehiclemodel() {
+        
+        $.post("/Home/_frm_vehicleModel", function (data) {
+            var dataT = data['data'];
+            for (var i = 0; i < dataT.length; i++) {
+                tr = $('<tr/>');
+                tr.append("<td>" + (i + 1) + "</td>");
+                tr.append("<td>" + dataT[i].VEHICLE_REGNUMBER + "</td>");
+                tr.append("<td>" + dataT[i].VEHLEMM_NAME + "</td>");
+                tr.append("<td>" + dataT[i].VEHLEMM_DESC + "</td>");
+                tr.append("<td>" + dataT[i].VEHLEMM_MAKE + "</td>");
+                tr.append("<td>" + dataT[i].VEHLEMM_MODEL + "</td>");
+                tr.append("<td>" + dataT[i].VEHLEMM_YEAR + "</td>");
+                tr.append("<td><a href='#' onclick='Edit(" + dataT[i].VEHLEMM_ID + ")' class='btn btn-tbl-edit btn-xs'><i class='fa fa-pencil'></i></a></td>");
+                $("#tblvehiclemodels").append(tr);
+            }
+            $('#tblvehiclemodels').DataTable({
+                dom: 'Bfrtip',
+                buttons: [
+                    'excel', 'pdf', 'print'
+                ],
+                "order": [],
+                "columnDefs": [{
+                    "targets": [0, 1, 2, 3, 4, 5, 6],
+                    "orderable": false,
+                    classname: 'dt[-head|-body]-compact'
+                }]
+                
+            });
+        });
+    }
+    function SaveVehicleModel()
+    {
+        if ($("#txtname").val() != "" && $("#ddl_vehicletype").val() != 0) {
+            $.post("/Home/SaveVehicleModel", {
+                "Name": $("#txtname").val(), "Make": $("#txtmake").val(), "VehicleType": $("#ddl_vehicletype").val(),
+                "Tank": $("#txtnooftank").val(), "Unit": $("#txtmeasuringunit").val(),
+                "Description": $("#txtdescription").val(), "Model": $("#txtmodel").val(), "year": $("#txtyear").val(), "tankCapacity": $("#txttankcapacity").val()
+
+            }, function (data) {
+
+                var dataT = data['data']
+
+                if (dataT == true) {
+                    alert("Data Saved successfully..");
+                    location.reload();
+                    $("#divrow").hide();
+                }
+                else {
+                    alert("Failed");
+                }
+            });
+        }
+        else
+        {
+            if($("#txtname").val()=="")
+            {
+                alert("Please Enter Vehicle Model Name");
+            }
+            else if($("#ddl_vehicletype").val() == 0)
+            {
+                alert("Please Select Vehicle Type");
+            }
+        }
+    }
+    function Edit(ID)
+    {
+        localStorage.setItem("ModelId",ID);
+        $.post("/Home/EditVehicleModel", {"VEHMDL_ID": ID}, function (data) {
+
+            var dataT = data['data'];
+            $("#btnupdate").show();
+            $("#divrow").show();
+            $("#btnsave").hide();
+
+            $('#txtname').val(dataT[0].VEHLEMM_NAME);
+            $('#txtmake').val(dataT[0].VEHLEMM_MAKE);
+            $('#txtmodel').val(dataT[0].VEHLEMM_MODEL);
+            $('#txtyear').val(dataT[0].VEHLEMM_YEAR);
+            $('#txtdescription').val(dataT[0].VEHLEMM_DESC);
+        });
+    }
+    function update()
+    {
+        var veh_modelid=  localStorage.getItem("ModelId");
+        if ($("#txtname").val() != "" && $("#ddl_vehicletype").val() != 0) {
+            $.post("/Home/UpdateVehicleModel", {
+                "Name": $("#txtname").val(), "Make": $("#txtmake").val(), "VehicleType": $("#ddl_vehicletype").val(),"VehicleTypeName": $("#ddl_vehicletype option:selected").text(),
+                "Tank": $("#txtnooftank").val(), "Unit": $("#txtmeasuringunit").val(),
+                "Description": $("#txtdescription").val(), "Model": $("#txtmodel").val(), "year": $("#txtyear").val(), "tankCapacity": $("#txttankcapacity").val(), "VehmodelId": veh_modelid
+
+            }, function (data) {
+
+                var dataT = data['data']
+
+                if (dataT == true) {
+                    alert("Data Saved successfully..");
+                    location.reload();
+                    $("#divrow").hide();
+                }
+                else {
+                    alert("Failed");
+                }
+            });
+        }
+        else {
+            if ($("#txtname").val() == "") {
+                alert("Please Enter Vehicle Model Name");
+            }
+            else if ($("#ddl_vehicletype").val() == 0) {
+                alert("Please Select Vehicle Type");
+            }
+        }
+    }
+</script>

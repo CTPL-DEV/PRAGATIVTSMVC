@@ -1,0 +1,611 @@
+﻿@{ ViewBag.Title = "frm_Devices";
+                Layout = "~/Views/Shared/Layout2.cshtml"; }
+<div id="load"></div>
+<style>
+    #rcorners2 {
+        /*border-radius: 35px;*/
+        border: 2px solid #73AD21;
+        padding: 20px;
+        /*width: 200px;*/
+        /*height: 150px;*/
+    }
+
+    #rcorner1 {
+        border: 2px solid #fb7061;
+        padding: 20px;
+    }
+
+    .dataTable {
+        border-colaapse: collapse !important;
+    }
+
+    .table td {
+        padding: 5px;
+        vertical-align: middle;
+        font-size: 12px !important;
+    }
+
+    .table th {
+        font-weight: 500;
+        font-size: 13px !important;
+    }
+
+    .select3-container {
+        width: 400px;
+    }
+</style>
+
+
+<div class="row" id="divrow">
+    <input type="hidden" id="hid_delaername" value="" />
+    <div class="col-lg-6">
+        Client Name:<select class="form-control" id="ddldevice" onchange="bindsim()">
+            <option value="0">-Select-</option>
+            @foreach (var item in ViewBag.categ)
+            {
+<option value="@item.CATEG_ID">@item.CATEG_NAME</option>}
+
+        </select>
+
+        @*Device Name: <input type="text" class="form-control" id="txtdevicename" />*@
+        Device Name:: :<select class="form-control" id="ddldevicename">
+            <option value="0">-Select-</option>
+            @foreach (var item in ViewBag.deviceTypes)
+            {
+<option value="@item.ID">@item.DEVICE_TYPENAME</option>}
+        </select>
+        Serial Number : <input type="text" class="form-control" id="txtserialnumber" />
+
+        Date of Sale: <input type="text" class="form-control" id="txtdateofsale" />
+
+        Call Number1 : <input type="text" class="form-control" id="txtcallnumber1" />
+
+        Stop Duration (Min) : <input type="number" class="form-control" id="txtstopduration" />
+
+        Data Duration (Secs) : <input type="number" class="form-control" id="txtdataduration" />
+    </div>
+    <div class="col-lg-6">
+        DeviceId:<input type="number" class="form-control" id="txtdeviceid" />
+        Manufacturing Date: <input type="text" class="form-control" id="txtmfcdate" />
+        Country Name:: :<select class="form-control" id="ddlcountrty">
+            <option value="0">-Select-</option>
+            @foreach (var item in ViewBag.countries)
+            {
+<option value="@item.COUNTRY_ID">@item.COUNTRY_NAME</option>}
+        </select>
+        Sim Number : <select class="form-control" id="ddlsimnumber">
+            <option value="0" selected>-Select-</option>
+        </select>
+        Call Number2 : <input type="text" class="form-control" id="txtcallnumber2" />
+        Over speed Duration (Min) : <input type="number" class="form-control" id="txtoverduration" />
+        <div style="width:20px">
+            Status  <input type="checkbox" checked="checked" class="form-control" id="chkstatus" />
+
+
+        </div>
+    </div>
+    <input type="button" id="btnsave" class="btn btn-success" onclick="Save('save')" style="margin-left:84%;margin-top:10px" value="Submit" />
+    <input type="button" id="btnupdate" class="btn btn-success" onclick="Save('update')" style="margin-left:84%;margin-top:10px" value="Update" />
+    <input type="button" value="BACK" style="margin-left:92%;margin-top:-38px" id="btnback" onclick="Back()" class=" btn btn-danger" />
+</div>
+<div class="row" style="margin-left:1px;">
+
+    <input type="button" id="btnadd" class="btn btn-primary" onclick="showrow()" style="width:57px;display:none;" value="ADD" />
+    <div class="card-head" style="text-align:center;">
+        <h4>Devices</h4>
+
+    </div>
+</div>
+<div class="card card-box">
+
+    <div class="card-body ">
+
+        <div class="table-scrollable">
+            <table id="tbldevices" border="1" style="width: 100%;overflow-x:auto!important;" class="table table-striped table-bordered">
+                <thead>
+                    <tr>
+                        <th class="center">S.no</th>
+                        <th class="center">Device Name</th>
+                        <th class="center">Device ID</th>
+                        <th class="center">Client Name</th>
+                        <th class="center">Serial Number</th>
+                        <th class="center">Sim Number</th>
+                        <th class="center">Call Number1</th>
+                        <th class="center">Status</th>
+
+                    </tr>
+                </thead>
+                <tbody id="tbldevicebody"></tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="modal inmodal" id="OtpModal" tabindex="-1" role="dialog" aria-hidden="true" style="display: none;">
+    <div class="modal-dialog">
+        <div class="modal-content animated fadeIn">
+            <div class="modal-header">
+                <button type="button" id="closeotpmodal" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="card card-box">
+
+                        <div class="card-body ">
+
+                            <div class="table-scrollable">
+                                <table id="tblShiftdevices" border="1" style="width: 100%" class="table table-striped table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th class="center">S.no</th>
+                                            <th class="center">Custmer Name</th>
+                                            <th class="center">VehicleNumber</th>
+                                            <th class="center">Device IMEI</th>
+                                            <th class="center">Sim Number</th>
+                                            <th class="center">Dealer Name</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="tblShiftdevicebody"></tbody>
+                                </table>
+                            </div>
+
+                            <label>Select Account to Shift :</label><br /> <select id="ddlclient" class="form-control" style="width:400px;"><option value="0">-Select-</option></select>
+
+
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="modal-footer" style="text-align:center;">
+
+                <button type="button" id="btn_submit" onclick="ShiftDevice()" class="btn btn-primary">Submit</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="~/Scripts/jquery.min.js"></script>
+
+<script>
+
+    $(document).ready(function () {
+        // $("#load").show();
+        var categid = localStorage.getItem("CATEG_TYPE_ID");
+        if (categid == "1" || categid == "2" || categid == "5") {
+            $("#tbldevices>thead>tr").append("<th>Edit</th>");
+            $("#tbldevices>thead>tr").append("<th>Shift Device</th>");
+            $("#btnadd").show();
+        }
+
+        getallDevices();
+        bindusers();
+    });
+
+    function bindusers() {
+
+
+        $.post("/Home/getCustomerForDeviceShift", function (data) {
+
+            var dataT = data['data'];
+            var opt = "<option value='0'>-Select-</option>";
+            for (var i = 0; i < dataT.length; i++) {
+
+                opt += "<option value='" + dataT[i].categ_id + "'>" + (dataT[i].customerName + "_" + dataT[i].DealerName) + "</option>";
+
+            }
+            $("#ddlclient").text("");
+            $('#ddlclient').append(opt);
+            $('#ddlclient').select3();
+        });
+
+    }
+
+    window.onload = function () {
+        
+        var categid = localStorage.getItem("CATEG_TYPE_ID");
+        //$("#load").show();
+
+        //if (categid != "1" || categid != "2" || categid != "4")
+        //{
+        //    $("#btnadd").hide();
+
+        //}
+        $("#ddldevice").select3();
+
+        $("#divrow").hide();
+
+        $("#btnupdate").hide();
+
+        // getall_devices();
+
+        //$("#txtmfcdate").datepicker({
+        //    dateFormat: 'mm-dd-yyyy',
+        //    changeMonth: true,
+        //    changeYear: true
+        //}).datepicker("setDate", "0");;
+        //$("#txtdateofsale").datepicker({
+        //    dateFormat: 'mm-dd-yyyy',
+        //    changeMonth: true,
+        //    changeYear: true
+        //}).datepicker("setDate", "0");;
+
+        $('#txtmfcdate').bootstrapMaterialDatePicker
+            ({
+                format: 'MM/DD/YYYY',
+                time: false,
+                switchOnClick: true,
+            });
+        $('#txtdateofsale').bootstrapMaterialDatePicker
+            ({
+                format: 'MM/DD/YYYY',
+                time: false,
+                switchOnClick: true,
+            });
+    }
+
+    function showrow() {
+        $("#divrow").show();
+
+    }
+
+    function Back() {
+        $("#divrow").hide();
+    }
+
+    function getallDevices() {
+        
+        $("#load").show();
+        var ID = localStorage.getItem("CATEG_TYPE_ID");
+        $.post("/Home/_frmdetails", function (data) {
+            //console.log(dataT);
+            
+            var dataT = data['data'];
+            var arr = [];
+            for (var i = 0; i < dataT.length; i++) {
+                if (ID == "1" || ID == "2" || ID == "5") {
+
+                    arr.push([i + 1, dataT[i].DEVICE_NAME, dataT[i].DEVICE_ID, dataT[i].CLIENT_NAME, dataT[i].DEVICE_SERIALNUMBER, dataT[i].SIM_NUMBER, dataT[i].DEVICE_CALLNUMBER1, dataT[i].DEVICE_STATUS, '<a href="#" onclick="EDIT(' + dataT[i].DEVICE_ID + ')" class="btn btn-tbl-edit btn-xs"><i class="fa fa-pencil"></i></a>', '<a href="#" onclick="getShiftDevice(' + dataT[i].DEVICE_ID + ')" class="btn btn-tbl-edit btn-xs"><i class="fa fa-angle-double-right"></i></a>']);
+                }
+                else {
+                    arr.push([i + 1, dataT[i].DEVICE_NAME, dataT[i].DEVICE_ID, dataT[i].CLIENT_NAME, dataT[i].DEVICE_SERIALNUMBER, dataT[i].SIM_NUMBER, dataT[i].DEVICE_CALLNUMBER1, dataT[i].DEVICE_STATUS])
+                }
+
+            }
+            $('#tbldevices').DataTable({
+                dom: 'Bfrtip',
+                buttons: [
+                    //'copy', 'csv', 'excel', 'pdf', 'print'
+                    'excel', 'pdf', 'print'
+                ],
+                data: arr,
+                deferRender: true,
+                // scrollY:        200,
+                scrollCollapse: true,
+                scroller: true,
+                processing: true,
+                columnDefs: [
+                    { targets: 'no-sort', orderable: false }
+                ],
+                language: {
+                    'loadingRecords': '&nbsp;',
+                    'processing': 'Loading...'
+                }
+            });
+            $("#load").hide();
+        });
+
+    }
+    function getall_devices() {
+
+        //$('#preloader').show();
+        var i = 0;
+        serverSide: true;
+        var filteredData, simple_checkbox, numOfVisibleRows;
+        var MySearch = $('#tbldevices').DataTable({
+            dom: 'Bfrtip',
+            buttons: [
+                'excel', 'pdf', 'print'
+            ],
+            "paging": true,
+            "searching": true,
+            // "filtering": true,
+            autoFill: true,
+            //"ordering": true,
+            //sDom: "Bfrtip",
+            //sDom: '<"search-box"r><"H"lf>t<"F"ip>',
+            //colReorder: true,
+            //"rowHeight": '20px',
+            //"targets": 0,
+            //"paging": true,
+            //"sPaginationType": "full_numbers",
+            highlight: true,
+            fixedColumns: {
+                leftColumns: 4
+            },
+            keys: {
+                columns: ':not(:first-child)'
+            },
+            "scrollX": false,
+            "scrollY": 660,
+            "language": {
+
+                sProcessing: "please wait",
+                "lengthMenu": "No of Records Per Page :  _MENU_ ",
+                "zeroRecords": "Loading Data - Wait",
+                "infoEmpty": "Showing 0 to 0 of 0 entries",
+                "infoFiltered": "From _MAX_ Total Entries",
+                "infoEmpty": "No records available",
+            },
+            processing: true,
+            select: true,
+            // "lengthMenu": [[50, 100, 500, -1], [50, 100, 500, "All"]],
+            "lengthMenu": [[100, 500, 1000, -1], [100, 500, 1000, "All"]],
+            "sAjaxSource": "/Home/_frmdetails",
+            "bDeferRender": true,
+            "bInfo": true,
+            fixedHeader: true,
+            fixedHeader: {
+                header: false,
+                footer: true
+            },
+            "columns": [
+                {
+                    mRender: function (data, type, row) {
+
+
+                        return "<td><span style='display: inline-block;width: 150px;white-space: nowrap;overflow: hidden !important;text-overflow: ellipsis;'>" + row.DEVICE_NAME + "</span></td>"
+                    }
+                },
+                //{ "data": "DEVICE_NAME" },
+                { "data": "DEVICE_ID" },
+                { "data": "CLIENT_NAME" },
+                { "data": "DEVICE_SERIALNUMBER" },
+                { "data": "SIM_NUMBER" },
+                { "data": "DEVICE_CALLNUMBER1" },
+                { "data": "DEVICE_STATUS" },
+
+                {
+                    "mData": null,
+                    "bSortable": false,
+                    mRender: function (data, type, row) {
+
+                        return '<input type="button" class="btn btn-primary" onclick="EDIT(' + row.DEVICE_ID + ')" value="EDIT" />'
+
+                    }
+                },
+            ],
+        })
+    }
+
+
+    function bindsim() {
+
+        var ID = $("#ddldevice").val();
+        var categ_name = $("#ddldevice option:selected").text();
+        if (ID != '0') {
+            $.post("/Home/device_categ_onchange", { "CATEG_ID": ID, "categname": categ_name }, function (data) {
+                var dataT = data['data'];
+                var opt = "<option value='0'>-Select-</option>";
+                for (var i = 0; i < dataT.length; i++) {
+                    opt += "<option value='" + dataT[i].SIM_ID + "'>" + dataT[i].SIM_NUMBER + "</option>";
+                }
+                $("#ddlsimnumber").text("");
+                $('#ddlsimnumber').append(opt);
+            });
+        }
+    }
+
+    function getShiftDevice(id) {
+        localStorage.setItem("Device_id", id);
+        if (id != '0') {
+            $.post("/Home/get_device_shift", { "DeviceID": id }, function (data) {
+                var dataT = data['data'];
+                for (var i = 0; i < dataT.length; i++) {
+                    tr = $('<tr/>');
+
+                    tr.append("<td>" + (i + 1) + "</td>");
+                    tr.append("<td>" + dataT[i].CustomerName + "</td>");
+                    tr.append("<td>" + dataT[i].VehicleNumber + "</td>");
+                    tr.append("<td>" + dataT[i].DevicenNumber + "</td>");
+                    tr.append("<td>" + dataT[i].SIMNumber + "</td>");
+                    tr.append("<td>" + dataT[i].DealerName + "</td>");
+                    $("#tblShiftdevices").append(tr);
+                    $("#OtpModal").show();
+                    $("#hid_delaername").val(dataT[i].DealerName);
+                }
+
+            });
+        }
+    }
+
+    function ShiftDevice() {
+        var categ_id = $("#ddlclient").val();
+        var deviceid = localStorage.getItem("Device_id");
+        $.post("/Home/shift_device", { "CategID": categ_id, "DeviceID": deviceid, "Categ_Name": $('#ddlclient option:selected').text() }, function (data) {
+            var dataT = data['data'];
+            if (dataT == true) {
+                alert("Device Shifted Successfully");
+                $("#OtpModal").hide();
+                location.reload();
+
+            }
+            else {
+                alert("Failed");
+                $("#OtpModal").hide();
+            }
+        });
+    }
+
+    function EDIT(ID) {
+        //  alert(ID);
+
+
+        $.post("/Home/device_Edit_Command", { "ID": ID }, function (data) {
+            
+            $("#btnsave").hide();
+            $("#divrow").show();
+            $("#btnupdate").show();
+
+            var dataT = data['data'];
+            var simData = data['data2'];
+            // alert(dataT[0].DEVICE_SIM_ID);
+            //      $("#ddldevice").select3().val(dataT[0].DEVICE_CATEGORY_ID).trigger('change');
+            //  bindsim();
+            //   $("#ddldevice").select3().val(dataT[0].DEVICE_CATEGORY_ID).trigger('change')
+
+            //setTimeout(function () {
+
+            //    $("#ddldevice").select3().val(dataT[0].DEVICE_CATEGORY_ID).trigger('change');
+
+            //}, 500)
+
+            //setTimeout(function () {
+
+            //    $("#ddlsimnumber").val(1);
+
+            //}, 1000)
+
+            //bind categories
+
+            localStorage.setItem("OldSIM", dataT[0].DEVICE_SIM_ID);
+            localStorage.setItem("OldSIMNumber", dataT[0].SIM_NUMBER);
+            var opt = "";
+            opt += '<option value="0">-Select -</option>'
+
+            opt += '<option value=' + dataT[0].DEVICE_CATEGORY_ID + ' selected>' + dataT[0].CLIENT_NAME + '</option>'
+
+            $("#ddldevice").text("");
+            $("#ddldevice").append(opt);
+
+            //bind sims
+            if (simData.length > 0) {
+                var opt1 = "";
+                opt1 += '<option value="0">-Select -</option>';
+                for (var j = 0; j < simData.length; j++) {
+
+                    if (j == 0) {
+                        opt1 += '<option value=' + simData[j].SIM_ID + ' selected>' + simData[j].SIM_NUMBER + '</option>'
+                    }
+                    else {
+                        opt1 += '<option value=' + simData[j].SIM_ID + '>' + simData[j].SIM_NUMBER + '</option>'
+                    }
+
+
+                }
+                $("#ddlsimnumber").text("");
+                $("#ddlsimnumber").append(opt1);
+            }
+
+
+            $("#ddldevice").attr('disabled', 'disabled');
+            $("#txtdeviceid").val(dataT[0].DEVICE_ID);
+            $("#txtdeviceid").attr('disabled', 'disabled');
+            $("#txtdevicename").val(dataT[0].DEVICE_NAME);
+            $("#txtmfcdate").val(dataT[0].DEVICE_MFGDATE_ONE);
+            $("#txtserialnumber").val(dataT[0].DEVICE_SERIALNUMBER);
+            $("#ddlcountrty").val(dataT[0].DEVICE_COUNTRY_ID);
+
+
+            $("#txtdateofsale").val(dataT[0].DEVICE_DATEOFSALE_ONE);
+
+
+            $("#txtcallnumber1").val(dataT[0].DEVICE_CALLNUMBER1);
+            $("#txtcallnumber2").val(dataT[0].DEVICE_CALLNUMBER2);
+
+            // $("#txtcallnumber1").val(dataT[0].DEVICE_COUNTRY_ID);
+
+            $("#txtstopduration").val(dataT[0].DEVICE_STOPDURATION_ONE);
+            $("#txtdataduration").val(dataT[0].DEVICE_CALLNUMBER2);
+            $("#txtoverduration").val(dataT[0].DEVICE_OVERSPEEDDURATION_ONE);
+
+            var selectedValue = dataT[0].DEVICE_NAME;
+
+            $("#ddldevicename option:contains('" + selectedValue + "')").each(function () {
+
+                if ($(this).html() == selectedValue) {
+                    $(this).attr('selected', 'selected');
+                }
+            });
+
+            if (dataT[0].DEVICE_STATUS == 'True') {
+
+                $("#chkstatus").attr('checked', true);
+            }
+
+        });
+        localStorage.setItem("CATEG_ID", ID);
+    }
+
+
+
+
+    function Save(id) {
+
+
+        var ID = '0'
+        if (id == "save") {
+            btn = "BTN_SAVE";
+
+        }
+        else {
+            ID = localStorage.getItem("CATEG_ID");
+            btn = "BTN_UPDATE";
+
+        }
+        var Status = false;
+        if ($("#chkstatus").is(':checked') == true) {
+            Status = true;
+        }
+
+
+        //btn_device_Save_Click(string btn, string DEVICEID, string DEVICECALLNO1, string DEVICECALLNO2,string DEVICESERIALNO,string DEVICESALEDATE,
+        //string DEVICEMFGDATE,string COUNTRYID,string SIMID,string DEVICEDATADURATION,string DEVICESPEEDDURATION,string DEVICESTOPDURATION,string STATUS,
+        //   string CATEG_ID,string CATEG_NAME)
+        if ($("#txtserialnumber").val() != "") {
+
+            var sim_Id, simnumber;
+            if ($("#ddlsimnumber").val() == 0) {
+                sim_Id = localStorage.getItem("OldSIM");
+                simnumber = localStorage.getItem("OldSIMNumber");
+            }
+            else {
+                sim_Id = $("#ddlsimnumber").val();
+                simnumber = $("#ddlsimnumber Option:selected").text();
+            }
+            $.post("/Home/btn_device_Save_Click", {
+                "btn": btn, "DEVICEID": $("#txtdeviceid").val(), "DEVICENAME": $("#ddldevicename option:selected").text(), "DEVICECALLNO1": $("#txtcallnumber1").val(),
+                "DEVICECALLNO2": $("#txtcallnumber2").val(), "DEVICESERIALNO": $("#txtserialnumber").val(),
+                "DEVICESALEDATE": $("#txtdateofsale").val(), "DEVICEMFGDATE": $("#txtmfcdate").val(), "COUNTRYID": $("#ddlcountrty").val(), "SIMID": sim_Id,
+                "DEVICEDATADURATION": $("#txtdataduration").val(), "DEVICESPEEDDURATION": $("#txtoverduration").val(), "DEVICESTOPDURATION": $("#txtstopduration").val(), "STATUS": Status, "CATEG_ID": $("#ddldevice").val(), "CATEG_NAME": $("#ddldevice Option:selected").text(), "SIM_NUMBER": simnumber,
+            }, function (data) {
+
+                var dataT = data['data']
+
+                if (dataT == 'true') {
+                    alert("" + id + " successfully..");
+                    location.reload();
+                    $("#divrow").hide();
+                }
+                else {
+                    alert(dataT);
+                }
+            });
+        }
+        else {
+            if ($("#ddlsimnumber").val() == 0) {
+                alert("Please Select SIM");
+            }
+            else if ($("#txtserialnumber").val() == "") {
+                alert("Please Enter Device IMEI Number");
+            }
+        }
+    }
+
+
+    $(document).on("click", "#closeotpmodal", function () {
+        $("#OtpModal").fadeOut();
+
+    })
+
+</script>

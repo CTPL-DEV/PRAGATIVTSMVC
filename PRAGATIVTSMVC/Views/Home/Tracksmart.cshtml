@@ -1,0 +1,866 @@
+﻿
+
+@{
+    ViewBag.Title = "Tracksmart";
+    Layout = "~/Views/Shared/Layout2.cshtml";
+}
+
+
+<style>
+    .font_css {
+        font-size: 12px;
+        font-family: "Times New Roman", Times, serif;
+        width: 100%;
+        color: black !important;
+    }
+
+    .switch {
+        position: relative;
+        display: inline-block;
+        width: 60px;
+        height: 34px;
+    }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+    .slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #ccc;
+        -webkit-transition: .4s;
+        transition: .4s;
+    }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            -webkit-transition: .4s;
+            transition: .4s;
+        }
+
+    input:checked + .slider {
+        background-color: #2196F3;
+    }
+
+    input:focus + .slider {
+        box-shadow: 0 0 1px #2196F3;
+    }
+
+    input:checked + .slider:before {
+        -webkit-transform: translateX(26px);
+        -ms-transform: translateX(26px);
+        transform: translateX(26px);
+    }
+
+    /* Rounded sliders */
+    .slider.round {
+        border-radius: 34px;
+    }
+
+        .slider.round:before {
+            border-radius: 50%;
+        }
+
+    .body {
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        font-family: 'Source Sans Pro','Helvetica Neue',Helvetica,Arial,sans-serif;
+        font-weight: 400;
+        overflow-x: hidden;
+        overflow-y: auto;
+    }
+
+    .circle {
+        border-radius: 50%;
+        behavior: url(PIE.htc);
+        /* remove if you don't care about IE8 */
+        width: 27px;
+        height: 27px;
+        padding: 5px;
+        background: #fff;
+        border: 2px solid #666;
+        color: #666;
+        text-align: center;
+        font: 32px Arial, sans-serif;
+    }
+
+    ul {
+        list-style-type: none;
+    }
+
+    .select2-selection__rendered {
+        border: 1px solid;
+        border-radius: 5px;
+        height: 35px;
+    }
+</style>
+
+<div id="mainContent">
+    <div class="row gap-20">
+        <div class="masonry-item w-100">
+            <div class="row gap-20">
+                <div class="col-md-3">
+                    <div class="layers bd bgc-white p-20">
+                        <div class="layer w-100 mB-10">
+                            <h6 class="lh-1" style="text-align:center;">Total Vehicles</h6>
+                        </div>
+                        <div class="layer w-100">
+                            <div class="peers ai-sb fxw-nw">
+                                @*<div class="peer peer-greed"><span id="sparklinedash"></span></div>*@
+                                <div style="margin:auto;">
+                                    <div class="peer">
+                                        <span class="d-ib lh-0 va-m fw-600 bdrs-10em pX-15 pY-15 bgc-green-50 c-green-500" id="spntotal">0</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="layers bd bgc-white p-20">
+                        <div class="layer w-100 mB-10">
+                            <h6 class="lh-1" style="text-align:center;">Moving Vehicles</h6>
+                        </div>
+                        <div class="layer w-100">
+                            <div class="peers ai-sb fxw-nw">
+                                @*<div class="peer peer-greed"><span id="sparklinedash2"></span></div>*@
+                                <div style="margin:auto;">
+                                    <div class="peer"><span class="d-ib lh-0 va-m fw-600 bdrs-10em pX-15 pY-15 bgc-red-50 c-red-500" id="spnmoving">0</span></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="layers bd bgc-white p-20">
+                        <div class="layer w-100 mB-10">
+                            <h6 class="lh-1" style="text-align:center;">Stopped Vehicles</h6>
+                        </div>
+                        <div class="layer w-100">
+                            <div class="peers ai-sb fxw-nw">
+                                @*<div class="peer peer-greed"><span id="sparklinedash3"></span></div>*@
+                                <div style="margin:auto;">
+                                    <div class="peer"><span class="d-ib lh-0 va-m fw-600 bdrs-10em pX-15 pY-15 bgc-purple-50 c-purple-500" id="spnstopped">0</span></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="layers bd bgc-white p-20">
+                        <div class="layer w-100 mB-10">
+                            <h6 class="lh-1" style="text-align:center;">Data Not Receiving</h6>
+                        </div>
+                        <div class="layer w-100">
+                            <div class="peers ai-sb fxw-nw">
+                                @*<div class="peer peer-greed"><span id="sparklinedash4"></span></div>*@
+                                <div style="margin:auto;">
+                                    <div class="peer"><span class="d-ib lh-0 va-m fw-600 bdrs-10em pX-15 pY-15 bgc-blue-50 c-blue-500" id="spnyellow">0</span></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="masonry-item col-12">
+            <div class="bd bgc-white">
+                <div class="peers fxw-nw@lg+ ai-s">
+                    <div class="peer peer-greed w-70p@lg+ w-100@lg- p-20">
+                        <div class="layers">
+
+                            <div class="layer w-100">
+                                <div id="MAP_TRACK" style="height:500px;" class="gmaps">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="peer bdL p-20 w-30p@lg+ w-100p@lg-">
+                        <div class="layers">
+                            <div class="layer w-100">
+                                <div class="layers">
+                                    <div class="layer w-100">
+                                        <select class="form-control" id="ddlvehicles" onchange="TRACK_SMART()">
+                                            <option value="0">-Select Vehicle-</option>
+                                            <option value="-1">All Vehicles</option>
+                                        </select>
+
+
+                                        @{
+                                            int T = 0;
+                                            int M = 0;
+                                            int S = 0;
+                                            int Y = 0;
+                                            foreach (var item in ViewBag.DASHBOARDDATA)
+                                            {
+                                                T++;
+                                                if (item.COLOR == "G")
+                                                {
+                                                    M++;
+                                                }
+                                                else if (item.COLOR == "R")
+                                                {
+                                                    S++;
+                                                }
+                                                else if (item.COLOR == "Y")
+                                                {
+                                                    Y++;
+                                                }
+                                            }
+
+                                            <input type="hidden" id="hdntotal" value="@T" />
+                                            <input type="hidden" id="hdnmoving" value="@M" />
+                                            <input type="hidden" id="hdnstop" value="@S" />
+                                            <input type="hidden" id="hdnyellow" value="@Y" />
+
+
+
+                                        }
+                                    </div>
+
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="myModal_trackhistory">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h4 class="modal-title">Track History</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+
+            <!-- Modal body -->
+            <div class="modal-body">
+                available soon
+            </div>
+
+            <!-- Modal footer -->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="myModal_tracknearest">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h4 class="modal-title">Track nearest vehicle</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+
+            <!-- Modal body -->
+            <div class="modal-body">
+                available soon
+            </div>
+
+            <!-- Modal footer -->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script src="~/Scripts/markerclusterer.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script>
+    var markersZ = [];
+    var iconBase = 'https://maps.google.com/mapfiles/kml/shapes/';
+    var icons = {
+        Truck: {
+            icon: iconBase + 'parking_lot_maps.png'
+        },
+        Plant: {
+            icon: iconBase + 'library_maps.png'
+        },
+        Port: {
+            icon: iconBase + 'info-i_maps.png'
+        },
+        Vehi: {
+            icon: '/Content/icons/placeholder_yellow.png'
+        },
+        Bus: {
+            icon: '/Content/icons/bus.png'
+        },
+        From: {
+            icon: '/Content/icons/placeholder_nu.png'
+        },
+        To: {
+            icon: '/Content/icons/maps-and-flags.png'
+        },
+        Stopped: {
+            icon: '/Content/icons/truck_r.png'
+        },
+        VehicleMoving: {
+            icon: '/Content/icons/green_truck.png'
+        },
+        Datanotreceiving: {
+            icon: '/Content/icons/truck_y.png'
+        },
+        Dirctions: {
+            icon: '/Truck/truck_green_0.png'
+        },
+    };
+    window.onload = function () {
+        initMap();
+        allvehicles();
+        COUNT_STATUS();
+        //  BINDDATA();
+        bindvehicles();
+    }
+
+
+    function COUNT_STATUS() {
+
+        $("#spntotal").text($("#hdntotal").val());
+        $("#spnmoving").text($("#hdnmoving").val());
+        $("#spnstopped").text($("#hdnstop").val());
+        $("#spnyellow").text($("#hdnyellow").val());
+
+    }
+
+
+
+
+
+    function myFunction() {
+        // Declare variables
+        var input, filter, table, tr, td, i, txtValue;
+        input = document.getElementById("txtreadonly");
+        filter = input.value.toUpperCase();
+        table = document.getElementById("myTable1");
+        tr = table.getElementsByTagName("tr");
+
+        // Loop through all table rows, and hide those who don't match the search query
+        for (i = 0; i < tr.length; i++) {
+            td = tr[i].getElementsByTagName("td")[0];
+            if (td) {
+                txtValue = td.textContent || td.innerText;
+                if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                    tr[i].style.display = "";
+                } else {
+                    tr[i].style.display = "none";
+                }
+            }
+        }
+    }
+
+
+    function BINDDATA() {
+        $.post("/Reports/_Stoppage", function (data) {
+            var dataT = data['Report'];
+            //    alert(dataT.length);
+            if (dataT.length > 0) {
+                for (var i = 0; i < dataT.length; i++) {
+
+                    $("#notes").append("<li id='liremove" + i + "' class='noteli'>" +
+                        "<textarea class='note-title' placeholder='Stoppage  Alert   left " + i + " ' maxlength='15' />" +
+                        "<textarea class='note-content' placeholder='" + dataT[i].VNO + "  " + dataT[i].DATE + " stopped " + dataT[i].PLACE + " since " + dataT[i].DURATION + "  '/>" +
+                        "<img class='close back' onclick='fnclose(" + i + ")' src='http://www.iconninja.com/files/583/379/810/close-circular-button-of-interface-icon.png'/>" +
+
+                        "</li>");
+                }
+            }
+            $(".close").click(function () {
+                // $(this).closest('li').css('display', 'none');
+            });
+        });
+    }
+    function fnclose(i) {
+        //  alert(i);
+        $("#liremove" + i + "").remove();
+    }
+    function initMap() {
+
+        var input = document.getElementById('txtlocation');
+
+        var autocomplete = new google.maps.places.Autocomplete(input);
+
+        var myLatLng = { lat: 23.852464, lng: 78.858390 };
+
+        map = new google.maps.Map(document.getElementById('MAP_TRACK'), {
+            zoom: 6,
+            center: myLatLng,
+            gestureHandling: 'greedy'
+        });
+    }
+    function fnread() {
+        if ($("#chkread").is(':checked') == true) {
+
+
+            $("#spntext").removeAttr("style")
+            $("#spntext").css({ "margin-top": "6px" });
+            $("#spntext").text('ON');
+            $("#txtreadonly").attr("readonly", false);
+
+        }
+        else if ($("#chkread").is(':checked') == false) {
+
+            $("#spntext").css({ "float": "right", "margin-top": "6px" });
+
+            $("#spntext").text('OFF');
+            $("#txtreadonly").val('').trigger('keyup');
+            $("#txtreadonly").attr("readonly", true);
+        }
+        else {
+
+        }
+
+    }
+
+
+    function Movingvehicles(COLOR) {
+        // allvehicles_status(string COLOR,string ClientId = null)
+
+        $.post("/HOME/allvehicles_status", { "COLOR": COLOR, "ClientId": '' }, function (data) {
+
+            var dataT = data['data'];
+
+            if (data != null && data != "null") {
+
+                ALLvehiclesdata(data);
+            }
+        });
+    }
+
+
+
+    function bindvehicles() {
+
+        $.post("/Home/Load_Vehicles", { "ClientId": '' }, function (data) {
+
+            var dataT = data['data'];
+            var dataD = data['data1'];
+            var opt = "<option value='0'>-Select-</option>";
+            var opt = "<option value='-1'>Select Vehicle</option>";
+            if (dataD.length < 2) {
+                for (var i = 0; i < dataT.length; i++) {
+                    opt += "<option value='" + dataT[0].VEHICLES_DEVICE_ID + "'>" + dataT[0].VEHICLES_REGNUMBER + "</option>";
+                }
+            }
+            else {
+                for (var i = 0; i < dataD.length; i++) {
+                    opt += "<option value='" + dataD[i].VEHICLES_DEVICE_ID + "'>" + dataD[i].VEHICLES_REGNUMBER + "</option>";
+                }
+            }
+            $("#ddlvehicles").text("");
+            $('#ddlvehicles').append(opt);
+            $('#ddlvehicles').select3();
+
+        });
+
+    }
+
+
+
+
+
+
+    function allvehicles() {
+
+
+        $.post("/HOME/allvehicledetails", { "ClientId": '' }, function (data) {
+
+            var dataT = data['data'];
+
+            if (data != null && data != "null") {
+
+                ALLvehiclesdata(data);
+            }
+        });
+
+    }
+
+    function ALLvehiclesdata(data) {
+        // $("#ddlworkorders").select2().val(0).trigger('change');
+
+        $("#workordermap").css('display', 'none');
+        $("#defaultmap").css('display', 'block');
+
+
+        var markerss = [];
+        var datalength = data['data'].length;
+
+
+
+
+        var dataT = data['data'];
+
+
+        var LATITUDELng = { lat: parseFloat(17.701961), lng: parseFloat(83.233461) };
+
+
+
+
+
+
+        var map = new google.maps.Map(document.getElementById('MAP_TRACK'), {
+            zoom: 6,
+            center: new google.maps.LatLng(dataT[0].LATITUDE, dataT[0].LONGITUDE),
+            gestureHandling: 'greedy',
+            styles: CustomMapStyles,
+            mapTypeId: google.maps.MapTypeId.ROADMAP
+        });
+
+        var infowindow = new google.maps.InfoWindow();
+
+        var marker, i;
+
+
+
+        for (i = 0; i < datalength; i++) {
+
+
+            if (dataT[i].COLOR == 'G') {
+                if (dataT[i].TRIPDATA_DIRECTION != null || dataT[i].TRIPDATA_DIRECTION != "null" || dataT[i].TRIPDATA_DIRECTION != "") {
+
+                    var value0 = dataT[i].TRIPDATA_DIRECTION;
+
+                    if (value0 <= 270) {
+                        value0 = parseInt(value0) + parseInt(90);
+                    }
+                    else if (value0 >= 360) {
+                        value0 = 359;
+                    }
+                    else {
+                        value0 = parseInt(value0) - parseInt(270);
+                    }
+
+
+                    buscolor = '/Truck/truck_green_' + value0 + '.png'
+
+                    //BUSCOLOR = '/Truck/truck_green_' + dataT[i].TRIPDATA_DIRECTION + '.png'
+                }
+            }
+            else if (dataT[i].COLOR == 'R') {
+                buscolor = icons["Stopped"].icon
+            }
+            else if (dataT[i].COLOR == 'Y') {
+                buscolor = icons["Datanotreceiving"].icon
+            }
+
+
+            marker = new google.maps.Marker({
+
+                position: new google.maps.LatLng(dataT[i].LATITUDE, dataT[i].LONGITUDE),
+                icon: buscolor,
+                map: map,
+                title: dataT[i].PLACE
+            });
+
+            markerss.push(marker);
+            marker.setMap(map);
+            //  bounds.extend(marker.position);
+            markersZ.push(marker);
+
+            //    }, 5000);
+
+            google.maps.event.addListener(marker, 'click', (function (marker, i) {
+
+
+                var stringContent = '<div style="color:black"><table>'
+                    + '<tr><td><b>Vehicle Number:</b></td><td>' + dataT[i].VEHICLENUMBER
+                    + '<tr><td><b>Speed:</b></td><td><label id="lblcurrentspeed">' + dataT[i].SPEED
+                    + '</td><tr><td><b>DateTime:</b></td><td> <label id="lblcurrentdate">'
+                    + dataT[i].TRIPDATA_TRIPDATE
+                    + '</td><tr><td><b>Odometer</b></td><td> <label id="lblcurrentdate">'
+                    + dataT[i].ODOMETER
+                    + '</label></td></tr><tr><td><b>Location:&nbsp;</b></td><td><label id="lblcurrentlocation">'
+                    + dataT[i].PLACE + '</label></td></tr><tr><td><b>KM TRAVELLED:&nbsp;</b></td><td><label id="lblkmtravelled">'
+                    + dataT[i].TOTAL_KM_DAY + '</label></td></tr></table></div>';
+                //  var stringContent = '<div style="color:black"><table>'
+                //+ '<tr><td><b>Vehicle Number:</b></td><td>' + dataT[i].VEHICLENUMBER
+                //                                 + '<tr><td><b>Speed:</b></td><td><label id="lblcurrentspeed">' + dataT[i].SPEED
+                //                                 + '</td><tr><td><b>Time:</b></td><td>Date <label id="lblcurrentdate">'
+                //                                  + dataT[i].DATE
+                //                                  + '</td><tr><td><b>Time:</b></td><td>Date <label id="lblcurrentdate">'
+                //                                  + dataT[i].ODOMETER
+                //                                 + '</label></td></tr><tr><td><b>Location:&nbsp;</b></td><td><label id="lblcurrentlocation">'
+                //                                 + dataT[i].PLACE + '</label></td></tr></table></div>';
+
+                return function () {
+                    infowindow.setContent(stringContent);
+                    infowindow.open(map, marker);
+                }
+            })(marker, i));
+        }
+        var markerCluster = new MarkerClusterer(map, markerss, { imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m' });
+    }
+
+
+
+    var lat_lng = new Array();
+
+    function TRACK_SMART() {
+        var V_DID = $("#ddlvehicles").val();
+        $.post("/HOME/VEHICLECHANGE", { "Device_ID": V_DID }, function (data) {
+            lat_lng = [];
+            $(".envelope").css('display', 'block');
+            var dataT = data['data'];
+
+            //if (dataT[0] != null && dataT[0] != "null") {
+            if (dataT[0] != null && dataT[0] != "null") {
+                // alert(dataT[0].LATITUDE);
+                var myLatlng = new google.maps.LatLng(dataT[0].LATITUDE, dataT[0].LONGITUDE);
+
+                lat_lng.push(myLatlng);
+                Showtravelpath(data);
+            }
+            //else {
+
+            //    alert("Data not avilable..");
+            //    initMap();
+
+            //}
+        });
+    }
+
+
+
+
+    function Showtravelpath(data) {
+        //  $("#load").show();
+        $("#workordermap").css('display', 'none');
+        $("#defaultmap").css('display', 'block');
+
+        dataT = data['data'];
+        var datalength = data['data'].length
+        if (datalength > 0) {
+            // $("#load").hide();
+            var mapOptions = {
+                center: new google.maps.LatLng(dataT[0].LATITUDE, dataT[0].LONGITUDE),
+                icon: '/Truck/truck_green_0.png',
+                zoom: 6,
+                gestureHandling: 'greedy',
+                styles: CustomMapStyles,
+                // mapTypeId: google.maps.MapTypeId.ROADMAP
+            };
+            map = new google.maps.Map(document.getElementById("MAP_TRACK"), mapOptions);
+            var infoWindow = new google.maps.InfoWindow();
+
+            var latlngbounds = new google.maps.LatLngBounds();
+
+            for (i = 0; i < 1; i++) {
+                //  alert(markers.length);
+                //    var data = markers[i]
+                // alert(data.lat + "  " + i + "->   " + data.lng);
+                $("#txtvalues").val(dataT[0].SPEED).trigger('keyup');;
+                $("#txtignition").text("ignition " + dataT[0].IGNITION)
+                var myLatlng = new google.maps.LatLng(dataT[0].LATITUDE, dataT[0].LONGITUDE);
+
+                lat_lng.push(myLatlng);
+
+                var buscolor = "";
+                var title = "";
+
+
+                var f = lat_lng.length - 1;
+                if (f == 0) {
+
+                    buscolor = '/Truck/truck_green_0.png';
+                    title = 'starting point'
+                }
+                var d = new Date();
+
+                var month = d.getMonth() + 1;
+                var day = d.getDate();
+
+                //var output = d.getFullYear() + '-' +
+                //    (month < 10 ? '0' : '') + month + '-' +
+                //    (day < 10 ? '0' : '') + day;
+
+                //var hours = d.getHours() - 12;
+                //var minutes = d.getMinutes();
+                //var seconds = d.getSeconds();
+                //var TIME = (hours < 10 ? '0' : '') + hours + ':' + (minutes < 10 ? '0' : '') + minutes + ':' + (seconds < 10 ? '0' : '') + seconds;
+
+
+
+                //else if (i == f) {
+                //    buscolor = '/Truck/truck_r.png';
+                //    title = 'end point'
+                //}
+                //else {
+                //    buscolor = '/Truck/tr.png';
+                //    title = 'hyderabad'
+                //}
+                if (dataT[0].COLOR == 'G') {
+                    if (dataT[0].TRIPDATA_DIRECTION != null || dataT[0].TRIPDATA_DIRECTION != "null" || dataT[0].TRIPDATA_DIRECTION != "") {
+
+                        var value0 = dataT[0].TRIPDATA_DIRECTION;
+
+                        if (value0 <= 270) {
+                            value0 = parseInt(value0) + parseInt(90);
+                        }
+                        else if (value0 >= 360) {
+                            value0 = 359;
+                        }
+                        else {
+                            value0 = parseInt(value0) - parseInt(270);
+                        }
+
+
+                        buscolor = '/Truck/truck_green_' + value0 + '.png'
+
+                        //BUSCOLOR = '/Truck/truck_green_' + dataT[0].TRIPDATA_DIRECTION + '.png'
+                    }
+                }
+                else if (dataT[0].COLOR == 'R') {
+                    buscolor = icons["Stopped"].icon
+                }
+                else if (dataT[0].COLOR == 'Y') {
+                    buscolor = icons["Datanotreceiving"].icon
+                }
+
+
+                var marker = new google.maps.Marker({
+                    position: myLatlng,
+                    icon: buscolor,
+                    map: map,
+                    title: title,
+                    zoom: 6
+                });
+
+                latlngbounds.extend(marker.position);
+                (function (marker, data) {
+                    google.maps.event.addListener(marker, "click", function (e) {
+                        if (i == 0) {
+                            //infoWindow.setContent('Starting point');
+                        }
+                        else {
+                            //  alert(dataT[0].DATE);DISTANCE
+
+
+                            if (username == "BAJAJ" || username == "JLPL" || username == "OMKAR IB" || username == "Satish" || username == "Bafna" || username == "shreenathji ib" || username == "AUTOMOBILE ENGINEERS") {
+                                var stringContent = '<div style="color:black"><table>'
+                                    + '<tr><td><b>Vehicle Number:</b></td><td>' + dataT[0].VEHICLENUMBER
+                                    + '<tr><td><b>Speed:</b></td><td><label id="lblcurrentspeed">' + dataT[0].SPEED
+                                    + '</td><tr><td><b>Time:</b></td><td>Date <label id="lblcurrentdate">'
+                                    + dataT[0].TRIPDATA_TRIPDATE
+                                    + '<tr><td><b>DISTANCE TO PLANT:</b></td><td><label id="">' + Math.round(dataT[0].DISTANCE)
+                                    + '<tr><td><b>DISTANCE TO PORT:</b></td><td><label id="">' + Math.round(dataT[0].DKM)
+
+                                    + '</td><tr><td><b>Time:</b></td><td>Date <label id="lblcurrentdate">'
+                                    + dataT[0].ODOMETER
+                                    + '</label></td></tr><tr><td><b>Location:&nbsp;</b></td><td><label id="lblcurrentlocation">'
+                                    + dataT[0].PLACE + '</label></td></tr></table></div>';
+                            }
+                            else {
+                                var stringContent = '<div style="color:black"><table>'
+                                    + '<tr><td><b>Vehicle Number:</b></td><td>' + dataT[0].VEHICLENUMBER
+                                    + '<tr><td><b>Speed:</b></td><td><label id="lblcurrentspeed">' + dataT[0].SPEED
+                                    + '</td><tr><td><b>DateTime:</b></td><td> <label id="lblcurrentdate">'
+                                    + dataT[0].TRIPDATA_TRIPDATE
+                                    + '</td><tr><td><b>Odometer</b></td><td> <label id="lblcurrentdate">'
+                                    + dataT[0].ODOMETER
+                                    + '</label></td></tr><tr><td><b>Location:&nbsp;</b></td><td><label id="lblcurrentlocation">'
+                                    + dataT[0].PLACE + '</label></td></tr><tr><td><b>KM TRAVELLED:&nbsp;</b></td><td><label id="lblkmtravelled">'
+                                    + dataT[0].TOTAL_KM_DAY + '</label></td></tr></table></div>';
+                            }
+
+
+
+                            infoWindow.setContent(stringContent);
+                        }
+
+                        infoWindow.open(map, marker);
+                    });
+                })(marker, data);
+            }
+            map.setCenter(latlngbounds.getCenter());
+            map.fitBounds(latlngbounds);
+
+            //***********ROUTING****************//
+
+            //Initialize the Path Array
+            var path = new google.maps.MVCArray();
+
+            //Initialize the Direction Service
+            var service = new google.maps.DirectionsService();
+
+            //Set the Path Stroke Color
+            var poly = new google.maps.Polyline({
+
+                map: map, strokeColor: '#4986E7'
+
+            });
+
+            //Loop and Draw Path Route between the Points on MAP
+            //  alert(lat_lng.length);
+            // setInterval(function () {
+            //  alert("yes");
+            for (var i = 0; i < lat_lng.length; i++) {
+                if ((i + 1) < lat_lng.length) {
+                    var src = lat_lng[i];
+                    var des = lat_lng[i + 1];
+                    path.push(src);
+                    poly.setPath(path);
+                    map.setZoom(6);
+                    service.route({
+                        origin: src,
+                        destination: des,
+                        travelMode: google.maps.DirectionsTravelMode.DRIVING,
+
+                    }, function (result, status) {
+                        if (status == google.maps.DirectionsStatus.OK) {
+                            for (var i = 0, len = result.routes[0].overview_path.length; i < len; i++) {
+                                path.push(result.routes[0].overview_path[i]);
+                            }
+                        }
+                    });
+                }
+            }
+
+            //  },5000)
+
+
+            //var line = new google.maps.Polyline({
+            //    path: [{ lat: 22.291, lng: 153.027 }, { lat: 18.291, lng: 153.027 }],
+            //    icons: [{
+            //        icon: '/Truck/truck_green_0.png',
+            //        offset: '100%'
+            //    }],
+            //    map: map
+            //});
+        }
+        //else {
+        //    alert("Data not avilable..");
+        //    initMap();
+        //}
+
+    }
+</script>
+<script src="https://maps.google.com/maps/api/js?key=AIzaSyC-IAb9uB1CyJePm788tnMdXe0RxCbcuwU&libraries=places"></script>

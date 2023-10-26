@@ -1,0 +1,979 @@
+﻿@{
+    ViewBag.Title = "frm_BajajIBTrips";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    .select2 {
+        width: 100% !important;
+    }
+</style>
+<div id="load"></div>
+<div class="container-fluid">
+    <div class="row page-titles">
+        <div class="col-md-5 col-8 align-self-center">
+            <h3 class="text-themecolor m-b-0 m-t-0">WORK ORDER</h3>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/Home/frm_GridTrack_Distance">WORK ORDER</a></li>
+                <li class="breadcrumb-item active">WORK ORDER</li>
+            </ol>
+        </div>
+        <div style="margin-left:50%">
+            <input style="display:none" type="button" value="Back" id="btnback" onclick="location.reload()" class="btn btn-danger" />
+        </div>
+    </div>
+
+    <div class="row" id="DIVROW1">
+        <div class="col-lg-3">
+            <div>
+                CLIENT :<select onchange="Clientschage()" class="form-control" id="ddlclients"></select>
+            </div>
+        </div>
+    </div>
+    <div class="row" id="divrow">
+
+        <div class="col-lg-3">
+            <div>
+                WORK ORDER STATUS <select class="form-control" id="ddlworkstatus" onchange="getorders()">
+                    <option value="0">-Select Status-</option>
+                    <option selected value="1">OPEN</option>
+                    <option value="2">In Progress</option>
+                    <option value="3">Partially Open</option>
+                </select>
+            </div>
+        </div>
+        <div class="col-lg-3">
+            <div id="divworkorder">
+                WORK ORDER NO <select class="form-control" id="ddlWorkorder" onchange="workorderonchange()">
+                    <option value="Select Order">Select Workorder</option>
+                    @*<option value="All Order">All Order</option>*@
+                    @foreach (var item in ViewBag.workorders)
+                    {
+                        <option value="@item.Workordervalue">@item.Workordertext</option>
+                    }
+                </select>
+            </div>
+        </div>
+        @*<div class="col-lg-3" style="margin-top:21px">
+                <input type="button" data-toggle="modal" data-target="#myModal5" value="DO ACKNOWLEDGEMENT" class="btn btn-primary" />
+            </div>*@
+        <div class="col-lg-3" style="margin-top:21px;">
+            <input type="button" data-toggle="modal" data-target="#myModal4" class="btn btn-primary" value="UNASSIGN TRIP" />
+        </div>
+    </div>
+    @*<div style="float:right;">
+            <input type="button" data-toggle="modal" data-target="#myModal4" class="btn btn-primary" style="margin-bottom:10px" value="Unassign Trip" />
+        </div>*@
+    @*<input type="button" id="btnadd" class="btn btn-success" onclick="showrow()" style="width:80px;margin-bottom:8px" value="ADD" />*@
+    <div>
+        <div style="margin-top:2%">
+            <table id="tblworkorders" border="1" style="width: 100%;font-size:12px" class="table table-bordered table-hover">
+                <thead>
+                    <tr><th>SNO</th><th>WORK ORDER NO</th><th>VEHICLE NO</th><th>COUNTRY</th><th>STATUS</th></tr>
+                </thead>
+                <tbody id="tblbodyworkorders"></tbody>
+            </table>
+            <table id="tblworkorders1" border="1" style="width: 100%;font-size:12px" class="table table-bordered table-hover">
+                <thead>
+                    <tr><th>SNO</th><th>WORK ORDER NO</th><th>VEHICLE NO</th><th>INDENT CREATION</th><th>DO ACK</th><th>PICKUP TIME</th><th>TRIP START</th><th>PLANT IN</th><th>PLANT OUT</th><th>PORT IN</th><th>TRIP END</th><th>UPDATE</th><th>EDIT</th><th>UPDATE</th></tr>
+                </thead>
+                <tbody id="tblbodyworkorders1"></tbody>
+            </table>
+        </div>
+        <div>
+            <input type="button" id="btnsave" value="Save" onclick="Save()" style="margin-top:1%" class="btn btn-primary" />
+            <input type="button" id="btnupdate" value="Update" onclick="Update()" style="margin-top:1%;display:none" class="btn btn-primary" />
+        </div>
+
+
+
+        <div>
+
+        </div>
+    </div>
+</div>
+
+
+
+<div id="myModal3" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Trip Complete</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+
+            </div>
+            <div class="modal-body">
+                <div class="row" id="divrow">
+                    <div class="col-lg-6">
+                        @*Port Out :<input type="text" id="txtportout" class="form-control" />*@
+
+                        Trip Start :<input type="text" id="txtunloadin" class="form-control" />
+                        
+                    </div>
+                    <div class="col-lg-6">
+                        Trip End   <input type="text" id="txtunloadout" class="form-control" />
+                        @*Plant In :<input type="text" id="txtplantin" class="form-control" />*@
+                        @*Plant Out :<input type="text" id="txtplantout" class="form-control" />*@
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <input type="button" value="Submit" id="btnsave3" onclick="TripEdit()" class="btn btn-success" />
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<div id="myModal4" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Trip Unassign</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+
+            </div>
+            <div class="modal-body">
+                <div class="row" id="divrow">
+                    <div class="col-lg-6">
+                        WORK ORDER NO <select class="form-control" id="ddlClosetrip">
+                            <option value="0">Select Order</option>
+
+                        </select>
+                    </div>
+                    <div class="col-lg-6">
+
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <input type="button" value="Submit" id="btnsave3" onclick="TripClose()" class="btn btn-success" />
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div id="myModal5" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">DO ACKNOWLEDGEMENT</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+
+            </div>
+            <div class="modal-body">
+                <div class="row" id="divrow">
+                    <table id="tbldostatus" class="table table-bordered table-hover table-active">
+                        <thead>
+
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                    <div class="col-lg-6">
+
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    @*<input type="button" value="Submit" id="btnsave3" onclick="UPDATEDOSTATUS()" class="btn btn-success" />*@
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div id="myModal6" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">PICKUP TIME</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+
+            </div>
+            <div class="modal-body">
+                <div class="row" id="divrow">
+                    <input type="text" id="txtpickuptime" class="form-control" style="width:35%;margin-left:30px" />
+                </div>
+                <div class="modal-footer">
+                    <input type="button" value="Submit" id="btnsave3" onclick="UPDATEPICKUPTIME()" class="btn btn-success" />
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+<script src="~/Scripts/jquery.min.js"></script>
+
+
+
+<script>
+    var CategID = localStorage.getItem("USERS_CATEG_ID")
+
+    if (CategID == 87) {
+        $("#divrow").hide();
+        LoadClients();
+    }
+    else {
+        $("#DIVROW1").hide();
+    }
+
+    window.onload = function () {
+        $("#load").hide();
+        $("#ddlWorkorder").select2();
+        $("#ddlClosetrip").select2();
+        $("#tblworkorders1").hide();
+        $("#btnsave").hide();
+        getorders();
+        Bindallworkorders();
+        DOSTATUS();
+        var dt = new Date();
+        var time = dt.getHours() + ":" + dt.getMinutes();
+        var date001 = dt.getMonth() + 1 + "/" + dt.getDate() + "/" + dt.getFullYear() + " " + time;
+
+        $('#txtpickuptime').val(date001);
+        $('#txtportout').val(date001);
+        $('#txtplantin').val(date001);
+        $('#txtplantout').val(date001);
+        $('#txtunloadin').val(date001);
+        $('#txtunloadout').val(date001);
+
+        $('#txtunloadout').bootstrapMaterialDatePicker
+         ({
+             time: true,
+             format: 'MM/DD/YYYY HH:mm',
+             triggerEvent: 'dblclick',
+             switchOnClick: true,
+         });
+
+        //$('#txtportout').bootstrapMaterialDatePicker
+        //  ({
+        //      time: true,
+        //      format: 'MM/DD/YYYY HH:mm',
+        //      triggerEvent: 'dblclick',
+        //      switchOnClick: true,
+        //  });
+        //$('#txtplantin').bootstrapMaterialDatePicker
+        //  ({
+        //      time: true,
+        //      format: 'MM/DD/YYYY HH:mm',
+        //      triggerEvent: 'dblclick',
+        //      switchOnClick: true,
+        //  });
+        //$('#txtplantout').bootstrapMaterialDatePicker
+        //  ({
+        //      time: true,
+        //      format: 'MM/DD/YYYY HH:mm',
+        //      triggerEvent: 'dblclick',
+        //      switchOnClick: true,
+        //  });
+        $('#txtunloadin').bootstrapMaterialDatePicker
+         ({
+             time: true,
+             format: 'MM/DD/YYYY HH:mm',
+             triggerEvent: 'dblclick',
+             switchOnClick: true,
+         });
+       
+
+        $('#txtpickuptime').bootstrapMaterialDatePicker
+      ({
+          time: true,
+          format: 'MM/DD/YYYY HH:mm',
+          triggerEvent: 'dblclick',
+          switchOnClick: true,
+      });
+    }
+
+    function Clientschage() {
+      //  $("#ddlworkstatus").val(0);
+        if ($("#ddlclients").val() != '0') {
+            $.post("/bajajib/workordersbasedonclients", { "CLIENTID": $("#ddlclients").val() }, function (data) {
+                $("#divrow").show();
+                //ddlWorkorder
+                var dataT = data['data'];
+                $("#ddlWorkorder").empty();
+                var opt = "<option value='0'>-Select Workorder-</option>";
+                for (var i = 0; i < dataT.length; i++) {
+                    opt += "<option value='" + dataT[i].Workordervalue + "'>" + dataT[i].Workordertext + "</option>";
+                }
+                $("#ddlWorkorder").text("");
+                $('#ddlWorkorder').append(opt);
+            });
+            Bindallworkorders();
+            DOSTATUS();
+        }
+
+    }
+
+    function LoadClients() {
+
+        $.post("/bajajib/Load_Clients", function (data) {
+            var dataT = data['data'];
+            $("#ddlclients").empty();
+            var opt = "<option value='0'>-Select-</option>";
+            for (var i = 0; i < dataT.length; i++) {
+                opt += "<option value='" + dataT[i].CATEG_ID + "'>" + dataT[i].CATEG_NAME + "</option>";
+            }
+            $("#ddlclients").text("");
+            $('#ddlclients').append(opt);
+        });
+    }
+    function TripClose() {
+
+
+
+        if ($("#ddlClosetrip").val() != '0') {
+            $("#load").show();
+            //Trip_Close(string WORKORDERNO)
+            $.post("/BAJAJIB/Trip_Close", { "WORKORDERNO": $("#ddlClosetrip").val(), "ClientID": $("#ddlclients").val() }, function (data) {
+                $("#load").hide();
+                var dataT = data['data'];
+                if (dataT == true) {
+                    alert("Trip Unassign successfully");
+                    $("#ddlworkstatus").val(2);
+                    getorders();
+                    //  location.reload();
+                } else {
+                    alert("error try Again..");
+                }
+            });
+        }
+        else {
+            alert("please select workorder..");
+            $("#ddlClosetrip").focus().trigger('change');
+        }
+    }
+
+    function Bindallworkorders() {
+
+        $.post("/BAJAJIB/frm_getall_workorders", { "ClientID": $("#ddlclients").val() }, function (data) {
+            var dataT = data['data'];
+            $("#ddlClosetrip").empty();
+            var opt = "<option value='0'>-Select-</option>";
+            for (var i = 0; i < dataT.length; i++) {
+                opt += "<option value='" + dataT[i].Workordervalue + "'>" + dataT[i].Workordertext + "</option>";
+            }
+            $("#ddlClosetrip").text("");
+            $('#ddlClosetrip').append(opt);
+        });
+    }
+
+
+    function BindWorkorders() {
+        //ddlWorkorder/
+
+        $.post("/BAJAJIB/PartiallWorkorders", { "ClientID": $("#ddlclients").val() }, function (data) {
+
+            var dataT = data['data'];
+            $("#ddlWorkorder").empty();
+            var opt = "<option value='0'>-Select Workorder-</option>";
+            for (var i = 0; i < dataT.length; i++) {
+                opt += "<option value='" + dataT[i].Workordervalue + "'>" + dataT[i].Workordertext + "</option>";
+            }
+            $("#ddlWorkorder").text("");
+            $('#ddlWorkorder').append(opt);
+
+        });
+
+    }
+    function ClosedTrip(ID) {
+       
+        
+        $.post("/BAJAJIB/Get_TRIPRECORDS", { "tripid": ID }, function (data) {
+            var dataT = data['Report'];
+           // $("#txtportout").val(dataT[0].REPORTOUT);
+          //  $("#txtplantin").val(dataT[0].PLANTIN);
+         //   $("#txtplantout").val(dataT[0].PLANTOUT);
+            $("#txtunloadin").val(dataT[0].UNLOADIN);
+            $("#txtunloadout").val(dataT[0].UNLOADOUT);
+        });
+
+
+
+
+        localStorage.setItem("TRIP_id", ID);
+    }
+    function PICKUPTIME(ID) {
+        localStorage.setItem("TRIP_ID_PICK", ID);
+    }
+    function UPDATEPICKUPTIME() {
+        var TRIPID = localStorage.getItem("TRIP_ID_PICK");
+
+        $.post("/bajajib/pickuptimedate", { "date": $("#txtpickuptime").val(), "tripid": TRIPID }, function (data) {
+            var datat = data['data'];
+            if (datat == true) {
+
+                alert("Pickup time update successfully..");
+                $("#ddlworkstatus").val(2);
+                $('#myModal6').modal('toggle');
+                getorders();
+            }
+            else {
+                alert("error try again..");
+            }
+        });
+
+    }
+
+    function TripEdit() {
+
+        var ID = localStorage.getItem("TRIP_id");
+        // Trip_Edit(string TRIPID,string ReportOut,string PlantIn,string PlantOut,string UnloadIn,string UnloadOut)
+
+        //if ($('#txtportout').val() != '' && $('#txtplantin').val() != '' && $('#txtplantout').val() != '' && $('#txtunloadin').val() != '' && $('#txtunloadout').val() != '') {
+        if ($('#txtunloadin').val() != '' && $('#txtunloadout').val() != '') {
+            $("#load").show();
+            // $.post("/BAJAJIB/Trip_Edit", { "TRIPID": ID, "ReportOut": $('#txtportout').val(), "PlantIn": $('#txtplantin').val(), "PlantOut": $('#txtplantout').val(), "UnloadIn": $('#txtunloadin').val(), "UnloadOut": $('#txtunloadout').val(), "ClientID": $("#ddlclients").val() }, function (data) {
+
+            $.post("/BAJAJIB/Trip_Edit", { "TRIPID": ID, "UnloadIn": $('#txtunloadin').val(), "UnloadOut": $('#txtunloadout').val(), "ClientID": $("#ddlclients").val() }, function (data) {
+                var dataT = data['data'];
+                $("#load").hide();
+                if (dataT == 'true') {
+                    alert("Submit successfully..");
+                    location.reload();
+                }
+                else {
+                    alert(dataT);
+                }
+            });
+        }
+        else {
+            if ($('#txtportout').val() == '') {
+                alert("please select date..")
+                $('#txtportout').focus();
+            }
+            else if ($('#txtplantin').val() != '') {
+                alert("please select date..")
+                $('#txtplantin').focus();
+            }
+            else if ($('#txtplantout').val() != '') {
+                alert("please select date..")
+                $('#txtplantout').focus();
+            }
+            else if ($('#txtunloadin').val() != '') {
+                alert("please select date..")
+                $('#txtunloadin').focus();
+            }
+            else if ($('#txtunloadout').val() != '') {
+                alert("please select date..")
+                $('#txtunloadout').focus();
+            }
+        }
+    }
+
+
+
+
+    var arrorder = [];
+
+
+    function workorderonchange() {
+
+        $("#btnback").css('display', 'block');
+
+        //rcmb_WorkOrders_SelectedIndexChanged(string WorkStatus, string Workorder)
+        if ($("#ddlWorkorder").val() != '0') {
+            $("#btnsave").show();
+            $.post("/BAJAJIB/rcmb_WorkOrders_SelectedIndexChanged", { "WorkStatus": $("#ddlworkstatus Option:selected").text(), "Workorder": $("#ddlWorkorder").val(), "ClientID": $("#ddlclients").val() }, function (data) {
+                arrorder = [];
+
+                var datat = data['data'];
+
+                var dataM = data['data1'];
+
+                var dataY = data['data2'];
+
+                arrorder.push(datat.length);
+
+
+
+                if ($.fn.dataTable.isDataTable('#tblworkorders')) {
+                    $('#tblworkorders').DataTable().destroy();
+                }
+
+                if ($.fn.dataTable.isDataTable('#tblworkorders1')) {
+                    $('#tblworkorders1').DataTable().destroy();
+                }
+
+
+                $("#tblworkorders1").hide();
+                $("#tblworkorders").show();
+
+                $("#tblbodyworkorders1").empty();
+                $("#tblbodyworkorders").empty();
+
+
+                for (var i = 0; i < datat.length; i++) {
+
+                    tr = $('<tr/>');
+                    tr.append("<td>" + datat[i].SrNo + "</td>");
+                    tr.append("<td>" + datat[i].WORKORDERNO + "</td>");
+                    tr.append("<td><select id='ddlvehicle" + i + "' class='form-control js-vehicles'><option value='0'>-select-</select></td>");
+                    tr.append("<td>" + datat[i].WORKORDER_CO + "</td>");
+                    tr.append("<td><input type='checkbox' checked id='chk" + i + "' style='height:30px;width:25px' /></td>");
+                    $("#tblworkorders").append(tr);
+                }
+                bindvehicles(dataM);
+
+                //  if (dataY.length > 0) {
+                //      bindexistingdata(dataY);
+                //  }
+
+
+                //$("#tblworkorders").DataTable({
+                //    dom: 'Bfrtip',
+                //    bInfo: false,
+                //    buttons: [
+                //            'excel', 'pdf', 'print'
+                //    ],
+                //    "paging": false,
+                //});
+            });
+        }
+    }
+
+
+
+    function bindvehicles(dataT) {
+
+        // console.log(dataT);
+
+        var opt = "";
+        $(".js-vehicles").empty();
+        opt += '<option value="0">-Select-</option>';
+        for (var i = 0; i < dataT.length; i++) {
+
+            opt += '<option value=' + dataT[i].DEVICE_ID + '>' + dataT[i].DEVICE_NAME + '</option>'
+        }
+        $(".js-vehicles").append(opt);
+        $(".js-vehicles").select2();
+    }
+
+
+    var Existarray = [];
+
+    function bindexistingdata(dataY) {
+        for (var i = 0; i < dataY.length; i++) {
+            //TRIP_ID
+            //   alert(dataY[i].TRIP_VEHICLENO);
+            Existarray.push(dataY[i].TRIPID);
+            //  alert(dataY[i].TRIP_DEVICEID);
+            $("#ddlvehicle" + i).select2().val(dataY[i].TRIP_DEVICEID).trigger('change');
+            $("#chk" + i).prop('checked', 'true');
+            $("#chk" + i).prop('disabled', 'true');
+        }
+    }
+
+    function Save() {
+
+
+
+        var V = "0";
+
+        var arrveh = [];
+        var arrvehid = [];
+        var arruncheckveh = []
+        var len = arrorder;
+
+
+
+        for (var i = 0; i < len; i++) {
+            var data = $('#ddlvehicle' + i).select2('data')
+            //alert(data[0].text);
+            //alert(data[0].id);
+
+            var VNO = data[0].text;
+
+            var VID = data[0].id;
+
+            if ($("#chk" + i).is(':checked') == true) {
+
+                if (VID == 0) {
+                    //    alert("ok");
+                    $("#ddlvehicle" + i).focus();
+                    arruncheckveh.push(i);
+                }
+                else {
+                    arrveh.push(VNO);
+                    arrvehid.push(VID);
+                }
+
+                //  alert(VNO+ "true");
+            }
+            else {
+                //  alert(VNO + "false");
+            }
+
+        }
+
+        //   console.log(arrveh);
+        var unselectedveh = arruncheckveh.length;
+        // alert(unselectedveh);
+        if (unselectedveh > 0) {
+            // alert("yesss");
+            //alert(arruncheckveh[0]);
+            //      console.log($("#ddlvehicle" + arruncheckveh[0]));
+
+            var V = "1";
+            alert("please select Vehicle Number..");
+            $("#ddlvehicle" + arruncheckveh[0]).select2('open');
+            //  $("#ddlvehicle1").select2('open');
+        }
+        else {
+            //  console.log(arrveh);
+
+            // var reportRecipients = ['AAA', 'XYZ', 'AAA', 'ABC', 'XXX', 'XYZ', 'PQR'];
+            var recipientsArray = arrveh;
+            console.log(recipientsArray);
+            var reportRecipientsDuplicate = [];
+            for (var i = 0; i < recipientsArray.length - 1; i++) {
+                if (recipientsArray[i + 1] == recipientsArray[i]) {
+                    var V = "1";
+                    //  alert("okkk")
+                    alert("your selected same vehicle numbers in multiple times please change those vehicle numbers..");
+                    $("#ddlvehicle" + i).select2('open');
+                    reportRecipientsDuplicate.push(recipientsArray[i]);
+                }
+                else {
+                    //arrveh
+                }
+            }
+            localStorage.setItem("VNO", arrveh);
+            localStorage.setItem("VID", arrvehid);
+            localStorage.setItem("tripid", Existarray);
+            var VNO = localStorage.getItem("VNO");
+            var vid = localStorage.getItem("VID");
+
+            var TRIPID = localStorage.getItem("tripid");
+
+            if (Existarray.length == 0 || Existarray.length == '') {
+                if (V == "0") {
+                    $("#load").show();
+                    $.post("/BAJAJIB/btn_Save_Click", { "btn": 'BTN_SAVE', "TRIP_WORKORDER_ID": $("#ddlWorkorder").val(), "VNO": VNO, "DEVICEID": vid, "status": true, "ClientId": $("#ddlclients").val() }, function (data) {
+                        var dataT = data['data'];
+                        // alert("yessss");
+                        $("#load").hide();
+                        if (dataT == 'true') {
+                            alert("save successfully..");
+                            $("#ddlworkstatus").val(2);
+                            getorders();
+                            //  location.reload();
+                        }
+                        else {
+                            alert("Vehicle already assigned another trip..");
+                            $("#ddlworkstatus").val(3);
+                            $("#ddlWorkorder").val($("#ddlWorkorder").val());
+                            //   getorders();
+                        }
+                    });
+                }
+            }
+            else {
+                // public JsonResult BTN_TRIP_UPDATE_CLICK(string TRIP_WORKORDER_ID, string VNO, string DEVICEID, string TRIPID, string status)
+
+                if (V == "0") {
+                    $("#load").show();
+                    $.post("/BAJAJIB/BTN_TRIP_UPDATE_CLICK", { "TRIP_WORKORDER_ID": $("#ddlWorkorder").val(), "VNO": VNO, "DEVICEID": vid, "TRIPID": TRIPID, "status": true, "ClientId": $("#ddlclients").val() }, function (data1) {
+
+                        var dataM = data1['data1'];
+                        // console.log(dataM);
+
+                        $("#load").hide();
+                        if (dataM == 'true') {
+                            alert("update successfully..");
+                            location.reload();
+                        }
+                        else {
+                            alert(dataM);
+                        }
+                    });
+                }
+
+            }
+
+
+
+
+
+
+
+            //   console.log(reportRecipientsDuplicate);
+            //if()
+        }
+
+
+
+    }
+
+
+    function getorders() {
+
+        $("#btnback").css('display', 'block');
+
+        if ($("#ddlworkstatus").val() != '0') {
+            $.post("/BAJAJIB/_Bajajtrips", { "WORKSTATUS": $("#ddlworkstatus").val(), "ClientID": $("#ddlclients").val() }, function (data) {
+
+                var datat = data['data'];
+
+
+                if ($("#ddlworkstatus Option:selected").text() == "In Progress") {
+                    $("#btnsave").hide();
+                    $("#divworkorder").hide();
+
+                    $("#tblworkorders").hide();
+                    $("#tblworkorders1").show();
+                    $("#tblbodyworkorders1").empty();
+                    if ($.fn.dataTable.isDataTable('#tblworkorders1')) {
+                        $('#tblworkorders1').DataTable().destroy();
+                    }
+
+                    if ($.fn.dataTable.isDataTable('#tblworkorders')) {
+                        $('#tblworkorders').DataTable().destroy();
+                    }
+
+
+                    $("#tblworkorders").show();
+                    $("#tblworkorders").hide();
+
+                    $("#tblbodyworkorders1").empty();
+                    $("#tblbodyworkorders").empty();
+
+
+
+
+                    for (var i = 0; i < datat.length; i++) {
+
+                        tr = $('<tr/>');
+                        tr.append("<td>" + (i + 1) + "</td>");
+                        tr.append("<td>" + datat[i].WORKORDERNO + "</td>");
+                        tr.append("<td>" + datat[i].VEHICLENO + "</td>");
+
+
+                        //  tr.append("<td>" + datat[i].LRNO + "</td>");
+                        //   tr.append("<td>" + datat[i].LRDATE + "</td>");
+
+                        tr.append("<td>" + datat[i].INDENTCREATEION + "</td>");
+                        tr.append("<td>" + datat[i].DOSTATUS + "</td>");
+                        tr.append("<td>" + datat[i].PICKUPTIME + "</td>");
+                        tr.append("<td>" + datat[i].REPORTOUT + "</td>");
+                        tr.append("<td>" + datat[i].PLANTIN + "</td>");
+                        tr.append("<td>" + datat[i].PLANTOUT + "</td>");
+                        tr.append("<td>" + datat[i].UNLOADIN + "</td>");
+                        tr.append("<td>" + datat[i].UNLOADOUT + "</td>");
+
+
+
+
+
+                        tr.append('<td><input type="button" class="btn btn-primary" onclick="EditVehicle(' + datat[i].TRIPID + ',\'' + datat[i].WORKORDERNO + '\',\'' + datat[i].WORKORDER_CO + '\',\'' + datat[i].TRIP_DEVICEID + '\')" value="Edit Vehicle" /></td>');
+                        tr.append('<td><input type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal3" onclick="ClosedTrip(' + datat[i].TRIPID + ')" value="Close Trip" /></td>');
+
+                        tr.append('<td><input type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal6" onclick="PICKUPTIME(' + datat[i].TRIPID + ')" value="PICKUP TIME" /></td>');
+                        $("#tblworkorders1").append(tr);
+                    }
+                    $("#tblworkorders1").DataTable({
+                        dom: 'Bfrtip',
+                        buttons: [
+                                'excel', 'pdf', 'print'
+                        ],
+                        'ordering': false,
+                        "paging": false,
+                    });
+                }
+                else if ($("#ddlworkstatus Option:selected").text() == "OPEN") {
+
+                    $("#btnsave").hide();
+
+                    $("#divworkorder").show();
+
+
+                    if ($.fn.dataTable.isDataTable('#tblworkorders1')) {
+                        $('#tblworkorders1').DataTable().destroy();
+                    }
+
+
+                    $("#tblworkorders1").hide();
+                    $("#tblworkorders").hide();
+
+                    //$("#tblbodyworkorders1").empty();
+                    //$("#tblbodyworkorders").empty();
+
+                    //for (var i = 0; i < datat.length; i++) {
+
+
+                    //}
+                    Clientschage();
+                }
+                    //
+                else if ($("#ddlworkstatus Option:selected").text() == "Partially Open") {
+                    {
+                        BindWorkorders();
+                        $("#btnsave").hide();
+
+                        $("#divworkorder").show();
+
+
+                        if ($.fn.dataTable.isDataTable('#tblworkorders1')) {
+                            $('#tblworkorders1').DataTable().destroy();
+                        }
+                        $("#tblworkorders1").hide();
+                        $("#tblworkorders").hide();
+
+
+
+
+                    }
+                }
+            });
+        }
+
+    }
+
+
+
+    function EditVehicle(ID, WORKORDERNO, WORKORDER_CO, VNO) {
+
+        localStorage.setItem("TRIPID", ID);
+        localStorage.setItem("WORKORDERNO", WORKORDERNO);
+        $("#btnupdate").css('display', 'block');
+        $("#btnsave").hide();
+        // alert(ID + "----" + WORKORDERNO);
+
+        if ($.fn.dataTable.isDataTable('#tblworkorders')) {
+            $('#tblworkorders').DataTable().destroy();
+        }
+
+        if ($.fn.dataTable.isDataTable('#tblworkorders1')) {
+            $('#tblworkorders1').DataTable().destroy();
+        }
+        $("#tblworkorders1").hide();
+        $("#tblworkorders").show();
+        $("#tblbodyworkorders1").empty();
+        $("#tblbodyworkorders").empty();
+        tr = $('<tr/>');
+        tr.append("<td>1</td>");
+        tr.append("<td>" + WORKORDERNO + "</td>");
+        tr.append("<td><select id='ddlvehicles' class='form-control'><option value='0'>-select-</select></td>");
+        tr.append("<td>" + WORKORDER_CO + "</td>");
+        //datat[i].STATUS
+        tr.append("<td><input type='checkbox' id='chkedit' style='height:30px;width:25px' /></td>");
+        //      tr.append("<td><input type='button' class='btn btn-primary' value='Edit' /></td>");
+        $("#tblworkorders").append(tr);
+        $("#chkedit").prop('checked', 'true');
+        $("#chkedit").prop('disabled', 'true');
+        Loadvehicles(VNO);
+    }
+
+    function Loadvehicles(VNO) {
+
+        // console.log(dataT);
+        $.post("/BAJAJIB/Loadvehicles", { "ClientID": $("#ddlclients").val() }, function (data) {
+            if (data != 'null') {
+                var dataT = data['data'];
+                var opt = "";
+                $(".js-vehicles").empty();
+                opt += '<option value="0">-Select-</option>';
+                for (var i = 0; i < dataT.length; i++) {
+                    opt += '<option value=' + dataT[i].DEVICE_ID + '>' + dataT[i].DEVICE_NAME + '</option>'
+                }
+                $("#ddlvehicles").append(opt);
+                $("#ddlvehicles").select2();
+                $("#ddlvehicles").select2().val(VNO).trigger('change');
+            }
+        });
+
+    }
+
+    function Update() {
+
+        var TRIPID = localStorage.getItem("TRIPID");
+
+        var WORKORDERNO = localStorage.getItem("WORKORDERNO")
+
+        if ($("#ddlvehicles").val() != '0') {
+            $("#load").show();
+            $.post("/BAJAJIB/TRIPUPDATE", { "VNO": $("#ddlvehicles Option:selected").text(), "VID": $("#ddlvehicles").val(), "TRIPID": TRIPID, "WORKORDERNO": WORKORDERNO, "ClientId": $("#ddlclients").val() }, function (data) {
+
+                var dataT = data['data'];
+                $("#load").hide();
+                if (dataT == true) {
+                    alert("Vehicle Update successfully");
+                    $("#ddlworkstatus").val(2);
+                    getorders();
+                    Bindallworkorders();
+                    //location.reload();
+                } else {
+                    alert("Vehicle already assigned another trip..");
+                }
+            });
+        }
+        else {
+            alert("Please select vehicle number..");
+        }
+
+    }
+
+
+    function DOSTATUS() {
+        $.post("/bajajib/workordersbasedonclients_DOISNULL", { "CLIENTID": $("#ddlclients").val() }, function (data) {
+            //' + datat[i].TRIPID + ',\'' + datat[i].WORKORDERNO + '\',
+            var datat = data['data'];
+            $("#tbldostatus").empty();
+            for (var i = 0; i < datat.length; i++) {
+                tr = $('<tr/>');
+                tr.append("<td>" + (i + 1) + "</td>");
+                tr.append("<td>" + datat[i].Workordervalue + "</td>");
+                tr.append('<td><input type="checkbox" id="chkdo' + i + '" /></td>');
+                tr.append('<td><input type="button" class="btn btn-success" value="CONFIRM" onclick="UPDATEDO(' + i + ',\'' + datat[i].Workordervalue + '\',)" /></td>');
+                $("#tbldostatus").append(tr);
+            }
+        });
+    }
+
+    function UPDATEDO(ID, WORKNO) {
+        if ($("#chkdo" + ID).is(':checked') == true) {
+
+            $.post("/bajajib/dostatusupdate", { "WORKORDERNO": WORKNO }, function (data) {
+                var datat = data['data'];
+                if (datat == true) {
+
+                    alert("DO status update successfully..");
+                    DOSTATUS();
+
+                }
+                else {
+                    alert("error try again..");
+                }
+            });
+        }
+        else {
+            alert("Please check the workorder..");
+            $("#chkdo" + ID).focus();
+        }
+    }
+
+
+
+
+
+</script>

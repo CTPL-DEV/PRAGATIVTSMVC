@@ -1,0 +1,166 @@
+﻿@{
+    ViewBag.Title = "Verification_certificate";
+    Layout = null;
+}
+<style>
+    tab {
+        overflow: hidden;
+        border: 1px solid #ccc;
+        background-color: #f1f1f1;
+    }
+    /* Style the buttons that are used to open the tab content */
+    .tab button {
+        background-color: inherit;
+        float: left;
+        border: none;
+        outline: none;
+        cursor: pointer;
+        padding: 14px 16px;
+        transition: 0.3s;
+    }
+
+        /* Change background color of buttons on hover */
+        .tab button:hover {
+            background-color: #ddd;
+        }
+
+        /* Create an active/current tablink class */
+        .tab button.active {
+            background-color: #ccc;
+        }
+
+    /* Style the tab content */
+    .tabcontent {
+        display: none;
+        padding: 6px 12px;
+        border: 1px solid #ccc;
+        border-top: none;
+    }
+</style>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<link rel="stylesheet" href="https://cdn.datatables.net/buttons/1.5.1/css/buttons.dataTables.min.css">
+<link rel="stylesheet" href="https://cdn.datatables.net/1.10.16/css/jquery.dataTables.min.css">
+<div class="w3-container w3-teal" style="background-color: #009688; margin-top: -20px; ">
+    <h1 style="color:white">MASS ENTERPRISES</h1><a href="/Home/Logout" style="margin-top:-44px;float:right;color:white">Logout.</a>
+</div>
+
+<div class="container-fluid">
+    <ul class="nav nav-tabs">
+        <li class="active"><a data-toggle="tab" href="#home">PENDING</a></li>
+        <li><a data-toggle="tab" href="#menu1">APPROVED</a></li>
+       
+    </ul>
+
+    <div class="tab-content">
+        <div id="home" class="tab-pane fade in active">
+            <table id="tblcertificates_P" border="0" style="font-size: 11px; width:100%" class="display nowrap table table-hover table-striped table-bordered" cellspacing="0" width="100%">
+                <thead>
+                    <tr>
+                        <th>SNO</th>
+                        <th>VEHICLE NUMBER</th>
+                        <th>REQUESTED DATE</th>
+                        <th>VALID UPTO</th>
+                        <th>ACTIONS</th>
+                    </tr>
+                </thead>
+                <tbody id="tblcertificatesPbody"></tbody>
+            </table>
+        </div>
+        <div id="menu1" class="tab-pane fade">
+            <table id="tblcertificates_A" border="0" style="font-size: 11px; width:100%" class="display nowrap table table-hover table-striped table-bordered" cellspacing="0" width="100%">
+                <thead>
+                    <tr>
+                        <th>SNO</th>
+                        <th>VEHICLE NUMBER</th>
+                        <th>REQUESTED DATE</th>
+                        <th>VALID UPTO</th>
+                        <th>ACTIONS</th>
+                    </tr>
+                </thead>
+                <tbody id="tblcertificatesAbody"></tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+    <script src="~/Scripts/jquery-1.10.2.min.js"></script>
+    <script>
+        window.onload = function () {
+            getdataAPPROVE();
+            getdata_PENDING();
+        }
+    
+        function getdata_PENDING() {
+
+            $.post("/REPORTS/_GETALL_CERTIFICATE", function (data) {
+
+                var dataT = data['data'];
+
+                $("#tblcertificatesPbody").empty();
+                var n = 0;
+                for (var j = 0; j < dataT.length; j++) {
+
+                    if (dataT[j].FLAGSTATUS != 1) {
+
+                        tr = $('<tr/>');
+                        tr.append("<td>" + (n + 1) + "</td>");
+                        tr.append("<td>" + dataT[j].VNO + "</td>");
+                        tr.append("<td>" + dataT[j].REQUESTEDDATE + "</td>");
+                        tr.append("<td>" + dataT[j].VALIDUPTO + "</td>");
+                        tr.append('<td><input type="button" value="APPROVE" onclick="APPROVE_CERTIFICATE(\'' + dataT[j].VNO + '\')" class="btn btn-success"></td>');
+                        $("#tblcertificates_P").append(tr);
+                        n++;
+                    }
+
+                }
+            })
+        }
+
+        function getdataAPPROVE() {
+
+            $.post("/REPORTS/_GETALL_CERTIFICATE", function (data) {
+
+                var dataT = data['data'];
+                $("#tblcertificatesAbody").empty();
+                var m = 0;
+                for (var i = 0; i < dataT.length; i++) {
+                    if (dataT[i].FLAGSTATUS == '1') {
+                        tr = $('<tr/>');
+                        tr.append("<td>" + (i + 1) + "</td>");
+                        tr.append("<td>" + dataT[i].VNO + "</td>");
+                        tr.append("<td>" + dataT[i].REQUESTEDDATE + "</td>");
+                        tr.append("<td>" + dataT[i].VALIDUPTO + "</td>");
+                        tr.append("<td>APPROVED</td>");
+                        $("#tblcertificates_A").append(tr);
+                        m++;
+                    }
+                }
+            });
+        }
+
+
+
+
+
+
+
+
+
+
+        function APPROVE_CERTIFICATE(VNO) {
+            $.post("/REPORTS/CERTIFICATE_APPROVE", { "VNO": VNO }, function (data) {
+                var dataT = data['data'];
+                if (dataT = true) {
+                    alert("update successfully");
+                    location.reload();
+                }
+                else {
+                    alert("try again");
+                }
+
+            })
+        }
+    </script>
+

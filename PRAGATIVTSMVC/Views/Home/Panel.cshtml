@@ -1,0 +1,67 @@
+﻿
+@{
+    ViewBag.Title = "Panel";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="container-fluid">
+    <div class="row page-titles">
+        <div class="col-md-5 col-8 align-self-center">
+            <h3 class="text-themecolor m-b-0 m-t-0">PAGES</h3>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/Home/frm_GridTrack_Distance">Home</a></li>
+                <li class="breadcrumb-item active">PAGES</li>
+            </ol>
+        </div>
+    </div>
+    <div class="row" id="divrow">
+        <div class="col-lg-6">
+
+            PANEL NAME: <input type="text" id="txtpanelname"  class="form-control" />
+
+        </div>
+        <div class="col-lg-6">
+            <div class="col-lg-6">
+              
+            </div>
+        </div>
+        <input type="button" id="btnsave" class="btn btn-success" onclick="Save()" style="margin-left:92%;margin-top:10px" value="Submit" />
+    </div>
+
+    <div>
+        <input type="button" class="btn btn-success" onclick="showrow()" style="width:153px;margin-bottom:8px" value="ADD PANEL" />
+        <table id="tblUser" class="table table-hover table-striped table-bordered" style="width:100%">
+            <tr>
+                <th>ID</th>
+                <th>PANEL NAME</th>
+                <th>Actions</th>
+            </tr>
+            @{
+                int i = 1;
+                foreach (var item in ViewBag.panels)
+                {
+                    <tr>
+                        <td>@i</td>
+                        <td>@item.PANEL_NAME</td>
+                        @if (item.PANEL_STATUS == 1)
+                        {
+                            <td>
+                                <input type="button" value="IN ACTIVE" onclick="UPDATESTATUS(0,@item.PANEL_ID)" class="btn btn-danger" />
+
+                            </td>
+                        }
+                        else
+                        {
+                            <td>
+                                <input type="button" value="ACTIVE" onclick="UPDATESTATUS(1,@item.PANEL_ID)" class="btn btn-success" />
+                            </td>
+                        }
+
+                    </tr>
+                        i++;
+
+                }
+            }
+        </table>
+    </div>
+</div>
+<script src="~/CUSTOMSCRIPTS/panel.js"></script>

@@ -1,0 +1,274 @@
+﻿
+@{
+    ViewBag.Title = "Dashboard";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">ALL VEHICLES</h4>
+                <div id="gmaps-simple" class="gmaps"></div>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">SINGLE VEHICLES</h4>
+                <div>
+                    <div class="col-lg-12" style="margin-bottom:10px">
+                        <div class="col-md-3">
+                            <select  class="form-control">
+                                <option value="0">-Select Vehicle-</option>
+                                <option value="0">-All Vehicle-</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6" >
+                            <input type="button" style="margin-top: -32px;margin-left:50%" value="Search" /> 
+                        </div>
+                    </div>
+                </div>
+                     
+                <div id="SingleVehicle" class="gmaps"></div>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">VEHICLE TRACK HISTORY</h4>
+                <div class="col-lg-12" style="margin-bottom:10px">
+                    <div class="col-md-3">
+                     <select style="" class="form-control">
+                            <option value="0">-Select Vehicle-</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <input type="text" style="margin-top:-18%;margin-left:107%;"  id="txtfrmdate" placeholder="FROM DATE" class="form-control" />
+                    </div>
+                    <div class="col-md-3">
+                        <input type="text" style="margin-top: -18%; margin-left: 215%;" id="txttodate" placeholder="TO DATE" class="form-control" />
+                    </div>
+                    <div class="col-md-3">
+                        <input type="button" style="margin-top: -18%; margin-left: 323%;"  value="Search" />
+                    </div>
+                </div>
+
+                <div id="Trackhistory" class="gmaps"></div>
+            </div>
+        </div>
+        @*<div class="card">
+            <div class="card-body">
+                <h4 class="card-title">Polygonal Map</h4>
+                <div id="gmaps-simple" class="gmaps"></div>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">Routes Map</h4>
+                <div id="gmaps-simple" class="gmaps"></div>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">Styled Map</h4>
+                <div id="gmaps-simple" class="gmaps"></div>
+            </div>
+        </div>*@
+    </div>
+</div>
+<script src="~/Scripts/jquery-1.10.2.min.js"></script>
+<script>
+    //var bounds = new google.maps.LatLngBounds();
+    var map;
+    var iconBase = 'https://maps.google.com/mapfiles/kml/shapes/';
+    var icons = {
+        Truck: {
+            icon: iconBase + 'parking_lot_maps.png'
+        },
+        Plant: {
+            icon: iconBase + 'library_maps.png'
+        },
+        Port: {
+            icon: iconBase + 'info-i_maps.png'
+        },
+        Vehi: {
+            icon: '/Content/icons/placeholder_yellow.png'
+        },
+        Bus: {
+            icon: '/Content/icons/bus.png'
+        },
+        From: {
+            icon: '/Content/icons/placeholder_nu.png'
+        },
+        To: {
+            icon: '/Content/icons/maps-and-flags.png'
+        },
+        Stopped: {
+            icon: '/Content/icons/truck_r.png'
+        },
+        VehicleMoving: {
+            icon: '/Content/icons/green_truck.png'
+        },
+        Datanotreceiving: {
+            icon: '/Content/icons/truck_y.png'
+        },
+        Dirctions: {
+            icon: '/Truck/truck_green_0.png'
+        },
+    };
+
+    $(document).ready(function () {
+        initMap();
+        initMap1();
+        initMap2();
+    });
+    
+
+    function initMap() {
+
+        var myLatLng = { lat: 23.852464, lng: 78.858390 };
+
+
+        map = new google.maps.Map(document.getElementById('gmaps-simple'), {
+            zoom: 5,
+            center: myLatLng,
+            gestureHandling: 'greedy'
+        });
+        //SingleVehicle
+        //Trackhistory
+
+        GETALL_MAP();
+
+    }
+
+    function initMap1() {
+
+        var myLatLng = { lat: 23.852464, lng: 78.858390 };
+
+
+        map = new google.maps.Map(document.getElementById('SingleVehicle'), {
+            zoom: 5,
+            center: myLatLng,
+            gestureHandling: 'greedy'
+        });
+        
+    }
+
+    function initMap2() {
+
+        var myLatLng = { lat: 23.852464, lng: 78.858390 };
+
+
+        map = new google.maps.Map(document.getElementById('Trackhistory'), {
+            zoom: 5,
+            center: myLatLng,
+            gestureHandling: 'greedy'
+        });
+       
+    }
+
+
+
+    function GETALL_MAP() {
+        $.post("/PVTS/ALLVEHICLES_DASHBOARD", function (data) {
+            console.log(data);
+            if (data != null) {
+                ALL_MAP(data);
+                alert("okk")
+                console.log(data);
+            }
+        });
+    }
+    function ALL_MAP(data) {
+        var dataT = data['data'];
+
+        var markerss = [];
+        var datalength = data['data'].length
+        var dataT = data['data'];
+
+       
+        var Current_LatLng = { lat: parseFloat(dataT[0].LATITUDE), lng: parseFloat(dataT[0].LONGITUDE) };
+        var map = new google.maps.Map(document.getElementById('gmaps-simple'), {
+            zoom: 05,
+            center: Current_LatLng,
+            gestureHandling: 'greedy'
+        });
+
+        var infowindow = new google.maps.InfoWindow();
+
+        var marker, i;
+
+        for (i = 0; i < datalength; i++) {
+         
+
+         
+            if (dataT[i].COLOR == 'RED')
+            {
+                BUSCOLOR = icons["Datanotreceiving"].icon
+            }
+            else if (dataT[i].COLOR == 'GREEN') {
+                if (dataT[i].COURCE != null || dataT[i].COURCE != "null" || dataT[i].COURCE != "") {
+                    var value0 = dataT[i].COURCE;
+                    if (value0 <= 270) {
+                        value0 = parseInt(value0) + parseInt(90);
+                    }
+                    else if (value0 >= 360) {
+                        value0 = 359;
+                    }
+                    else {
+                        value0 = parseInt(value0) - parseInt(270);
+                    }
+                    BUSCOLOR = '/Truck/truck_green_' + value0 + '.png'
+                }
+                else {
+                    BUSCOLOR = icons["Stopped"].icon
+                }
+            }
+            else if (dataT[i].COLOR == 'BLUE') {
+                BUSCOLOR = icons["Stopped"].icon
+            }
+           
+              
+
+
+            marker = new google.maps.Marker({
+
+                position: new google.maps.LatLng(dataT[i].LATITUDE, dataT[i].LONGITUDE),
+                icon: BUSCOLOR,
+                map: map,
+                title: dataT[i].ADDRESS
+            });
+
+            markerss.push(marker);
+        
+
+
+            setInterval(function () {
+                marker.setMap(map);
+                bounds.extend(marker.position);
+                markersZ.push(marker);
+
+            }, 5000);
+            var MHC = "";
+            var AWC = "";
+            google.maps.event.addListener(marker, 'click', (function (marker, i) {
+                var stringContent = '<div style="color:black"><table>'
+                    + '<tr><td><b>Vehicle Number:</b></td><td><tr><td><b>Speed:</b></td><td>' + dataT[i].CURRENT_SPEED
+                                                    + '<tr><td><b>Time:</b></td><td>Date ' + dataT[i].SERVERTIME
+                                                    + '</td></tr><tr><td><b>Location:&nbsp;</b></td><td>' + dataT[i].ADDRESS
+                                                    + '</td></tr></table></div>';
+
+                return function () {
+                    infowindow.setContent(stringContent);
+                    infowindow.open(map, marker);
+                }
+            })(marker, i));
+        }
+
+     
+
+        var markerCluster = new MarkerClusterer(map, markerss, { imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m' });
+
+
+
+    }
+
+</script>

@@ -1,0 +1,185 @@
+﻿
+@{
+    ViewBag.Title = "OdishaMining";
+    Layout = "~/Views/Shared/Layout2.cshtml";
+}
+
+<h2>OdishaMining</h2>
+<div id="load" style="display:none;"></div>
+<div class="row" id="divrow">
+    <input type="hidden" id="txtdeviceid" value="" />
+    <div class="col-lg-6">
+
+        <div id="div_distributors">
+            Select Distributor:<select id="ddldistributor" class="form-control" onchange="LoadDealers()" style="width:400px">
+                <option value='0' selected>-Select Distributor-</option>
+            </select>
+        </div>
+        <div id="div_dealers">
+            Select Dealer:<select id="ddldealer" class="form-control" onchange="LoadCustomers()" style="width:400px;">
+                <option value='0' selected>-Select Dealer-</option>
+            </select>
+        </div>
+        <div id="div_customers">
+            Select Customers:<select id="ddlCustomers" class="form-control" onchange="LoadVehicles()" style="width:400px;">
+                <option value='0' selected>-Select Customer-</option>
+            </select>
+        </div>
+
+        <div id="div_vehicles">
+        </div>
+        <div class="row" style="margin-top:30px;" id="div_search">
+
+
+            <div id="div_distributors">
+                Select Admin:<select id="ddlAdmin" class="form-control" onchange="LoadAdmin" style="width:400px">
+                    <option value='0' selected>-Select Admin-</option>
+                    <option value='2694' selected>Orissa Admin</option>
+                </select>
+            </div>
+
+            <div class="row">
+                <input type="button" id="btnsave" class="btn btn-primary" onclick="Save('save')" style="margin-top:10px;" value="Submit" />
+            </div>
+        </div>
+    </div>
+  </div>
+    <script>
+    $(document).ready(function () {
+        // $("#load").show();
+        LoadDistributors();
+        //LoadDealers();
+        //LoadCustomers();
+        //LoadVehicles();
+
+    });
+    function LoadDistributors() {
+        d_ID = $("#ddlcategory").val();
+        $.post("/Home/getDistributors", { "CategID": 1 }, function (data) {
+
+            var dataT = data['data'];
+            var opt = "<option value='0'>-Select Distributor-</option>";
+            for (var i = 0; i < dataT.length; i++) {
+                opt += "<option value='" + dataT[i].CATEG_ID + "'>" + dataT[i].CATEG_NAME + "</option>";
+            }
+            $("#ddldistributor").text("");
+            $('#ddldistributor').append(opt);
+            $("#drp_distributor").text("");
+            $('#drp_distributor').append(opt);
+            var opt1 = "<option value='0'>-Select Dealer-</option>";
+            $('#drp_dealer').append(opt1);
+        });
+    }
+    function LoadDealers() {
+        d_ID = $("#ddldistributor").val();
+        $.post("/Home/getDealers", { "CategID": d_ID }, function (data) {
+
+            var dataT = data['data'];
+            var opt = "<option value='0' selected>-Select Dealer-</option>";
+            for (var i = 0; i < dataT.length; i++) {
+                opt += "<option value='" + dataT[i].CATEG_ID + "'>" + dataT[i].CATEG_NAME + "</option>";
+            }
+            $("#ddldealer").text("");
+            $('#ddldealer').append(opt);
+            //var opt1 = "<option value='0'>-Select Customers-</option>";
+            //$('#drp_customers').append(opt1);
+        });
+
+        $.post("/Home/getCustomers", { "CategID": d_ID }, function (data) {
+
+            var dataT = data['data'];
+            var opt = "<option value='0'>-Select Customer-</option>";
+            for (var i = 0; i < dataT.length; i++) {
+                opt += "<option value='" + dataT[i].CATEG_ID + "'>" + dataT[i].CATEG_NAME + "</option>";
+            }
+            $("#ddlCustomers").text("");
+            $('#ddlCustomers').append(opt);
+        });
+
+
+    }
+
+    function LoadCustomers() {
+        
+
+        if ($("#ddldistributor").val() != 0 && $("#ddldealer").val() != 0) {
+            d_ID = $("#ddldealer").val();
+        }
+        else if ($("#ddldistributor").val() != 0 && $("#ddldealer").val() == 0) {
+            d_ID = $("#ddldistributor").val();
+        }
+        else {
+            d_ID = localStorage.getItem("USERS_CATEG_ID");
+            $("#div_distributors").hide();
+            $("#div_dealers").hide();
+        }
+        $.post("/Home/getCustomers", { "CategID": d_ID }, function (data) {
+
+            var dataT = data['data'];
+            var opt = "<option value='0'>-Select Customer-</option>";
+            for (var i = 0; i < dataT.length; i++) {
+                opt += "<option value='" + dataT[i].CATEG_ID + "'>" + dataT[i].CATEG_NAME + "</option>";
+            }
+            $("#ddlCustomers").text("");
+            $('#ddlCustomers').append(opt);
+        });
+
+
+    }
+    var arrform = [];
+        function LoadVehicles() {
+
+
+            var ID = $("#ddlCustomers").val();
+            $('#div_vehicles').empty();
+            if (ID != '0') {
+                $.post("/Home/LoadVehicles", { "CATEG_ID": ID }, function (data) {
+                    var dataT = data['data'];
+                    var opt = "";
+
+                    for (var i = 0; i < dataT.length; i++) {
+                        arrform.push(dataT[i].DEVICE_ID);
+                        opt += "<span>" + dataT[i].DEVICE_NAME + "</span><input type='checkbox' style='margin-top:-21px;margin-left:60px' class='form-control'  id=chk_" + dataT[i].DEVICE_ID + "  />";
+                    }
+
+                    $('#div_vehicles').append(opt);
+                });
+            }
+        }
+        function LoadAdmin()
+        {
+
+        }
+        function Save() {
+            
+            var length = arrform.length;
+
+            var arr1 = [];
+
+            for (var i = 0; i < length; i++) {
+
+                var chk = arrform[i];
+
+                if ($("#chk_" + chk).is(':checked') == true) {
+
+                    arr1.push(chk);
+                }
+            }
+
+            var vehcleid = localStorage.setItem("vehID", arr1);
+
+            var frmids = localStorage.getItem("vehID");
+
+            $.post("/Home/Odissa_Mining", { "distID": $('#ddldistributor').val(), "dealerID": $('#ddldealer').val(), "custId": $('#ddlAdmin').val(), "VehicleId": frmids }, function (data) {
+                var dataT = data['data'];
+                if (dataT = true) {
+                    alert("Added successfully");
+                    location.reload();
+                }
+                else {
+                    alert("Failed");
+                }
+            });
+        }
+
+    </script>

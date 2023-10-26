@@ -1,0 +1,341 @@
+﻿@{
+    ViewBag.Title = "frm_Roles";
+    Layout = "~/Views/Shared/Layout2.cshtml";
+}
+<style>
+    -webkit-scrollbar {
+        width: 0px;
+        background: transparent;
+    }
+	.box {
+    border-radius: 4px;
+    padding: 10px;
+}
+    .table td {
+        padding: 5px;
+        vertical-align: middle;
+        font-size:12px!important;
+    }
+       .table th {
+       font-weight:500;
+       font-size:13px!important;
+    }
+</style>
+
+    
+    <div class="row" id="divrow">
+        <div class="col-lg-6">
+            Client Name:<select id="ddlclient" onchange="clientchange()" class="form-control">
+                <option value="0">-Select-</option>
+                @foreach (var item in ViewBag.clientnames)
+                {
+                    <option value="@item.CATEG_ID">@item.CATEG_NAME</option>
+                }
+
+            </select>
+           Dashboard: <select id="ddldashboard" style="margin-bottom:25px" onchange="dashboardonchange()" class="form-control">
+                <option value="0">-Select-</option>
+                <option value="GRIDTRACK_COLUMNS">GridTack</option>
+                <option value="GRIDTRACKGEO_COLUMNS">GridTack_Geo</option>
+                <option value="GRIDTRACKCAB_COLUMNS">GridTack_Distance</option>
+                <option value="CONSIGNMENT_TRACK">Consignment_Dashboard</option>
+            </select>
+          
+            <div id="dashboard" >
+                <h3>Dashboard Columns</h3><br />
+                <div id="dashboardcolumns"  style="overflow-x:scroll;height:200px">
+
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6">
+            Role Type : <select style="margin-bottom: 87px;" id="ddlroletype" class="form-control">
+    <option value="0">-Select-</option>
+</select>
+            <div id="forms">
+                <h3>Form Names Check All <input type="checkbox" class="form-control" id="chkall" onchange="checkall()" style="margin-left: 10px; margin-top: -31px;" /></h3><br />
+                <div id="formsone" class="box" style="overflow-x:scroll;height:200px;">
+                   
+                    
+                </div>
+            </div>
+        </div>
+        <input type="button" id="btnsave" class="btn btn-success" onclick="Save('save')" style="margin-left:84%;margin-top:10px" value="Submit" />
+        <input type="button" id="btnupdate" class="btn btn-success" onclick="Save('update')" style="margin-left:84%;margin-top:10px" value="Update" />
+        <input type="button" value="BACK" style="margin-left:92%;margin-top:-38px" id="btnback" onclick="location.reload()" class=" btn btn-danger" />
+    </div>
+<div  class="row" style="margin-left:1px;">
+    <input type="button" class="btn btn-primary" onclick="showrow()" style="width:57px;" value="ADD" />
+    <div class="card-head" style="text-align:center;">
+        <h4>User Roles</h4>
+
+    </div>
+    
+</div>
+  <div class="card card-box" style="margin-top:5px;">
+                               
+      <div class="card-body">
+          
+
+        <table id="tblroles" class="table table-striped table-bordered" cellspacing="0" width="100%">
+            <thead>
+                <tr>
+                    <th class="center">ID</th>
+                    <th class="center">Cilent Name</th>
+                    <th class="center">Roles Type</th>
+                    <th class="center">Edit</th>
+                </tr>
+            </thead>
+            <tbody>
+                @{
+                    int i = 1;
+                    foreach (var item in ViewBag.roles)
+                    {
+                        <tr>
+                            <td>@i</td>
+                            <td>@item.CATEG_NAME</td>
+                            <td>@item.USERROLE_NAME</td>
+                            <td>
+                                @*<input type="button" value="EDIT" onclick="EDIT(@item.ROLES_ID)" class="btn btn-primary" />*@
+								<a href='#' onclick="EDIT(@item.ROLES_ID)" class='btn btn-tbl-edit btn-xs'><i class='fa fa-pencil'></i></a>
+                            </td>
+                        </tr>
+                        i++;
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+ </div>
+
+<script>
+$(document).ready(function(){
+    $('#tblroles').dataTable();
+});
+    window.onload = function () {
+        $("#forms").hide();
+        $("#dashboard").hide();
+        $("#divrow").hide();
+        $("#btnupdate").hide();
+    }
+    
+    function showrow() {
+        $("#divrow").show();
+    }
+
+
+
+    function clientchange() {
+
+        if ($("#ddlclient").val() != 0) {
+            var id = $("#ddlclient").val();
+            $.post("/Home/bindroletype", { "id": id }, function (data) {
+
+
+                var dataT = data['data'];
+                var opt = "<option value='0'>-Select-</option>";
+                for (var i = 0; i < dataT.length; i++) {
+                    opt += "<option value='" + dataT[i].NameId + "'>" + dataT[i].Name + "</option>";
+                }
+                $("#ddlroletype").text("");
+                $('#ddlroletype').append(opt);
+
+            });
+        }
+    }
+    var arrdash = [];
+    function dashboardonchange() {
+
+        if ($("#ddldashboard").val() != 0) {
+            var id = $("#ddldashboard").val();
+            $.post("/Home/Dashboardchange", { "Value": id }, function (data) {
+               
+
+                $("#forms").show();
+                $("#dashboard").show();
+
+                var dataT = data['data'];
+
+                var tap = "";
+                //dashboardcolumns
+                for (var i = 0; i < dataT.length; i++) {
+
+                    arrdash.push(dataT[i].COLUMN_ID);
+
+                    tap = "<span>" + dataT[i].COLUMN_NAME + "</span><input type='checkbox' style='margin-top:-21px;margin-left:60px' class='form-control'  id=dash" + dataT[i].COLUMN_ID + "  />";
+                    $("#dashboardcolumns").append(tap);
+                }
+
+            });
+
+        }
+    }
+
+
+    function checkall() {
+        var length = arrform.length;
+      
+
+      
+        for (var i = 0; i < length; i++) {
+           
+            if ($("#chkall").is(':checked') == true) {
+
+                $("#chk" + arrform[i]+"").prop('checked', true);
+            }
+            else {
+                $("#chk" + arrform[i]).prop('checked', false);
+            }
+
+        }
+    }
+    formsone();
+    var arrform = [];
+    function formsone() {
+
+        $.post("/Home/loadforms", function (data) {
+
+
+            arrform = [];
+
+                var dataT = data['data'];
+
+
+                var tap = "";
+                //dashboardcolumns
+                for (var i = 0; i < dataT.length; i++) {
+                    arrform.push(dataT[i].FORMS_ID);
+                    tap = "<span>"+ dataT[i].FORMS_NAME+"</span><label></label><input type='checkbox' style='margin-top: -21px; margin-left: 140px' class='form-control' id="+"chk"+dataT[i].FORMS_ID+" />";
+                    //tap = "<span>" + dataT[i].COLUMN_NAME + "</span><input type='checkbox' style='margin-top:-21px;margin-left:60px' class='form-control' checked id=" + dataT[i].COLUMN_ID + "  />";
+                    $("#formsone").append(tap);
+                }
+
+            });
+    }
+
+
+
+
+    //string Clientname, string ROLEID, string ROLLETYPE, string FORMIDS, string COLUMNIDS, string DASHBOARDNAME, string btn
+    function Save(id) {
+
+     
+        //
+       
+        var length = arrform.length;
+       
+        var length1 = arrdash.length;
+        var arr1 = [];
+        var arr2 = [];
+        for (var i = 0; i < length; i++) {
+
+            var chk =arrform[i];
+           
+            if ($("#chk"+chk).is(':checked') == true) {
+                
+                arr1.push(chk);
+            }
+        }
+
+
+        var FORMIDS = localStorage.setItem("FORMIDS", arr1);
+
+     var frmids=localStorage.getItem("FORMIDS");
+   
+     for (var i = 0; i < length1; i++) {
+
+         var chk1 = arrdash[i];
+
+         if ($("#dash" + chk1).is(':checked') == true) {
+
+             arr2.push(chk1);
+         }
+     }
+
+     var COLUMNID = localStorage.setItem("COLUMNIDS", arr2);
+
+     var columnids = localStorage.getItem("COLUMNIDS");
+     var IDs = "";
+        if (id == "save") {
+            btn = "BTN_SAVE";
+            nousers = "";
+        }
+        else {
+            var IDs = localStorage.getItem("ROLEID");
+            btn = "BTN_UPDATE";
+        }
+     
+
+        $.post("/Home/ROLE_Save_Click", { "Clientname": $("#ddlclient").val(), "ROLEID": IDs, "ROLLETYPE": $("#ddlroletype").val(), "FORMIDS": frmids, "COLUMNIDS": columnids, "DASHBOARDNAME": $("#ddldashboard").val(), "btn": btn, "org_name": $("#ddlclient Option:selected").text() }, function (data) {
+            var dataT = data['data']
+
+            if (dataT == 'true') {
+                alert("" + id + " successfully..");
+                location.reload();
+            }
+            else {
+              
+                alert(dataT);
+            }
+        });
+    }
+
+
+
+    function EDIT(ROLEID) {
+
+        $.post("/Home/Edit_role", { "ROLEID": ROLEID }, function (data) {
+
+
+            localStorage.setItem("ROLEID", ROLEID);
+            $("#divrow").show();
+            $("#btnupdate").show();
+            $("#btnsave").hide();
+            var dataT = data['data'];
+
+            var Formids = dataT[0].ROLES_FORMSID;
+            var Columnids = dataT[0].ROLES_COLUMNSID;
+            var clienid = dataT[0].ROLES_CATEGORY_ID;
+            var roletype = dataT[0].ROLES_ROLETYPE;
+            var dashboard = dataT[0].ROLES_DASHBOARD;
+            $("#ddlclient").val(clienid);
+            clientchange();
+            $("#ddldashboard").val(dashboard);
+            window.setTimeout(function () {
+                $("#ddlroletype").val(roletype);
+               
+                dashboardonchange();
+            },500);
+            
+
+            var  FORMS= Formids.split(',');
+            var COLUMNS = Columnids.split(',');
+          
+         
+                //var length = localStorage.getItem("length")
+            
+            for (var i = 0; i < FORMS.length; i++) {
+            
+                    $("#chk" + FORMS[i]).prop('checked', true);
+            }
+          
+            window.setTimeout(function () {
+                for (var k = 0; k < COLUMNS.length; k++) {
+                    $("#dash" + COLUMNS[k]).prop('checked', true);
+                }
+            }, 1000)
+            
+
+           
+
+            
+            
+            
+        });
+    }
+
+
+
+
+
+</script>

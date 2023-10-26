@@ -1,0 +1,474 @@
+﻿
+@{ Layout = null; }
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>FitmentCertificate</title>
+    <link href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700" rel="stylesheet" type="text/css" />
+    <link href="~/assets/plugins/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+    <link href="~/assets/style.css" rel="stylesheet">
+    <link rel="stylesheet" href="~/assets/plugins/material/material.min.css">
+    <link rel="stylesheet" href="~/assets/css/material_style.css">
+    <link href="~/CSS/bootstrap-material-datetimepicker.css" rel="stylesheet" />
+    <script type="text/javascript" charset="utf8" src="//code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="https://code.jquery.com/jquery-1.12.3.min.js" integrity="sha256-aaODHAgvwQW1bFOGXMeX+pC4PZIPsvn2h1sArYOhgXQ=" crossorigin="anonymous"></script>
+    @*<style>
+            .child {
+               margin-left: auto;
+        margin-right: auto;
+            }
+        </style>*@
+</head>
+<body>
+    <div class="fitment_certificate" style="width: 930px;margin: 0px auto;">
+
+        <div class="fitment_inner" style="width: 930px; height: auto;  margin: 40px auto 10px auto;">
+            <div id="dvprint" class="page">
+
+
+                <div style="width: 96%; height: auto; margin:0px; padding:30px 30px 30px 30px;background-color: #FFF; font-family: 'Open Sans', sans-serif;">
+
+                    <div style="width: 100%; height: auto; display: inline-block;">
+
+                        <div>
+                            <center> <img src="http://tranopro.com/IMAGES/ctpl-header-logo.png" style="width:30%" /></center>
+                        </div>
+
+                        <div>
+
+                            <center>
+                                <p style="font-size: 15px; font-weight: bold;">
+
+                                    Containe Technologies Private Limited.
+                                    <br />
+                                    #3-13-142/341P,342,Gokul Nagar,Marriguda,Mallapur,Secunderabad,TS-500076
+
+                                </p>
+
+                            </center>
+                        </div>
+
+
+
+
+                        <div style="width: 100%; height: 60px; float: left; margin-top:8px;">
+
+                            <div style="width:60%; height:90px; float: left; margin-right:2%;">
+                                <img id="ctl00_ContentPlaceHolder1_imgBarCode" alt="image" style="height:90px;width:90px;border-width:0px;">
+                            </div>
+                            <br />
+                            <br />
+                            <br />
+                            @*<div style="width:34%; height:auto; float: left; display:none;">
+                                    <div style="font-size: 15px; font-weight: bold; text-align: center; width: 100%; float: right; margin: 0px 0px 8px 0px;">
+                                        ELECTRONIC SPEED LIMITING DEVICE
+                                    </div>
+                                    <div style="border: 1px solid #333; font-weight: bold; text-align: center; width: 99%; float: right; padding: 10px 0px; border-radius: 50px; font-size: 20px;">
+                                        GPS CERTIFICATE
+                                    </div>
+                                </div>
+
+
+                                <div style="width:27%; height:60px; float: right;">
+                                    <div class="title" id="div_text" style="float: right; border: 1px solid #333; font-weight: bold; text-align: center; width: 98%; padding: 8px 0px; font-size: 14px; line-height: 20px;">
+                                        DEPARTMENT  COPY
+                                    </div>
+                                </div>*@
+
+                        </div>
+
+                    </div>
+
+
+                    <div>
+                        <table>
+                            <tr><td><br /><br /></td></tr>
+                        </table>
+                    </div>
+
+                    <div style="width: 100%; height: auto; float: left; font-size: 11px; margin: 0px 0px;">
+
+                        <div class="to_addrs" style="width:49%; display: inline-block; height:auto;">
+
+
+                            <div style="width: 100%; height: auto; float: left; font-size: 11px;">
+                                To,
+                            </div>
+
+
+
+
+
+                            <div style="width: 100%; float: left; height: auto; font-size: 11px; margin-top:0px;">
+                                The Regional Transport Authority,
+                            </div>
+
+                            <div style="clear:both;"> </div>
+
+
+                            <div class="dotted" style="width: 100%; float: left;  font-size: 11px;">
+                                <span id="txt_RTO">@ViewBag.RTO</span>
+                            </div>
+
+
+
+                            <div style="clear:both;"> </div>
+
+                            <div class="dotted" style="width: 100%; float: left;  font-size: 11px; ">
+                                <span id="txt_rtoState">@ViewBag.division</span>&nbsp;
+                            </div>
+
+                            <div style="clear:both;"> </div>
+
+                        </div>
+
+
+                        <div class="fitment_crtfct_no" style="width:50%; display: inline-block; height:auto; vertical-align: top;text-align: right;">
+
+
+                            <div style="display: inline-block; ">      <p style="margin: 0px 0 5px 0;">Fitment Certificate No: </p></div><div style="display: inline-block;border-bottom: 1px dotted;width: 40%;margin-left: 5px;"><span id="txt_certificateNo">@ViewBag.certificateNo</span> </div> <br />
+                            <div style="display: inline-block;">      <p style="margin: 0px 0 5px 0;">Fitment cum calibration Date: </p></div><div style="display: inline-block;border-bottom: 1px dotted;width: 40%;margin-left: 5px;"><span id="txt_InstallDate">@ViewBag.fitmentDate</span> </div> <br />
+
+                            <div style="display: inline-block;">     <p style="margin: 0px 0 5px 0;">Next Calbration Date :</p></div><div style="display: inline-block;border-bottom: 1px dotted;width: 40%;margin-left: 5px;"><span id="txt_RenewalDate">@ViewBag.renewalDate</span></div>
+
+                        </div>
+
+
+                    </div>
+
+
+                    <div style="width: 100%; height: 0px; float: left;"> </div>
+
+                    <div style="width: 100%; height: auto; float: left; margin: 2px 0px; text-align: justify; font-size: 11px; ">
+                        This is to certify that the Electronics VTS device/ VTS fitted as per the details given below.
+                        It is checked, sealed and is functioning in all manners.
+                    </div>
+
+
+                    <div style="width: 100%; height: auto; display:inline-block">
+                        <h4 style="margin: 0px 0 0px 0;">Vehicle Details :-</h4>
+                    </div>
+
+
+                    <div style="width: 100%; height: auto;display:inline-block;">
+
+                        <div class="vehicle-detail" style="width: 33%; height: auto; display:inline-block; font-size: 11px;vertical-align: top;">
+
+
+                            <div style="display: inline-block;"><p style="width: 70px;margin: 0px; padding: 2px 0px 0px 0px;">VehicleNo:</p></div><div style="display: inline-block;border-bottom: 1px dotted;width: 63%; margin-left: 5px;"> <span></span>@ViewBag.vehNum</div>
+                            <div style="display: inline-block;"><p style="width: 72px;margin: 0px; padding: 2px 0px 0px 0px;">ChassisNo:</p></div><div style="display: inline-block;border-bottom: 1px dotted;width: 63%; margin-left: 5px;"> <span id="ctl00_ContentPlaceHolder1_lblChassis">@ViewBag.chassisNo </span></div>
+                            <div style="display: inline-block;"><p style="width: 72px;margin: 0px; padding: 2px 0px 0px 0px;">EngineNo : </p></div><div style="display: inline-block;border-bottom: 1px dotted;width: 63%; margin-left: 5px;"><span id="ctl00_ContentPlaceHolder1_lblEngineNo">@ViewBag.engineNo </span></div>
+
+                        </div>
+
+
+
+                        <div class="vehicle-detail" style="width: 32%; height: auto; display:inline-block; font-size: 11px;vertical-align: top;">
+
+                            <div style="display: inline-block;"><p style="width: 100px; margin: 0px; padding: 2px 0px 0px 0px;">Type of Vehicle:</p></div><div style="display: inline-block;border-bottom: 1px dotted;width: 45%; margin-left: 5px;">  <span>@ViewBag.vehType</span></div>
+                            <div style="display: inline-block;"> <p style="width: 100px; margin: 0px; padding: 2px 0px 0px 0px;">Vehicle(Make):</p></div><div style="display: inline-block;border-bottom: 1px dotted;width: 45%; margin-left: 5px;">  <span id="ctl00_ContentPlaceHolder1_lblVechileMake">@ViewBag.vehMake</span></div>
+                            <div style="display: inline-block;"> <p style="width: 100px; margin: 0px; padding: 2px 0px 0px 0px;">Vehicle(Model): </p></div><div style="display: inline-block;border-bottom: 1px dotted;width: 45%; margin-left: 5px;"> <span id="ctl00_ContentPlaceHolder1_lblVehicleModel">@ViewBag.VEH_MODEL</span></div>
+
+                        </div>
+
+
+                        <div class="vehicle-detail" style="width: 33%; height: auto; display:inline-block; font-size: 11px;vertical-align: top;">
+                            <div style="display: inline-block;">   <p style="margin: 0px; padding: 2px 0px 0px 0px;">Registration Date : </p></div><div style="display: inline-block;border-bottom: 1px dotted;width: 50%;margin-left: 5px;"><span id="ctl00_ContentPlaceHolder1_lblregdt">@ViewBag.regDate</span></div>
+                            <div style="display: inline-block;">  <p style="margin: 0px; padding: 2px 0px 0px 0px;">Date of mfg, Year :</p></div><div style="display: inline-block;border-bottom: 1px dotted;width: 40%;margin-left: 5px;"> <span>@ViewBag.year</span></div>
+                            <div style="display: inline-block;">  <p style="margin: 0px; padding: 2px 0px 0px 0px;">Last Calibration Date :</p></div><div style="display: inline-block;border-bottom: 1px dotted;width: 40%;margin-left: 5px;"> <span></span></div>
+
+                        </div>
+
+
+                    </div>
+
+
+
+                    <div style="width: 100%; height: auto; display:inline-block">
+                        <h4 style="margin: 10px 0 0px 0;">Vehicle Owner Details :-</h4>
+                    </div>
+
+
+                    <div style="width: 100%; height: auto;display:inline-block;">
+
+                        <div class="Owner_Details" style="width: 40%; height: auto; display:inline-block; font-size: 11px;vertical-align: top;">
+
+                            <div style="display: inline-block;"><p style="margin: 0px; padding: 2px 0px 0px 0px;">Owner Name : </p></div><div style="display: inline-block;border-bottom: 1px dotted;width: 60%;margin-left: 5px;"><span> @ViewBag.customerName</span></div>
+
+                        </div>
+
+
+
+                        <div class="Owner_Details" style="width: 58%; height: auto; display:inline-block; font-size: 11px;vertical-align: top;">
+
+                            <div style="display: inline-block;"><p style="margin: 0px; padding: 2px 0px 0px 0px;">Owner Address : </p></div><div style="display: inline-block;border-bottom: 1px dotted;width: 70%;margin-left: 5px;"><span>@ViewBag.address</span></div>
+
+
+                        </div>
+
+
+
+
+                    </div>
+
+
+
+
+                    <div style="width: 100%; height: auto; display:inline-block">
+                        <h4 style="margin: 10px 0 0px 0;">Dealer Details :-</h4>
+                    </div>
+
+
+                    <div style="width: 100%; height: auto;display:inline-block;">
+
+                        <div class="Dealer-Details" style="width: 40%; height: auto; display:inline-block; font-size: 11px;vertical-align: top;">
+
+                            <div style="display: inline-block;"><p style="margin: 0px; padding: 2px 0px 0px 0px;">Dealer Name : </p></div><div style="display: inline-block;border-bottom: 1px dotted;width: 60%;margin-left: 5px;"><span>@ViewBag.dealerName</span></div>
+
+                        </div>
+
+
+
+                        <div class="Dealer-Details" style="width: 58%; height: auto; display:inline-block; font-size: 11px;vertical-align: top;">
+
+                            <div style="display: inline-block;"><p style="margin: 0px; padding: 2px 0px 0px 0px;">Dealer Address : </p></div><div style="display: inline-block;border-bottom: 1px dotted;width: 70%;margin-left: 5px;"><span>@ViewBag.dealerAddress</span></div>
+
+
+                        </div>
+
+
+
+                    </div>
+
+
+
+                    <div style="width: 100%; height: auto; display:inline-block">
+                        <h4 style="margin: 5px 0 0px 0;">VTS Details :-</h4>
+                    </div>
+
+
+                    <div style="width: 100%; height: auto;display:inline-block;">
+
+                        <div class="Speed_Governor_Details" style="width: 34%; height: auto; display:inline-block; font-size: 11px;vertical-align: top;">
+
+                            <div style="display: inline-block;width: 45%;"> <p style="/*width: 82px;*/ margin: 0px; padding: 2px 0px 0px 0px;">IMEI No </p></div><div style="width: 2%;height: auto;display: inline-block;font-size: 11px;"> : </div><div style="display: inline-block;border-bottom: 1px dotted;width: 50%;margin-left: 2px;"> <span>@ViewBag.IMEI</span></div>
+
+                            <div style="display: inline-block;width: 45%;"> <p style="/*width: 82px;*/ margin: 0px; padding: 2px 0px 0px 0px;">Type </p></div><div style="width: 2%;height: auto;display: inline-block;font-size: 11px;"> : </div><div style="display: inline-block;border-bottom: 1px dotted;width: 50%;margin-left: 2px;"><span>@ViewBag.Type</span></div>
+
+                            <div style="display: inline-block;width: 49%;"> <p style="/*width: 82px;*/ margin: 0px; padding: 2px 0px 0px 0px;">Fitment Certificate No</p></div><div style="width: 2%;height: auto;display: inline-block;font-size: 11px;"> : </div><div style="display: inline-block;border-bottom: 1px dotted;width: 46%;margin-left: 2px;"><span id="ctl00_ContentPlaceHolder1_lblSno">@ViewBag.certificateNo</span> </div>
+
+                            <div style="display: inline-block;width: 45%;"> <p style="/*width: 82px;*/ margin: 0px; padding: 2px 0px 0px 0px;">Model </p></div><div style="width: 2%;height: auto;display: inline-block;font-size: 11px;"> : </div><div style="display: inline-block;border-bottom: 1px dotted;width: 50%;margin-left: 2px;"> <span>@ViewBag.deviceType</span>	</div>
+
+                            <!--  <div style="display: inline-block;width: 45%;"> <p style="/*width: 82px;*/ margin: 0px; padding: 2px 0px 0px 0px;">Seal No </p></div><div style="width: 2%;height: auto;display: inline-block;font-size: 11px;"> : </div><div style="display: inline-block;border-bottom: 1px dotted;width: 50%;margin-left: 2px;"><span id="ctl00_ContentPlaceHolder1_lblVehicleModel"><?php echo $result->sealNo; ?></span></div> -->
+
+                            <div style="display: inline-block;width: 45%;"> <p style="/*width: 82px;*/ margin: 0px; padding: 2px 0px 0px 0px;">Sim No </p></div><div style="width: 2%;height: auto;display: inline-block;font-size: 11px;"> : </div><div style="display: inline-block;border-bottom: 1px dotted;width: 50%;margin-left: 2px;"><span id="ctl00_ContentPlaceHolder1_lblVehicleModel"></span></div>
+
+
+                        </div>
+
+
+
+                        <div class="Speed_Governor_Details" style="width: 30%; height: auto; display:inline-block; font-size: 11px;vertical-align: top;">
+
+                            <div style="display: inline-block;width: 39%;">   <p style="/*width: 83px;*/margin: 0px; padding: 2px 0px 0px 0px;">Fitment Date </p></div><div style="width: 2%;height: auto;display: inline-block;font-size: 11px;"> : </div><div style="display: inline-block;border-bottom: 1px dotted;width: 53%;margin-left: 2px;"><span id="ctl00_ContentPlaceHolder1_lblDate">@ViewBag.fitmentDate</span></div> <br />
+
+
+                            <div style="display: inline-block;width: 39%;"> <p style="/*width: 83px;*/ margin: 0px; padding: 2px 0px 0px 0px;">Invoice No </p></div><div style="width: 2%;height: auto;display: inline-block;font-size: 11px;"> : </div><div style="display: inline-block;border-bottom: 1px dotted;width: 53%;margin-left: 2px;"><span id="ctl00_ContentPlaceHolder1_lblInvioceNo"></span></div> <br />
+
+                            <div style="display: inline-block;width: 39%;">   <p style="/*width: 83px;*/margin: 0px; padding: 2px 0px 0px 0px;">Invoice Date </p></div><div style="width: 2%;height: auto;display: inline-block;font-size: 11px;"> : </div><div style="display: inline-block;border-bottom: 1px dotted;width: 53%;margin-left: 2px;"> <span id="ctl00_ContentPlaceHolder1_InvoiceDate">@ViewBag.Date</span></div> <br />
+
+                            <!--    <div style="display: inline-block;width: 39%;">  <p style="/*width: 83px;*/margin: 0px; padding: 2px 0px 0px 0px;">Report date </p></div><div style="width: 2%;height: auto;display: inline-block;font-size: 11px;"> : </div><div style="display: inline-block;border-bottom: 1px dotted;width: 53%;margin-left: 2px;" dat="<?php echo $result->vehicleID; ?>"> <span><?php echo date('d/m/Y', strtotime($result->testReportDate)); ?></span></div>-->
+
+                            <div style="display: inline-block;width: 39%;">  <p style="/*width: 83px;*/margin: 0px; padding: 2px 0px 0px 0px;">Sim Phone No </p></div><div style="width: 2%;height: auto;display: inline-block;font-size: 11px;"> : </div><div style="display: inline-block;border-bottom: 1px dotted;width: 53%;margin-left: 2px;" dat="<?php echo $result->vehicleID; ?>"> <span>@ViewBag.simNum</span></div>
+
+
+                            <!--                        <div style="display: inline-block;">   <p style="margin: 0px; padding: 9px 0px 0px 0px;">Report No : </p></div><div style="display: inline-block;border-bottom: 1px dotted;width: 50%;margin-left: 5px;"><span id="ctl00_ContentPlaceHolder1_lblVehicleModel"><?php echo $result->testReportNo; ?></span></div>-->
+
+                        </div>
+
+
+
+                        <div class="Speed_Governor_Details" style="width: 33%; height: auto; display:inline-block; font-size: 11px;vertical-align: top;">
+                            <div style="display: inline-block;width: 42%;">  <p style="/*width: 120px;*/ margin: 0px; padding: 2px 0px 0px 0px;">Service Provider </p></div><div style="width: 2%;height: auto;display: inline-block;font-size: 11px;"> : </div><div style="display: inline-block;border-bottom: 1px dotted;width: 53%;margin-left: 2px;"> <span>BSNL </span></div>
+
+
+                            <!--  <div style="display: inline-block;margin-left: 12px;">   <p style="width: 120px; margin: 0px; padding: 2px 0px 0px 0px;">TAC No : </p></div><div style="display: inline-block;border-bottom: 1px dotted;width: 54%;margin-left: 0px;"><span id="ctl00_ContentPlaceHolder1_lblVehicleModel"><?php echo $result->tacNO; ?></span></div>-->
+                        </div>
+                    </div>
+
+                    <div style="width: 100%; height: auto; display:inline-block">
+                        <h4 style="margin: 8px 0 5px 0;">Fitment Images :-</h4>
+                    </div>
+
+                    <div style="width: 100%; height: auto;display:inline-block; text-align: center;">
+
+                        <div class="fitment-images" style="width: 25%; height: auto; display:inline-block; font-size: 11px;vertical-align: top;">
+                            <img src="@ViewBag.vehImage" style="width:140px;height:150px;" ">
+                            `<p style="margin-bottom: 3px;">RC</p>
+                        </div>
+
+
+                        <div class="fitment-images" style="width: 24%; height: auto; display:inline-block; font-size: 11px;vertical-align: top;">
+                            <img src="@ViewBag.RCImage" style="width:140px;height:150px;">
+                            <p style="margin-bottom: 3px;">Vehicle</p>
+                        </div>
+
+
+                        <div class="fitment-images" style="width: 24%; height: auto; display:inline-block; font-size: 11px;vertical-align: top;">
+                            <img src="@ViewBag.deviceImage" style="width:140px;height:150px;">
+                            <p style="margin-bottom: 3px;">Device Installation</p>
+                        </div>
+
+                        <!-- <div class="fitment-images" style="width: 24%; height: auto; display:inline-block; font-size: 11px;vertical-align: top;">
+                        <!--                        <img src="<?php //echo $MENUFACTURER_STAMP;     ?>" style="width:160px" height="95px">
+                                                <div style="width:140px;height:150px"></div>
+                                                <p style="margin-bottom: 3px;">RTO Sign & Seal</p>
+                                            </div>-->
+
+                    </div>
+
+                    <div style="width: 100%; float: left; margin: 2px 0px; margin-bottom: 10px; border-bottom: solid 1px #efefef;  height: 10px;">
+
+                    </div>
+
+
+
+
+                    <div style="clear:both;"> </div>
+
+
+                    <div style="width: 100%; height: auto; float: left; margin-bottom:10px;">
+
+                        <div style="width: 34%; height: auto; float: left; font-size: 11px; line-height: 20px;">
+
+                            <div style="width: 100%; height: auto; float: left; margin: 0px 0px 0px 0px;">
+                                <div style="width: 18%; height: auto; float: left; font-size: 11px;">
+                                    Date
+                                </div>
+                                <div style="width: 5%; height: auto; float: left; font-size: 11px;">
+                                    :
+                                </div>
+                                <div class="dotted" style="width: 74%; float: left; height: 17px; border-bottom: 1px dotted black; font-size: 11px; margin-top:1px;">
+
+                                    <span id="ctl00_ContentPlaceHolder1_lblTodayDate">@ViewBag.Date</span>
+                                </div>
+                            </div>
+
+                            <div style="width: 100%; height: auto; float: left; margin: 0px 0px 0px 0px;">
+                                <div style="width: 18%; height: auto; float: left; font-size: 11px;">
+                                    Time
+                                </div>
+                                <div style="width: 5%; height: auto; float: left; font-size: 11px;">
+                                    :
+                                </div>
+                                <div class="dotted" style="width: 74%; float: left; height: 17px; border-bottom: 1px dotted black; font-size: 11px; margin-top:1px;">
+
+                                    <span id="ctl00_ContentPlaceHolder1_lblTime">@ViewBag.Time</span>
+                                </div>
+                            </div>
+                        </div>
+
+
+
+
+
+                        <div style="width: 45%; height: auto; float: left; font-size: 11px; line-height: 20px;">
+
+                            <div style="width: 100%; height: auto; float: left; margin: 0px 0px 0px 0px;">
+                                <div style="width: 52%; height: auto; float: left; font-size: 11px;">
+                                    Name&nbsp;of&nbsp;the&nbsp;Customer
+                                </div>
+                                <div style="width: 5%; height: auto; float: left; font-size: 11px;">
+                                    :
+                                </div>
+                                <div class="dotted" style="width: 40%; float: left; height: 17px; border-bottom: 1px dotted black; font-size: 11px; margin-top:1px;">
+
+                                    <span id="ctl00_ContentPlaceHolder1_lblName"> @ViewBag.customerName</span>
+                                </div>
+                            </div>
+
+                            <!-- <div style="width: 100%; height: auto; float: left; margin: 0px 0px 0px 0px;">
+                                <div style="width: 52%; height: auto; float: left; font-size: 11px;">
+                                    Driving&nbsp;License&nbsp;No
+                                </div>
+
+                                <div style="width: 5%; height: auto; float: left; font-size: 11px;">
+                                    :</div>
+                                <div class="dotted" style="width: 40%; float: left; height: 20px; border-bottom: 1px dotted black; font-size: 11px; margin-top:1px;">
+
+                                    <span id="ctl00_ContentPlaceHolder1_lblDrivingLicNo">N/A</span>
+                                </div>
+                            </div>-->
+
+                            <div style="width: 100%; height: auto; float: left; margin: 0px 0px 0px 0px;">
+                                <div style="width: 52%; height: auto; float: left; font-size: 11px;">
+                                    Mobile&nbsp;Number
+                                </div>
+                                <div style="width: 5%; height: auto; float: left; font-size: 11px;">
+                                    :
+                                </div>
+
+                                <div class="dotted" style="width: 40%; float: left; height: 17px; font-size: 11px; margin-top:1px;border-bottom: 1px dotted black;">
+
+                                    <span id="ctl00_ContentPlaceHolder1_lblMobileNo">@ViewBag.custMobile</span>
+                                </div>
+                            </div>
+
+                        </div>
+
+
+                        <div style="width:16%; float:right; height:auto; text-align:center;">
+                            <div style="width:100%; float:left; height:24px;"> Thankyou </div>
+
+                            <div style="width:100%; float:left; height:26px; line-height:26px;">
+                            </div>
+                            <div style="width:100%; float:left; height:auto;"> Signature </div>
+                        </div>
+                        <div style="width:52%; height: auto; float: left; margin: 0px 0px 0px 0px;">
+                            <div style="width:11%; height: auto; float: left; font-size: 11px;">
+                                Place
+                            </div>
+                            <div style="width:2%; height: auto; float: left; font-size: 11px;">
+                                :
+                            </div>
+
+
+                            <div class="dotted" style="width:51%; float: left; height:20px; font-size: 11px; margin-top:1px;border-bottom: 1px dotted black;">
+
+                                <span id="ctl00_ContentPlaceHolder1_lblPlace"></span>
+                            </div>
+                        </div>
+
+
+                    </div>
+
+                    <div class="login-more p-t-30">
+                        <footer>
+                            <center>  <span>Copyright © 2022  <a href="http://containe.in/" target="_blank" title="Containe">Containe Technologies Pvt Ltd.All rights reserved.</a></span></center>
+                        </footer>
+                    </div>
+
+
+                    <div style="clear: both;"> </div>
+
+                </div>
+
+
+                <div style="clear: both;"> </div>
+
+            </div>
+
+
+
+            <div style="clear: both;"> </div>
+        </div>
+    </div>
+    <script>
+
+    document.getElementById("ctl00_ContentPlaceHolder1_imgBarCode").src="@ViewBag.QRCode"
+    </script>
+</body>
+</html>

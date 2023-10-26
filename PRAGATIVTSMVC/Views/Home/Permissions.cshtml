@@ -1,0 +1,70 @@
+﻿
+@{
+    ViewBag.Title = "Permissions";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<div class="container-fluid">
+    <div class="row page-titles">
+        <div class="col-md-5 col-8 align-self-center">
+            <h3 class="text-themecolor m-b-0 m-t-0">USER PERMISSIONS</h3>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="javascript:void(0)">Home</a></li>
+                <li class="breadcrumb-item active">USER PERMISSIONS</li>
+            </ol>
+        </div>
+    </div>
+   
+
+    <div>
+        <select class="form-control" style="width:233px;margin-bottom:10px" id="ddlusers" onchange="CHECKPERMISSIONS()">
+            <option value="0">-Select User-</option>
+            @foreach (var item in ViewBag.USERS_PERMISSIONS)
+            {
+                //if (item.ROLE_NAME != "Admin")
+                //{
+                     <option value="@item.CATEG_ID">@item.CATEG_NAME</option>
+               // }
+               
+            }
+        </select>
+        <div style="margin-left: 20%; margin-top: -37px; ">
+            <input type="button" id="btnsubmit" class="btn btn-success" value="Submit" onclick="savepermissions()" />
+            <input type="button" id="btnupdate" class="btn btn-success" value="Update " onclick="updatepermissions()" />
+        </div>
+        <div>
+            <table id="tblpermissions" border="1" style="font-size: 12px; width:100%" class="display nowrap table table-hover table-striped table-bordered" cellspacing="0" width="100%">
+                <thead style="background-color: #57d0d0">
+                    <tr>
+                        <td>ID</td>
+                        <td>PAGE NAME</td>
+                        <td><input type="checkbox" id="chkview" onclick="checkview()" style="width:13px" class="form-control" /><p style="margin-top:-29px;margin-left:16px">VIEW (check all)</p></td>
+                        <td><input type="checkbox" id="chkedit" onclick="checkedit()" style="width:13px" class="form-control" /><p style="margin-top:-29px;margin-left:16px">EDIT (check all)</p></td>
+                        <td><input type="checkbox" id="chkcreate" style="width:13px" onclick="checkcreate()" class="form-control" /><p style="margin-top:-29px;margin-left:16px">CREATE (check all)</p></td>
+                    </tr>
+                </thead>
+                <tbody>
+
+                </tbody>
+                @*@{
+                    int i = 1;
+                    foreach (var item in ViewBag.getallpages)
+                    {
+                        <tr>
+                            <td>@i</td>
+                            <td>@item.PAGE_NAME</td>
+                            <td><input type="checkbox" id="chkview_@i" style="width:25px" class="form-control" /></td>
+                            <td><input type="checkbox" id="chkedit_@i" style="width:25px" class="form-control" /></td>
+                            <td><input type="checkbox" id="chkcreate_@i" style="width:25px" class="form-control" /></td>
+                        </tr>
+                            i++;
+                    }
+                   <input type="hidden" id="pageslength" value="@i" />
+                }*@
+            </table>
+        </div>
+        </div>
+  
+</div>
+<script src="~/CUSTOMSCRIPTS/permissions.js"></script>

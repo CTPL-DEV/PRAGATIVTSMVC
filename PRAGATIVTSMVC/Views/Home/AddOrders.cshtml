@@ -1,0 +1,412 @@
+﻿
+@{
+    ViewBag.Title = "AddOrders";
+    Layout = "~/Views/Shared/Layout2.cshtml";
+}
+<style>
+    .table th {
+       font-weight:500;
+       font-size:13px!important;
+    }
+    .table td {
+      
+       font-size:12px!important;
+    }
+</style>
+<script src="~/assets/js/dateformat.js"></script>
+<div class="row" id="divrow">
+    <input type="hidden" id="txtdeviceid" value="" />
+    <input type="hidden" id="txtcategId" value="" />
+    <input type="hidden" id="hid_orderId" value="" />
+    <div class="col-lg-6">
+        @*Select Parent:<select id="ddldistributor" class="form-control" onchange="LoadDealers()" style="width:200px"></select>
+        Select Account:<select id="ddldealer" class="form-control" style="width:200px;"></select>*@
+        
+        @*Select Distributor:<select id="ddldistributor" class="form-control" onchange="LoadDealers()" style="width:400px"></select>
+        Select Dealer:<select id="ddldealer" class="form-control" onchange="LoadCustomers()" style="width:400px;"></select>
+
+        Select Customers:<select id="ddlCustomers" class="form-control" style="width:400px;"></select>*@
+
+        <div id="div_distributors">
+            Select Distributor:<select id="ddldistributor" class="form-control" onchange="LoadDealers()" style="width:400px">
+                <option value='0' selected>-Select Distributor-</option>
+            </select>
+        </div>
+        <div id="div_dealers">
+            Select Dealer:<select id="ddldealer" class="form-control" onchange="LoadCustomers()" style="width:400px;">
+                <option value='0' selected>-Select Dealer-</option>
+            </select>
+        </div>
+
+
+        Select Customers:<select id="ddlCustomers" class="form-control" onchange="getOrders()" style="width:400px;">
+            <option value='0' selected>-Select Customer-</option>
+        </select>
+        <label>Select Package:</label>
+        <select id="ddlpackages" class="form-control" style="width:400px;">
+            <option value="0" selected>-Select-</option>
+            @foreach (var item1 in ViewBag.packages)
+            {
+                <option value="@item1.PACKAGE_ID">@item1.PACKAGE_NAME</option>
+            }
+        </select>
+         Number Of Orders:
+        <input type="number"  id="txt_orders" value="0" style="width:400px;" class="form-control" />
+        <input type="button" id="btnsave" class="btn btn-primary" onclick="SaveOrder()"  style="margin-top:10px;" value="Submit" />
+      
+        <input type="button" value="BACK"  id="btnback" onclick="Back()" style="margin-top:10px;" class="btn btn-primary" />
+    </div>
+ </div>
+    <div class="card card-box" id="div_table" style="margin-top:10px;">
+        <div class="card-body">
+                <table id="tblorders" class="table table-striped table-bordered" cellspacing="0" width="100%" style="margin-top:10px">
+                <thead>
+                    <tr>
+                        <th class="center">ID</th>
+
+                        <th class="center">Order Name</th>
+                        <th class="center">Customer Name</th>
+                        <th class="center">Device IMEI</th>
+                        <th class="center">Package Name</th>
+                        <th class="center">Price</th>
+                        <th class="center">Created Date</th>
+                        <th class="center">Start Date</th>
+                        <th class="center">Exp Date</th>
+                        <th class="center">Status</th>
+                        <th class="center">Renewal Status</th>
+                        <th class="center">Certificate</th>
+                       
+                    </tr>
+                </thead>
+                <tbody>
+                  
+                </tbody>
+            </table>
+        </div>
+    </div>
+<div class="modal inmodal" id="PackageModal" tabindex="-1" role="dialog" aria-hidden="true" style="display: none;">
+    <div class="modal-dialog">
+        <div class="modal-content animated fadeIn">
+            <div class="modal-header">
+                <button type="button" id="closeotpmodal" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>Select Package:</label>
+                            <select id="ddlRewpackages" class="form-control" style="width:400px;">
+                                <option value="0" selected>-Select-</option>
+                                @foreach (var item1 in ViewBag.packages)
+            {
+                                    <option value="@item1.PACKAGE_ID">@item1.PACKAGE_NAME</option>
+                                }
+                            </select>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="modal-footer" style="text-align:center;">
+
+                <button type="button" id="btn_Renew" onclick="SubmitRenew()" class="btn btn-primary">Renew</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        var categtypeid = localStorage.getItem("CATEG_TYPE_ID");
+        if (categtypeid == "1" || categtypeid == "2" || categtypeid == "6" || categtypeid == "5") {
+            $("#tbldevices>thead>tr").append("<th>Edit</th>");
+            $("#btnadd").show();
+            if (categtypeid == 6) {
+                LoadCustomers();
+            }
+            else {
+                LoadDistributors();
+            }
+
+        }
+       
+    });
+    function Back()
+    {
+        location.reload();
+    }
+    //Load Distributors
+    function LoadDistributors() {
+        var ID = $("#ddlcategory").val();
+        $.post("/Home/getDistributors", { "CategID": 1 }, function (data) {
+
+            var dataT = data['data'];
+            var opt = "<option value='0'>-Select Distributor-</option>";
+            for (var i = 0; i < dataT.length; i++) {
+                opt += "<option value='" + dataT[i].CATEG_ID + "'>" + dataT[i].CATEG_NAME + "</option>";
+            }
+            $("#ddldistributor").text("");
+            $('#ddldistributor').append(opt);
+        });
+    }
+
+    //Load Dealers
+    //function LoadDealers() {
+    //    var ID = $("#ddldistributor").val();
+    //    $.post("/Home/getDealers", { "CategID": ID }, function (data) {
+
+    //        var dataT = data['data'];
+    //        var opt = "<option value='0'>-Select Dealer-</option>";
+    //        for (var i = 0; i < dataT.length; i++) {
+    //            opt += "<option value='" + dataT[i].CATEG_ID + "'>" + dataT[i].CATEG_NAME + "</option>";
+    //        }
+    //        $("#ddldealer").text("");
+    //        $('#ddldealer').append(opt);
+    //    });
+    //}
+    //Load Dealers
+
+    function LoadDealers() {
+        var ID = $("#ddldistributor").val();
+        $.post("/Home/getDealers", { "CategID": ID }, function (data) {
+
+            var dataT = data['data'];
+            var opt = "<option value='0' selected>-Select Dealer-</option>";
+            for (var i = 0; i < dataT.length; i++) {
+                opt += "<option value='" + dataT[i].CATEG_ID + "'>" + dataT[i].CATEG_NAME + "</option>";
+            }
+            $("#ddldealer").text("");
+            $('#ddldealer').append(opt);
+        });
+
+        //Load Distrubutor Customers
+
+
+        $.post("/Home/getCustomers", { "CategID": ID }, function (data) {
+
+            var dataT = data['data'];
+            var opt = "<option value='0'>-Select Customer-</option>";
+            for (var i = 0; i < dataT.length; i++) {
+                opt += "<option value='" + dataT[i].CATEG_ID + "'>" + dataT[i].CATEG_NAME + "</option>";
+            }
+            $("#ddlCustomers").text("");
+            $('#ddlCustomers').append(opt);
+        });
+
+
+    }
+    //Load Customers
+
+    //function LoadCustomers() {
+    //    var ID = $("#ddldealer").val();
+    //    $.post("/Home/getCustomers", { "CategID": ID }, function (data) {
+
+    //        var dataT = data['data'];
+    //        var opt = "<option value='0'>-Select Customer-</option>";
+    //        for (var i = 0; i < dataT.length; i++) {
+    //            opt += "<option value='" + dataT[i].CATEG_ID + "'>" + dataT[i].CATEG_NAME + "</option>";
+    //        }
+    //        $("#ddlCustomers").text("");
+    //        $('#ddlCustomers').append(opt);
+    //    });
+    //}
+    function LoadCustomers() {
+        
+        var ID;
+        if ($("#ddldistributor").val() != 0 && $("#ddldealer").val() != 0) {
+            ID = $("#ddldealer").val();
+           
+        }
+        else if ($("#ddldistributor").val() != 0 && $("#ddldealer").val() == 0) {
+            ID = $("#ddldistributor").val();
+           
+        }
+        else {
+            ID = localStorage.getItem("USERS_CATEG_ID");
+            $("#div_distributors").hide();
+            $("#div_dealers").hide();
+        }
+       
+        $.post("/Home/getCustomers", { "CategID": ID }, function (data) {
+
+            var dataT = data['data'];
+            var opt = "<option value='0'>-Select Customer-</option>";
+            for (var i = 0; i < dataT.length; i++) {
+                opt += "<option value='" + dataT[i].CATEG_ID + "'>" + dataT[i].CATEG_NAME + "</option>";
+            }
+            $("#ddlCustomers").text("");
+            $('#ddlCustomers').append(opt);
+            
+        });
+
+
+    }
+    //function LoadDistributors() {
+    //    var ID = $("#ddlcategory").val();
+    //    $.post("/Home/getDistributors", { "CategID": 1 }, function (data) {
+
+    //        var dataT = data['data'];
+    //        var opt = "<option value='0'>-Select Distributor-</option>";
+    //        for (var i = 0; i < dataT.length; i++) {
+    //            opt += "<option value='" + dataT[i].CATEG_ID + "'>" + dataT[i].CATEG_NAME + "</option>";
+    //        }
+    //        $("#ddldistributor").text("");
+    //        $('#ddldistributor').append(opt);
+    //    });
+    //}
+    //function LoadDealers() {
+    //    var ID = $("#ddldistributor").val();
+    //    $.post("/Home/getAccounts", { "CategID": ID }, function (data) {
+
+    //        var dataT = data['data'];
+    //        var opt = "<option value='0'>-Select Dealer-</option>";
+    //        for (var i = 0; i < dataT.length; i++) {
+    //            opt += "<option value='" + dataT[i].CATEG_ID + "'>" + dataT[i].CATEG_NAME + "</option>";
+    //        }
+    //        $("#ddldealer").text("");
+    //        $('#ddldealer').append(opt);
+    //    });
+    //}
+    function SaveOrder()
+    {
+        if ($("#txt_orders").val() != "" && $("#txt_orders").val() != 0) {
+
+
+            $.post("/Home/CreateOrder", { "Categ_ID": $("#ddlCustomers").val(), "PackageId": $("#ddlpackages").val(), "Categ_Name": $("#ddlCustomers Option:selected").text(), "Number": $("#txt_orders").val() }, function (data) {
+                //console.log(dataT);
+                
+                var dataT = data['data'];
+
+                if (dataT == "True") {
+                    alert("Order Created Successfully");
+                    location.reload();
+                }
+                else if (dataT=="False") {
+                    alert("Failed to add Order");
+                }
+                else
+                {
+                    alert(dataT);
+                }
+            });
+        } else {
+            alert("Please Enter Atleast One Order");
+            $("#txt_orders").focus();
+        }
+    }
+    function RenewOrder(DeviceId, categId, orderId)
+    {
+        var user_role_id = localStorage.getItem("USERS_ROLE_ID");
+        if (user_role_id == "1") {
+        $('#PackageModal').show();
+        $('#txtdeviceid').val(DeviceId);
+        $('#txtcategId').val(categId);
+            $('#hid_orderId').val(orderId);
+        }
+        else {
+            alert("You are not an Authorized.Please contact 9100777438 for Renewal");
+        }
+    }
+    function SubmitRenew()
+    {
+        var device_ID = $('#txtdeviceid').val();
+      
+
+        $.post("/Home/OrderRenewal", { "DeviceID": device_ID, "Package": $("#ddlRewpackages").val(), "CategID": $('#txtcategId').val(), "OrderId": $('#hid_orderId').val() }, function (data) {
+            //console.log(dataT);
+            
+            var dataT = data['data'];
+
+            if (dataT == "True") {
+                alert("Order Renewed Successfully");
+                location.reload();
+            }
+            else if (dataT == "False") {
+                alert("Failed to Renew Order");
+            }
+            else {
+                alert(dataT);
+            }
+        });
+    }
+    function DownloadCertificate(DevideId)
+    {
+
+    }
+    function getOrders() {
+
+    
+        var ID = $("#ddlCustomers").val();
+        var parent_ID = localStorage.getItem("USERS_CATEG_ID");
+        var categ_name = $("#ddlCustomers Option:selected").text();
+        if (ID != '0') {
+            $.post("/Home/getOrders", { "CATEG_ID": ID, "categname": categ_name,"ParentID":parent_ID }, function (data) {
+                var dataT = data['data'];
+                
+                $('#tblorders tbody > tr').remove();
+                for (var i = 0; i < dataT.length; i++) {
+                  
+                 //   var nowDate = new Date(parseInt(dataT[i].ORDER_CREATEDATE.substr(6)));
+                  //  var orderdate = nowDate.format("ddd mmm dd yyyy HH:MM:ss");
+                    tr = $('<tr/>');
+
+                    tr.append("<td>" + (i + 1) + "</td>");
+                    tr.append("<td>" + dataT[i].ORDER_NAME + "</td>");
+                    tr.append("<td>" + dataT[i].categName + "</td>");
+                    tr.append("<td>" + dataT[i].SerialNumber + "</td>");
+                    tr.append("<td>" + dataT[i].ORDER_PACKAGE + "</td>");
+                    tr.append("<td>" + dataT[i].ORDER_PRICE + "</td>");
+                    tr.append("<td>" + dataT[i].DATE + "</td>");
+                    tr.append("<td>" + dataT[i].startdate + "</td>");
+                    tr.append("<td>" + dataT[i].enddate + "</td>");
+                    //tr.append("<td>" + dataT[i].Status + "</td>");
+                    if (dataT[i].ORDER_STATUS == 0)
+                    {
+                        tr.append("<td><span class='badge badge-pill fl-l badge-success lh-0 p-10'>Installed</span></td>");
+                    }
+                    else if (dataT[i].ORDER_STATUS == 1)
+                    {
+                        tr.append("<td><span class='badge badge-pill fl-l badge-info lh-0 p-10'>Not Used</span></td>");
+                    }
+                    else if (dataT[i].ORDER_STATUS == 2)
+                    {
+                        tr.append("<td><span class='badge badge-pill fl-l badge-primary lh-0 p-10'>Renewed</span></td>");
+                    }
+                  
+                    //  var ExpDate = new Date(parseInt(dataT[i].ORDER_EXPDATE.substr(6)));
+                    if (dataT[i].ORDER_STATUS == 0)
+                    {
+                        var ExpDate = new Date(dataT[i].ExpDate);
+                        var currentDate = new Date();
+                        if (currentDate > ExpDate) {
+                            
+                            tr.append("<td><a href='#' onclick='RenewOrder(" + dataT[i].DEVICE_ID + "," + dataT[i].ORDER_CATEGORYID + "," + dataT[i].ORDER_ID + ")'><span class='badge badge-pill fl-l badge-warning lh-0 p-15'>Renewal</span></a></td>");
+                        }
+                        else {
+                            tr.append("<td><span></span></td>");
+                        }
+                    }
+                    else {
+                        tr.append("<td><span></span></td>");
+                    }
+
+                    tr.append("<td><a href='/Home/Certificate?deviceId=" + dataT[i].DEVICE_ID + "'  class='btn btn-tbl-edit btn-xs'><i class='fa fa-download'></i></a></td>");
+                    $("#tblorders").append(tr);
+                    
+                }
+                //$('#tblorders').DataTable({
+                //    dom: 'Bfrtip',
+                //    buttons: [
+                //        //'copy', 'csv', 'excel', 'pdf', 'print'
+                //        'excel', 'pdf', 'print'
+                //    ]
+                //});
+            });
+        }
+    }
+    $(document).on("click", "#closeotpmodal", function () {
+        $("#PackageModal").fadeOut();
+
+    })
+</script>

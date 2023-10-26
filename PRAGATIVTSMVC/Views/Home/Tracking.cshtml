@@ -1,0 +1,1395 @@
+﻿@{ ViewBag.Title = "Tracking";
+                Layout = "~/Views/Shared/Layout2.cshtml"; }
+<div id="load"></div>
+<style>
+    .select2 {
+        width: 100% !important;
+    }
+
+    /*#SingleVehicle {
+        overflow: hidden !important;
+        position: relative !important;
+    }*/
+</style>
+<div id="mainContent">
+    <div class="row gap-20">
+        <div class="masonry-item col-12">
+            <div class="bd bgc-white">
+                <div class="peers fxw-nw@lg+ ai-s">
+                    <div class="peer peer-greed w-70p@lg+ w-100@lg- p-20">
+                        <div class="masonry-item col-md-6">
+                            <div class="form-group row">
+                                <label class="col-sm-2 col-form-label">Tracking</label>
+                                <div class="col-sm-10">
+                                    <select class="form-control" id="ddlvehicles" style="width:50%;" onchange="TravelPath()">
+                                        <option value="0">-Select Vehicle-</option>
+                                        <option value="-1">All Vehicles</option>
+                                    </select>
+                                </div>
+
+                            </div>
+                        </div>
+                        <div class="layers">
+
+                            <div class="layer w-100">
+                                <div id="defaultmap">
+                                    <div id="SingleVehicle" style="height:500px;position:initial;" class="">
+                                    </div>
+                                    <div>
+                                        <input hidden id="txtvalues" type="text" />
+                                        <label id="txtignition" style="margin-top:9px;color:black;margin-left:100px"></label>
+                                    </div>
+                                </div>
+                                <div id="workordermap" style="display:none">
+                                    <div id="SingleVehicle1" style="height:73%" class="gmaps">
+                                    </div>
+                                    <div>
+                                        <input hidden id="txtvalues" type="text" />
+                                        <label id="txtignition" style="margin-top:9px;color:black;margin-left:100px"></label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
+
+@*<div class="container-fluid">
+
+        <div class="row" id="DIVROW1">
+            <div class="col-lg-3">
+                <div style="margin-bottom:10px">
+                    CLIENT <select onchange="bindvehicles()" class="form-control" id="ddlclients"></select>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div>
+
+                            <div class="col-lg-12" style="margin-bottom:10px;position:relative;">
+
+                                <div class="col-md-3" style="margin-left:-29px;">
+                                    <h4 class="card-title">Tracking</h4>
+                                </div>
+                                <div class="col-md-3" style="margin-top:-3%;margin-left:22%">
+                                    <select class="form-control" id="ddlvehicles" onchange="TravelPath()">
+                                        <option value="0">-Select Vehicle-</option>
+                                        <option value="-1">All Vehicles</option>
+                                    </select>
+                                </div>
+
+                            </div>
+                        </div>
+                        <div id="defaultmap">
+                            <div id="SingleVehicle" style="height:500px;position:initial;" class="">
+                            </div>
+                            <div>
+                                <input hidden id="txtvalues" type="text" />
+                                <label id="txtignition" style="margin-top:9px;color:black;margin-left:100px"></label>
+                            </div>
+                        </div>
+                        <div id="workordermap" style="display:none">
+                            <div id="SingleVehicle1" style="height:73%" class="gmaps">
+                            </div>
+                            <div>
+                                <input hidden id="txtvalues" type="text" />
+                                <label id="txtignition" style="margin-top:9px;color:black;margin-left:100px"></label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="box-body">
+                    </div>
+                    <div class="card-body">
+                        <h4 class="card-title">VEHICLE TRACK HISTORY</h4>
+                        <div class="col-lg-12" style="margin-bottom:10px">
+                            <div class="col-md-3" style="margin-left:-29px">
+                                <select id="ddlvehicles_history" class="form-control">
+                                    <option value="0">-Select Vehicle-</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <input type="text" style="margin-top:-14%;margin-left:107%;" id="txtfrmdate" placeholder="FROM DATE" class="form-control" />
+                            </div>
+                            <div class="col-md-3">
+                                <input type="text" style="margin-top: -15%; margin-left: 215%;" id="txttodate" placeholder="TO DATE" class="form-control" />
+                            </div>
+                            <div class="col-md-3">
+                                <input type="button" style="margin-top: -14%; margin-left: 323%;" value="Search" onclick="Search()" />
+                                <input type="button" id="btnPlay" style="display: block; margin-top: -42px; margin-left: 363%; " value="Play" onclick="startAnimation()" class="btn btn-primary" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div class="container-fluid">
+        <div class="row" id="divrow">
+            <div class="col-lg-8">
+                <div id="map" class="gmaps">
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div style="height: 75%; overflow-x: auto;">
+                    <table id="tblhistory" class="display nowrap table table-hover table-striped table-bordered" style="font-size:10px" cellspacing="0">
+                        <tr>
+                            <th>Sno</th>
+                            <th>Nearest Landmark</th>
+                            <th>Time</th>
+                            <th>Odometer</th>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>*@
+
+@*<script src="~/Scripts/jquery-1.10.2.min.js"></script>
+    <script src="~/Scripts/markerclusterer.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/js/bootstrap-datepicker.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/css/bootstrap-datepicker3.css" />*@
+<script>
+
+    var CategID = localStorage.getItem("USERS_CATEG_ID")
+
+    var username = localStorage.getItem("USERNAME");
+
+    if (CategID == 87) {
+        $("#DIVROW1").show();
+
+    }
+    else {
+        $("#DIVROW1").hide();
+    }
+
+
+    bindvehicles();
+    window.onload = function () {
+
+        $("#load").hide();
+        speedometer();
+        $(".envelope").css('display', 'none');
+
+        var idd = localStorage.getItem("DEVICEID");
+        // alert(idd + "okkkkkkkk" + das_id);
+        if (idd != null && idd != 'null') {
+
+            //  window.setTimeout(function () {
+            $("#ddlvehicles").val(idd).trigger('change');
+            //  }, 1000)
+
+
+        } else {
+            // localStorage.setItem("DEVICEID", null);
+            // allvehicles();
+        }
+
+        //$('#txtfrmdate').bootstrapMaterialDatePicker
+        // ({
+        //     format: 'MM/DD/YYYY HH:mm', minDate: new Date(),
+        //     defaultDate: moment().subtract(1, 'days'),
+        //     cancelText: 'Batal',
+        //     okText: 'Selesai',
+        //     clearText: 'Hapus',
+        //     nowText: 'Sekarang'
+        // });
+
+        $('#txtfrmdate').bootstrapMaterialDatePicker({
+            format: 'MM/DD/YYYY HH:mm',
+            weekStart: 1,
+            time: true,
+            nowButton: true,
+            clearButton: false,
+            cancelText: 'Cancel',
+            okText: 'OK',
+            clearText: 'clear',
+            // triggerEvent: 'dblclick',
+            switchOnClick: true,
+            //  nowText: 'Aujourd\'hui'
+        });
+
+
+        $('#txttodate').bootstrapMaterialDatePicker({
+            format: 'MM/DD/YYYY HH:mm',
+            weekStart: 1,
+            time: true,
+            nowButton: true,
+            clearButton: false,
+            cancelText: 'Cancel',
+            okText: 'OK',
+            clearText: 'clear',
+            triggerEvent: 'dblclick',
+            switchOnClick: true,
+            // nowText: 'Aujourd\'hui'
+        });
+
+
+
+
+
+        var dt = new Date();
+
+        var onedayAgo = new Date();
+
+        onedayAgo.setDate(onedayAgo.getDate() - 1);
+
+        var time = dt.getHours() + ":" + dt.getMinutes();
+
+        var date001 = onedayAgo.getMonth() + 1 + "/" + onedayAgo.getDate() + "/" + onedayAgo.getFullYear() + " " + "00:00";
+        $('#txtfrmdate').val(date001);
+
+        var date002 = dt.getMonth() + 1 + "/" + dt.getDate() + "/" + dt.getFullYear() + " " + time;
+        $('#txttodate').val(date002);
+    }
+
+    //  var bounds = new google.maps.LatLngBounds();
+
+    var map;
+    var markersZ = [];
+    var iconBase = 'https://maps.google.com/mapfiles/kml/shapes/';
+    var icons = {
+        Truck: {
+            icon: iconBase + 'parking_lot_maps.png'
+        },
+        Plant: {
+            icon: iconBase + 'library_maps.png'
+        },
+        Port: {
+            icon: iconBase + 'info-i_maps.png'
+        },
+        Vehi: {
+            icon: '/Content/icons/placeholder_yellow.png'
+        },
+        Bus: {
+            icon: '/Content/icons/bus.png'
+        },
+        From: {
+            icon: '/Content/icons/placeholder_nu.png'
+        },
+        To: {
+            icon: '/Content/icons/maps-and-flags.png'
+        },
+        Stopped: {
+            icon: '/Content/icons/truck_r.png'
+        },
+        VehicleMoving: {
+            icon: '/Content/icons/green_truck.png'
+        },
+        Datanotreceiving: {
+            icon: '/Content/icons/truck_y.png'
+        },
+        Dirctions: {
+            icon: '/Truck/truck_green_0.png'
+        },
+    };
+
+    $(document).ready(function () {
+        // initMap();
+        initMap1();
+        //initMap2();
+        bindvehicles();
+        LoadClients();
+        // BindWorkorders();
+
+
+    });
+
+
+    function LoadClients() {
+
+        $.ajax({
+            url: '/bajajib/Load_Clients',
+            type: "POST",
+            cache: false,
+            
+            success: function (data) {
+                var dataT = data['data'];
+                $("#ddlclients").empty();
+                var opt = "<option value='0'>-Select-</option>";
+                for (var i = 0; i < dataT.length; i++) {
+                    opt += "<option value='" + dataT[i].CATEG_ID + "'>" + dataT[i].CATEG_NAME + "</option>";
+                }
+                $("#ddlclients").text("");
+                $('#ddlclients').append(opt);
+
+            }
+        });
+
+    }
+    function BindWorkorders() {
+
+        var ClientID = $("#ddlclients").val();
+        $.ajax({
+            url: '/BAJAJIB/Getworkorders_working',
+            type: "POST",
+            cache: false,
+            data: { "ClientID": ClientID },
+            dataType:"json",
+            success: function (data) {
+
+                var dataT = data['data'];
+                $("#ddlworkorders").empty();
+                var opt = "<option value='0'>-Select Workorder-</option>";
+                for (var i = 0; i < dataT.length; i++) {
+                    opt += "<option value='" + dataT[i].WORKORDERNO + "'>" + dataT[i].WORKORDERNO + "</option>";
+                }
+                $("#ddlworkorders").text("");
+                $('#ddlworkorders').append(opt);
+                $('#ddlworkorders').select2();
+            }
+        });
+    }
+
+    function bindvehicles() {
+
+        var ClientId = $("#ddlclients").val();
+        $.ajax({
+            url: '/Home/Load_Vehicles',
+            type: "POST",
+            cache: false,
+            data: { "ClientId": ClientId },
+            dataType:"json",
+            success: function (data) {
+
+                var dataT = data['data1'];
+                var opt = "<option value='0'>-Select-</option>";
+                var opt = "<option value='-1'>Select Vehicle</option>";
+                for (var i = 0; i < dataT.length; i++) {
+                    opt += "<option value='" + dataT[i].VEHICLES_DEVICE_ID + "'>" + dataT[i].VEHICLES_REGNUMBER + "</option>";
+                }
+                $("#ddlvehicles").text("");
+                $('#ddlvehicles').append(opt);
+                $('#ddlvehicles').select3();
+                $("#ddlvehicles_history").text("");
+                $('#ddlvehicles_history').append(opt);
+                $("#ddlvehicles_history").select3();
+            }
+        });
+        // BindWorkorders();
+    }
+
+    function bindworkordervehicles() {
+        if ($("#ddlworkorders").val() != '0') {
+
+            $.ajax({
+                url: '/BAJAJIB/WORKORDERS_VEHICLES',
+                type: "POST",
+                cache: false,
+                data: { "WORKORDER": $("#ddlworkorders").val() },
+                dataType:"json",
+                success: function (data) {
+
+                    var dataT = data['data'];
+                    var opt = "<option value='0'>-Select-</option>";
+                    var opt = "<option value='-1'>Select Vehicle</option>";
+                    for (var i = 0; i < dataT.length; i++) {
+                        opt += "<option value='" + dataT[i].TRIP_DEVICEID + "'>" + dataT[i].TRIP_VEHICLENO + "</option>";
+                    }
+                    $("#ddlvehicles").text("");
+                    $('#ddlvehicles').append(opt);
+                    $('#ddlvehicles').select2();
+                    $("#ddlvehicles_history").text("");
+                    $('#ddlvehicles_history').append(opt);
+                    $("#ddlvehicles_history").select2();
+                }
+            });
+        }
+
+    }
+
+
+
+    function initMap() {
+        $("#load").hide();
+        var myLatLng = { lat: 23.852464, lng: 78.858390 };
+
+        map = new google.maps.Map(document.getElementById('gmaps-simple'), {
+            zoom: 14,
+            center: myLatLng,
+            gestureHandling: 'greedy',
+            styles: CustomMapStyles,
+        });
+    }
+
+    function movemarker000(lat, lng) {
+
+        map.setCenter(new google.maps.LatLng(lat, lng))
+        map.setZoom(14);
+        return false;
+    }
+
+
+    function movemarker(lat, lng, i) {
+        // alert(lat+""+lng)
+        var latlng = new google.maps.LatLng(lat, lng);
+
+        var marker = new google.maps.Marker({
+            position: latlng,
+            map: map,
+            title: 'Click to zoom',
+            zoom: 14,
+            icon: '/NumberMarkers/marker' + (i) + '.png'
+        });
+
+        map.setZoom(14);
+        map.setCenter(marker.getPosition());
+        //  map.setZoom(15);
+
+    }
+
+
+    //string Startdate,string Enddate,string Dev_ID)
+    var map;
+    var Slider_TrackInfo;
+    var Pause_d;
+    var pause = -1;
+    var Slider_TrackInfo;
+    var lst_LMarks;
+    function Search() {
+        $("#load").show();
+        var Startdate = $("#txtfrmdate").val();
+        var Enddate = $("#txttodate").val();
+        var Dev_ID = $("#ddlvehicles_history").val();
+        $.ajax({
+            url: '/Home/Tracking_history',
+            type: "POST",
+            cache: false,
+            data: { "Startdate": Startdate, "Enddate": Enddate, "Dev_ID": Dev_ID },
+            success: function (data) {
+
+                var DATAT = data['TripData'];
+                Slider_TrackInfo = DATAT;
+                setdata(data);
+                $("#load").hide();
+            }
+        });
+
+    }
+    var marker = null;
+    var timerHandle = null;
+
+    function setdata(data) {
+        var markerss = [];
+        dataT = data['TripData'];
+        var datalength = data['TripData'].length
+        //   alert(datalength)
+        if (datalength > 0) {
+
+            //  }
+            var mapOptions = {
+                center: new google.maps.LatLng(dataT[0].LATITUDE, dataT[0].LONGITUDE),
+                icon: '/Truck/truck_green_0.png',
+                zoom: 18,
+                gestureHandling: 'greedy',
+                styles: CustomMapStyles,
+                // mapTypeId: google.maps.MapTypeId.ROADMAP
+            };
+            map = new google.maps.Map(document.getElementById("map"), mapOptions);
+            var infowindow = new google.maps.InfoWindow();
+            var lat_lng = new Array();
+            var latlngbounds = new google.maps.LatLngBounds();
+            for (i = 0; i < datalength; i++) {
+                //  alert(markers.length);
+                // var data = markers[i]
+                // alert(data.lat + "  " + i + "->   " + data.lng);
+
+                //tblhistory
+
+                //NumberMarkers/marker' + (i + 1) + '.png
+
+
+
+                tr = $('<tr/>');
+                tr.append('<td><img src="/NumberMarkers/marker' + (i + 1) + '.png"  onclick="movemarker000(' + dataT[i].LATITUDE + ',' + dataT[i].LONGITUDE + ')"></ img></td>');
+                tr.append("<td>" + dataT[i].PLACE + "</td>");
+                tr.append("<td>" + dataT[i].TRIPDATA_TRIPDATE + "</td>");
+                tr.append("<td>" + dataT[i].ODOMETER + "</td>");
+                $('#tblhistory').append(tr);
+
+                var myLatlng = new google.maps.LatLng(dataT[i].LATITUDE, dataT[i].LONGITUDE);
+
+                lat_lng.push(myLatlng);
+
+                var buscolor = "";
+                var title = "";
+
+                var f = datalength - 1;
+                if (i == 0) {
+
+                    buscolor = '/Truck/ring.png';
+                    title = 'starting point'
+                }
+                else if (i == f) {
+                    buscolor = '/Truck/truck_r.png';
+                    title = 'end point'
+                }
+                else {
+                    buscolor = '/NumberMarkers/marker' + (i + 1) + '.png';
+                    title = 'hyderabad'
+                }
+                var marker = new google.maps.Marker({
+                    position: myLatlng,
+                    icon: buscolor,
+                    map: map,
+                    title: title,
+                });
+                latlngbounds.extend(marker.position);
+                markerss.push(marker);
+                marker.setMap(map);
+                //  bounds.extend(marker.position);
+                markersZ.push(marker);
+                //   latlngbounds.extend(marker.position);
+                google.maps.event.addListener(marker, 'click', (function (marker, i) {
+                    //  alert("okk")
+
+
+                    var stringContent = '<div style="color:black"><table>'
+                        + '<tr><td><b>DRIVER:</b></td><td>' + dataT[i].DRIVER_NAME
+                        + '<tr><td><b>User Time:</b></td><td><label id="lblcurrentspeed">' + dataT[i].TRIPDATA_TRIPDATE
+                        + '</td><tr><td><b>SPEED(Km/Hr):</b></td><td>Date <label id="lblcurrentdate">'
+                        + dataT[i].TRIPDATAT_SPEED
+                        + '</td><tr><td><b>Odometer Reading(km):</b></td><td>Date <label id="lblcurrentdate">'
+                        + dataT[i].ODOMETER
+                        + '</td><tr><td><b>Time:</b></td><td>Postion <label id="">'
+                        + dataT[i].LATITUDE + "" + dataT[i].LONGITUDE
+                        + '</label></td></tr><tr><td><b>Postion:&nbsp;</b></td><td><label id="lblcurrentlocation">'
+                        + dataT[i].PLACE + '</label></td></tr></table></div>';
+                    return function () {
+                        infowindow.setContent(stringContent);
+                        infowindow.open(map, marker);
+                    }
+                })(marker, i));
+
+            }
+
+            map.setCenter(latlngbounds.getCenter());
+            map.fitBounds(latlngbounds);
+
+            //***********ROUTING****************//
+
+            //Initialize the Path Array
+            var path = new google.maps.MVCArray();
+
+            //Initialize the Direction Service
+            var service = new google.maps.DirectionsService();
+
+            //Set the Path Stroke Color
+            var poly = new google.maps.Polyline({
+
+                map: map, strokeColor: '#4986E7'
+
+            });
+
+            //Loop and Draw Path Route between the Points on MAP
+            //   alert(lat_lng.length);
+            for (var i = 0; i < lat_lng.length; i++) {
+                if ((i + 1) < lat_lng.length) {
+                    var src = lat_lng[i];
+                    var des = lat_lng[i + 1];
+                    path.push(src);
+                    poly.setPath(path);
+                    service.route({
+                        origin: src,
+                        destination: des,
+                        // travelMode: google.maps.DirectionsTravelMode.DRIVING
+                    }, function (result, status) {
+                        if (status == google.maps.DirectionsStatus.OK) {
+                            for (var i = 0, len = result.routes[0].overview_path.length; i < len; i++) {
+                                path.push(result.routes[0].overview_path[i]);
+                            }
+                        }
+                    });
+                }
+            }
+
+            //var line = new google.maps.Polyline({
+            //    path: [{ lat: 22.291, lng: 153.027 }, { lat: 18.291, lng: 153.027 }],
+            //    icons: [{
+            //        icon: '/Truck/truck_green_0.png',
+            //        offset: '100%'
+            //    }],
+            //    map: map
+            //});
+        }
+        //else {
+        //    alert("Data not avilable..");
+        //    initMap();
+        //}
+
+    }
+
+    function Delay(delay) {
+        var startTime = new Date();
+        var endTime = null;
+        do {
+            endTime = new Date();
+        } while ((endTime - startTime) < delay);
+    }
+
+
+    function animate(d) {
+
+        // alert("animate("+d+")");
+        Pause_d = d;
+        var endPointCount = Slider_TrackInfo.length;
+
+
+
+        if (d > endPointCount - 1) {
+            // alert("endpoint");
+            map.panTo(new google.maps.LatLng(Slider_TrackInfo[endPointCount - 1].LATITUDE, Slider_TrackInfo[endPointCount - 1].LONGITUDE));
+            marker.setPosition(new google.maps.LatLng(Slider_TrackInfo[endPointCount - 1].Longitude, Slider_TrackInfo[endPointCount - 1].Longitude));
+            document.getElementById("btnPlay").value = "Play";
+            pause = -1;
+            return;
+        }
+
+        var p = new google.maps.LatLng(Slider_TrackInfo[d].LATITUDE, Slider_TrackInfo[d].LONGITUDE)
+        //  map.panTo(p);
+        marker.setPosition(p);
+        //updatePoly(d);
+        //timerHandle = setTimeout("animate(" + (d + 1) + ")", rcmb_Interval.get_value() != 0 ? rcmb_Interval.get_value() : alert("Please select an interval"));
+        timerHandle = setTimeout("animate(" + (d + 1) + ")", 250);
+    }
+
+    function startAnimation() {
+
+        if (document.getElementById("btnPlay").value == "Play") {
+            document.getElementById("btnPlay").value = "Pause";
+            if (pause == -1) {
+
+                clearTimeout(timerHandle);
+                if (marker != null)
+                    marker.setMap(null);
+                //   alert(Slider_TrackInfo[0].LATITUDE+""+Slider_TrackInfo[0].LONGITUDE)
+                map.setCenter(new google.maps.LatLng(Slider_TrackInfo[0].LATITUDE, Slider_TrackInfo[0].LONGITUDE));
+                marker = createMarker(new google.maps.LatLng(Slider_TrackInfo[0].LATITUDE, Slider_TrackInfo[0].LONGITUDE), "start", Slider_TrackInfo[0].LONGITUDE, "green");
+                //poly2 = new google.maps.Polyline({ path: [polyline.getPath().getAt(0)], strokeColor: "#0000FF", strokeWeight: 10 });
+                //            if (rcmb_Interval.get_value() == 0) {
+                //                alert("Please select an interval1 ");
+                //                return;
+                //            }
+                //            else {
+                setTimeout("animate(1)", 250);  // Allow time for the initial map display
+                //            }
+            }
+            else {
+
+                setTimeout("animate(" + Pause_d + ")", 250);
+            }
+        }
+        else if (document.getElementById("btnPlay").value == "Pause") {
+            document.getElementById("btnPlay").value = "Play";
+            clearTimeout(timerHandle);
+            pause = Pause_d;
+        }
+
+    }
+
+
+    function createMarker(latlng, label, html) {
+
+        var contentString = '<b>' + label + '</b><br>' + html;
+        var marker = new google.maps.Marker({
+            position: latlng,
+            map: map,
+            title: label,
+            //   icon: '/Truck/red.png',
+            icon: '/Truck/red1.png',
+            zIndex: 400
+        });
+        marker.myname = label;
+        // gmarkers.push(marker);
+
+        google.maps.event.addListener(marker, 'click', function () {
+            infowindow.setContent(contentString);
+            infowindow.open(map, marker);
+        });
+        return marker;
+    }
+
+
+
+    function allvehicles() {
+
+        var ClientId = $("#ddlclients").val();
+        $.ajax({
+            url: '/HOME/allvehicledetails',
+            type: "POST",
+            cache: false,
+            data: { "ClientId": ClientId },
+            dataType: "json",
+            success: function (data) {
+
+                var dataT = data['data'];
+
+                if (data != null && data != "null") {
+
+                    ALLvehiclesdata(data);
+                }
+            }
+        });
+    }
+
+
+
+
+    function Workorderchange() {
+        $("#load").show();
+        //  $("#ddlvehicles").select2().val(-1).trigger('change');
+        if ($("#ddlworkorders").val() != '0') {
+
+            var workorderid = $("#ddlworkorders").val();
+            $.ajax({
+                url: '/HOME/allvehicledetails_workorders',
+                type: "POST",
+                cache: false,
+                data: { "workorderid": workorderid },
+                dataType: "json",
+                success: function (data) {
+
+
+                    var dataT = data['data'];
+                    if (data != null && data != "null") {
+                        ALLvehiclesdata1(data);
+                        $("#load").hide();
+                    }
+                    $("#load").hide();
+                }
+            });
+            bindworkordervehicles();
+        }
+        $("#load").hide();
+    }
+
+
+    function initMap1() {
+
+        var myLatLng = { lat: 23.852464, lng: 78.858390 };
+
+
+        map = new google.maps.Map(document.getElementById('SingleVehicle'), {
+            zoom: 14,
+            center: myLatLng,
+            gestureHandling: 'greedy',
+            styles: CustomMapStyles,
+        });
+        //  TravelPath1();
+    }
+
+    function initMap2() {
+
+        var myLatLng = { lat: 23.852464, lng: 78.858390 };
+
+
+        map = new google.maps.Map(document.getElementById('map'), {
+            zoom: 14,
+            center: myLatLng,
+            gestureHandling: 'greedy',
+            styles: CustomMapStyles,
+        });
+
+    }
+
+
+    setInterval(function () {
+
+        TravelPath1();
+    }, 2000);
+
+
+    var lat_lng = new Array();
+
+
+
+    function TravelPath() {
+        
+        if (CategID != 2706) {
+
+            lat_lng = [];
+            if ($("#ddlvehicles").val() != '0' && $("#ddlvehicles").val() != '-1') {
+                localStorage.setItem("DEVICEID", null);
+            }
+            TravelPath1();
+        }
+        else {
+            TravelPath1();
+        }
+    }
+
+
+    function TravelPath1() {
+        
+        //  alert("okk")
+        //   $("#ddlworkorders").select2().val(0).trigger('change');
+        // $("#load").show();
+        var devid = localStorage.getItem("DEVICEID");
+
+        //  alert(devid)
+
+
+        if (devid != null && devid != 'null' && devid != '') {
+
+            $.ajax({
+                url: '/HOME/VEHICLECHANGE',
+                type: "POST",
+                cache: false,
+                data: { "Device_ID": devid },
+                dataType: "json",
+                success: function (data) {
+
+                    $(".envelope").css('display', 'block');
+                    var dataT = data['data'];
+
+                    //if (dataT[0] != null && dataT[0] != "null") {
+                    if (dataT[0] != null && dataT[0] != "null") {
+                        // alert(dataT[0].LATITUDE);
+                        var myLatlng = new google.maps.LatLng(dataT[0].LATITUDE, dataT[0].LONGITUDE);
+
+                        lat_lng.push(myLatlng);
+                        Showtravelpath(data);
+                    }
+                    //else {
+
+                    //    alert("Data not avilable..");
+                    //    initMap();
+
+                    //}
+                }
+            });
+            //window.setTimeout(function () {
+            //    localStorage.setItem("DEVICEID", null);
+            //}, 2000);
+
+        }
+        else {
+            if ($("#ddlvehicles").val() != '0' && $("#ddlvehicles").val() != '-1') {
+
+                var Device_ID = $("#ddlvehicles").val();
+                $.ajax({
+                    url: '/HOME/VEHICLECHANGE',
+                    type: "POST",
+                    cache: false,
+                    data: { "Device_ID": Device_ID },
+                    dataType: "json",
+                    success: function (data) {
+
+
+                        $(".envelope").css('display', 'block');
+                        var dataT = data['data'];
+
+                        //if (dataT[0] != null && dataT[0] != "null") {
+                        if (dataT[0] != null && dataT[0] != "null") {
+                            // alert(dataT[0].LATITUDE);
+                            var myLatlng = new google.maps.LatLng(dataT[0].LATITUDE, dataT[0].LONGITUDE);
+
+                            lat_lng.push(myLatlng);
+                            Showtravelpath(data);
+                        }
+                        else {
+
+                            alert("Data not avilable..");
+                            initMap();
+                        }
+                    }
+                });
+            }
+            //else {
+            //    if ($("#ddlvehicles").val() == '-1') {
+            //        $.post("/HOME/allvehicledetails", { "ClientId": $("#ddlclients").val() }, function (data) {
+            //            $(".envelope").css('display', 'none');
+            //            var dataT = data['data'];
+
+            //            if (dataT[0] != null && dataT[0] != "null") {
+
+            //                ALLvehiclesdata(data);
+            //            }
+            //            else {
+
+            //                alert("Data not avilable..");
+            //                initMap();
+            //            }
+            //            // BindWorkorders();
+            //        });
+            //    }
+            //}
+        }
+
+    }
+
+    function speedometer() {
+
+        //  $("#txtvalues").myfunc({ divFact: 10, eventListenerType: 'keyup' }).trigger('keyup');
+    }
+
+    var marker_new;
+    var markers_new = [];set
+    function Showtravelpath(data) {
+
+        
+        // $("#load").show();
+        $("#workordermap").css('display', 'none');
+        $("#defaultmap").css('display', 'block');
+
+
+        dataT = data['data'];
+        var datalength = data['data'].length
+        if (datalength > 0) {
+            $("#load").hide();
+            var mapOptions = {
+                center: new google.maps.LatLng(dataT[0].LATITUDE, dataT[0].LONGITUDE),
+                icon: '/Truck/truck_green_0.png',
+                zoom: 14,
+                gestureHandling: 'greedy',
+                styles: CustomMapStyles,
+                // mapTypeId: google.maps.MapTypeId.ROADMAP
+            };
+            //    map = new google.maps.Map(document.getElementById("SingleVehicle"), mapOptions);
+            var infoWindow = new google.maps.InfoWindow();
+
+            var latlngbounds = new google.maps.LatLngBounds();
+
+            function ClearMarkers() {
+                setMapOnAll(null);
+                markers_new = [];
+            }
+
+            function setMapOnAll(map) {
+
+                for (var i = 0; i < markers_new.length; i++) {
+                    markers_new[i].setMap(map);
+                }
+            }
+            for (i = 0; i < 1; i++) {
+                //  alert(markers.length);
+                //    var data = markers[i]
+                // alert(data.lat + "  " + i + "->   " + data.lng);
+                $("#txtvalues").val(dataT[0].SPEED).trigger('keyup');;
+                $("#txtignition").text("ignition " + dataT[0].IGNITION)
+                var myLatlng = new google.maps.LatLng(dataT[0].LATITUDE, dataT[0].LONGITUDE);
+
+                lat_lng.push(myLatlng);
+
+                var buscolor = "";
+                var title = "";
+
+
+                var f = lat_lng.length - 1;
+                if (f == 0) {
+
+                    buscolor = '/Truck/truck_green_0.png';
+                    title = 'starting point'
+                }
+                var d = new Date();
+
+                var month = d.getMonth() + 1;
+                var day = d.getDate();
+
+                //var output = d.getFullYear() + '-' +
+                //    (month < 10 ? '0' : '') + month + '-' +
+                //    (day < 10 ? '0' : '') + day;
+
+                //var hours = d.getHours() - 12;
+                //var minutes = d.getMinutes();
+                //var seconds = d.getSeconds();
+                //var TIME = (hours < 10 ? '0' : '') + hours + ':' + (minutes < 10 ? '0' : '') + minutes + ':' + (seconds < 10 ? '0' : '') + seconds;
+
+
+
+                //else if (i == f) {
+                //    buscolor = '/Truck/truck_r.png';
+                //    title = 'end point'
+                //}
+                //else {
+                //    buscolor = '/Truck/tr.png';
+                //    title = 'hyderabad'
+                //}
+                if (dataT[0].COLOR == 'G') {
+                    if (dataT[0].TRIPDATA_DIRECTION != null || dataT[0].TRIPDATA_DIRECTION != "null" || dataT[0].TRIPDATA_DIRECTION != "") {
+
+                        var value0 = dataT[0].TRIPDATA_DIRECTION;
+
+                        if (value0 <= 270) {
+                            value0 = parseInt(value0) + parseInt(90);
+                        }
+                        else if (value0 >= 360) {
+                            value0 = 359;
+                        }
+                        else {
+                            value0 = parseInt(value0) - parseInt(270);
+                        }
+
+
+                        buscolor = '/Truck/truck_green_' + value0 + '.png'
+
+                        //BUSCOLOR = '/Truck/truck_green_' + dataT[0].TRIPDATA_DIRECTION + '.png'
+                    }
+                }
+                else if (dataT[0].COLOR == 'R') {
+                    buscolor = icons["Stopped"].icon
+                }
+                else if (dataT[0].COLOR == 'Y') {
+                    buscolor = icons["Datanotreceiving"].icon
+                }
+
+                ClearMarkers();
+                marker_new = new google.maps.Marker({
+                    position: myLatlng,
+                    icon: buscolor,
+                    //map: map,
+                    title: title,
+                });
+                markers_new.push(marker_new);
+
+
+                setMapOnAll(map);
+
+                latlngbounds.extend(marker_new.position);
+                (function (marker_new, data) {
+                    google.maps.event.addListener(marker_new, "click", function (e) {
+
+                        if (i == 0) {
+                            //infoWindow.setContent('Starting point');
+                        }
+                        else {
+                            //  alert(dataT[0].DATE);DISTANCE
+
+
+                            if (username == "BAJAJ" || username == "JLPL" || username == "OMKAR IB" || username == "Satish" || username == "Bafna" || username == "shreenathji ib" || username == "AUTOMOBILE ENGINEERS") {
+                                var stringContent = '<div style="color:black"><table>'
+                                    + '<tr><td><b>Vehicle Number:</b></td><td>' + dataT[0].VEHICLENUMBER
+                                    + '<tr><td><b>Speed:</b></td><td><label id="lblcurrentspeed">' + dataT[0].SPEED
+                                    + '</td><tr><td><b>Time:</b></td><td>Date <label id="lblcurrentdate">'
+                                    + dataT[0].TRIPDATA_TRIPDATE
+                                    + '<tr><td><b>DISTANCE TO PLANT:</b></td><td><label id="">' + Math.round(dataT[0].DISTANCE)
+                                    + '<tr><td><b>DISTANCE TO PORT:</b></td><td><label id="">' + Math.round(dataT[0].DKM)
+
+                                    + '</td><tr><td><b>Time:</b></td><td>Date <label id="lblcurrentdate">'
+                                    + dataT[0].ODOMETER
+                                    + '</label></td></tr><tr><td><b>Location:&nbsp;</b></td><td><label id="lblcurrentlocation">'
+                                    + dataT[0].PLACE + '</label></td></tr></table></div>';
+                            }
+                            else {
+                                var stringContent = '<div style="color:black"><table>'
+                                    + '<tr><td><b>Vehicle Number:</b></td><td>' + dataT[0].VEHICLENUMBER
+                                    + '<tr><td><b>Speed:</b></td><td><label id="lblcurrentspeed">' + dataT[0].SPEED
+                                    + '</td><tr><td><b>Time:</b></td><td>Date <label id="lblcurrentdate">'
+                                    + dataT[0].TRIPDATA_TRIPDATE
+                                    + '</td><tr><td><b>ODOMeter:</b></td><td><label id="lblcurrentdate">'
+                                    + dataT[0].ODOMETER
+                                    + '</label></td></tr><tr><td><b>Location:&nbsp;</b></td><td><label id="lblcurrentlocation">'
+                                    + dataT[0].PLACE + '</label></td></tr><tr><td><b>KM TRAVELLED:&nbsp;</b></td><td><label id="lblkmtravelled">'
+                                    + dataT[0].TOTAL_KM_DAY + '</label></td></tr></table></div>';
+                            }
+
+
+
+                            infoWindow.setContent(stringContent);
+                        }
+
+
+                        infoWindow.open(map, marker_new);
+                    });
+                })(marker_new, data);
+            }
+            map.setCenter(latlngbounds.getCenter());
+            //   map.fitBounds(latlngbounds);
+
+            //***********ROUTING****************//
+
+            //Initialize the Path Array
+            var path = new google.maps.MVCArray();
+
+            //Initialize the Direction Service
+            var service = new google.maps.DirectionsService();
+
+            //Set the Path Stroke Color
+            var poly = new google.maps.Polyline({
+
+                map: map, strokeColor: '#4986E7'
+
+            });
+
+            //Loop and Draw Path Route between the Points on MAP
+            //  alert(lat_lng.length);
+            // setInterval(function () {
+            //  alert("yes");
+            for (var i = 0; i < lat_lng.length; i++) {
+                if ((i + 1) < lat_lng.length) {
+                    var src = lat_lng[i];
+                    var des = lat_lng[i + 1];
+                    path.push(src);
+                    poly.setPath(path);
+                    //  map.setZoom(14);
+                    service.route({
+                        origin: src,
+                        destination: des,
+                        travelMode: google.maps.DirectionsTravelMode.DRIVING,
+
+                    }, function (result, status) {
+                        if (status == google.maps.DirectionsStatus.OK) {
+                            for (var i = 0, len = result.routes[0].overview_path.length; i < len; i++) {
+                                // path.push(result.routes[0].overview_path[i]);
+                            }
+                        }
+                    });
+                }
+            }
+
+            //  },5000)
+
+
+            //var line = new google.maps.Polyline({
+            //    path: [{ lat: 22.291, lng: 153.027 }, { lat: 18.291, lng: 153.027 }],
+            //    icons: [{
+            //        icon: '/Truck/truck_green_0.png',
+            //        offset: '100%'
+            //    }],
+            //    map: map
+            //});
+        } else {
+            alert("Data not avilable..");
+            initMap();
+        }
+
+    }
+
+
+
+
+
+
+    function ALLvehiclesdata(data) {
+        
+        // $("#ddlworkorders").select2().val(0).trigger('change');
+
+        $("#workordermap").css('display', 'none');
+        $("#defaultmap").css('display', 'block');
+
+
+        var markerss = [];
+        var datalength = data['data'].length;
+
+
+
+
+        var dataT = data['data'];
+
+
+        var LATITUDELng = { lat: parseFloat(17.701961), lng: parseFloat(83.233461) };
+
+
+
+
+
+
+        var map = new google.maps.Map(document.getElementById('SingleVehicle'), {
+            zoom: 14,
+            center: new google.maps.LatLng(dataT[0].LATITUDE, dataT[0].LONGITUDE),
+            gestureHandling: 'greedy',
+            styles: CustomMapStyles,
+            mapTypeId: google.maps.MapTypeId.ROADMAP
+        });
+
+
+
+        var infowindow = new google.maps.InfoWindow();
+
+        var marker, i;
+
+
+
+        for (i = 0; i < datalength; i++) {
+
+
+            if (dataT[i].COLOR == 'G') {
+                if (dataT[i].TRIPDATA_DIRECTION != null || dataT[i].TRIPDATA_DIRECTION != "null" || dataT[i].TRIPDATA_DIRECTION != "") {
+
+                    var value0 = dataT[i].TRIPDATA_DIRECTION;
+
+                    if (value0 <= 270) {
+                        value0 = parseInt(value0) + parseInt(90);
+                    }
+                    else if (value0 >= 360) {
+                        value0 = 359;
+                    }
+                    else {
+                        value0 = parseInt(value0) - parseInt(270);
+                    }
+
+
+                    buscolor = '/Truck/truck_green_' + value0 + '.png'
+
+                    //BUSCOLOR = '/Truck/truck_green_' + dataT[i].TRIPDATA_DIRECTION + '.png'
+                }
+            }
+            else if (dataT[i].COLOR == 'R') {
+                buscolor = icons["Stopped"].icon
+            }
+            else if (dataT[i].COLOR == 'Y') {
+                buscolor = icons["Datanotreceiving"].icon
+            }
+
+
+            marker = new google.maps.Marker({
+
+                position: new google.maps.LatLng(dataT[i].LATITUDE, dataT[i].LONGITUDE),
+                icon: buscolor,
+                map: map,
+                title: dataT[i].PLACE
+            });
+
+            markerss.push(marker);
+            marker.setMap(map);
+            //  bounds.extend(marker.position);
+            markersZ.push(marker);
+
+            //    }, 5000);
+
+            google.maps.event.addListener(marker, 'click', (function (marker, i) {
+                var date = dataT[i].DATE;
+                var nowDate = new Date(parseInt(date.substr(6)));
+
+                var stringContent = '<div style="color:black"><table>'
+                    + '<tr><td><b>Vehicle Number:</b></td><td>' + dataT[i].VEHICLENUMBER
+                    + '<tr><td><b>Speed:</b></td><td><label id="lblcurrentspeed">' + dataT[i].SPEED
+                    + '</td><tr><td><b>Time:</b></td><td>Date <label id="lblcurrentdate">'
+                    + nowDate
+                    + '</td><tr><td><b>ODOMeter:</b></td><td><label id="lblcurrentdate">'
+                    + dataT[i].ODOMETER
+                    + '</label></td></tr><tr><td><b>Location:&nbsp;</b></td><td><label id="lblcurrentlocation">'
+                    + dataT[i].PLACE + '</label></td></tr></table></div>';
+
+                return function () {
+                    infowindow.setContent(stringContent);
+                    infowindow.open(map, marker);
+                }
+            })(marker, i));
+        }
+        //  var markerCluster = new MarkerClusterer(map, markerss, { imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m' });
+    }
+
+
+
+    function ALLvehiclesdata1(data) {
+
+        $("#defaultmap").css('display', 'none');
+        $("#workordermap").css('display', 'block');
+        // $("#ddlworkorders").select2().val(0).trigger('change');
+        var markerss = [];
+        var datalength = data['data'].length;
+
+
+
+
+        var dataT = data['data'];
+
+
+        var LATITUDELng = { lat: parseFloat(17.701961), lng: parseFloat(83.233461) };
+
+
+
+
+
+
+        var map = new google.maps.Map(document.getElementById('SingleVehicle1'), {
+            zoom: 14,
+            center: new google.maps.LatLng(dataT[0].LATITUDE, dataT[0].LONGITUDE),
+            gestureHandling: 'greedy',
+            styles: CustomMapStyles,
+            mapTypeId: google.maps.MapTypeId.ROADMAP
+        });
+
+
+
+        var infowindow = new google.maps.InfoWindow();
+
+        var marker, i;
+
+
+
+        for (i = 0; i < datalength; i++) {
+
+
+            if (dataT[i].COLOR == 'G') {
+                if (dataT[i].TRIPDATA_DIRECTION != null || dataT[i].TRIPDATA_DIRECTION != "null" || dataT[i].TRIPDATA_DIRECTION != "") {
+
+                    var value0 = dataT[i].TRIPDATA_DIRECTION;
+
+                    if (value0 <= 270) {
+                        value0 = parseInt(value0) + parseInt(90);
+                    }
+                    else if (value0 >= 360) {
+                        value0 = 359;
+                    }
+                    else {
+                        value0 = parseInt(value0) - parseInt(270);
+                    }
+
+
+                    buscolor = '/Truck/truck_green_' + value0 + '.png'
+
+                    //BUSCOLOR = '/Truck/truck_green_' + dataT[i].TRIPDATA_DIRECTION + '.png'
+                }
+            }
+            else if (dataT[i].COLOR == 'R') {
+                buscolor = icons["Stopped"].icon
+            }
+            else if (dataT[i].COLOR == 'Y') {
+                buscolor = icons["Datanotreceiving"].icon
+            }
+
+
+            marker = new google.maps.Marker({
+
+                position: new google.maps.LatLng(dataT[i].LATITUDE, dataT[i].LONGITUDE),
+                icon: buscolor,
+                map: map,
+                title: dataT[i].PLACE
+            });
+
+            markerss.push(marker);
+            marker.setMap(map);
+            //  bounds.extend(marker.position);
+            markersZ.push(marker);
+
+            //    }, 5000);
+
+            google.maps.event.addListener(marker, 'click', (function (marker, i) {
+
+
+                var stringContent = '<div style="color:black"><table>'
+                    + '<tr><td><b>Vehicle Number:</b></td><td>' + dataT[i].VEHICLENUMBER
+                    + '<tr><td><b>Speed:</b></td><td><label id="lblcurrentspeed">' + dataT[i].SPEED
+                    + '</td><tr><td><b>Time:</b></td><td>Date <label id="lblcurrentdate">'
+                    + dataT[i].DATE
+                    + '</td><tr><td><b>Time:</b></td><td>Date <label id="lblcurrentdate">'
+                    + dataT[i].ODOMETER
+                    + '</label></td></tr><tr><td><b>Location:&nbsp;</b></td><td><label id="lblcurrentlocation">'
+                    + dataT[i].PLACE + '</label></td></tr></table></div>';
+
+                return function () {
+                    infowindow.setContent(stringContent);
+                    infowindow.open(map, marker);
+                }
+            })(marker, i));
+        }
+        //  var markerCluster = new MarkerClusterer(map, markerss, { imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m' });
+    }
+
+
+
+</script>
+@*<script src="https://maps.google.com/maps/api/js?key=AIzaSyDGpQNLosD_MiVaVY4pi4SX3vqwv19Exw8&libraries=places"></script>*@

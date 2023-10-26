@@ -1,0 +1,541 @@
+﻿@model IEnumerable<PRAGATIVTSMVC.Models.SMVTS_RFID_READER>
+
+@{
+    ViewBag.Title = "RFID_Reader";
+    Layout = "~/Views/Shared/Layout2.cshtml";
+}
+
+<h2>RFID_Reader</h2>
+
+<link href="~/Content/multi-select/css/multi-select.css" rel="stylesheet" />
+<script src="~/Content/multi-select/js/bundle.min.js"></script>
+<style>
+    /*.select2 {
+        width: 100% !important;
+    }*/
+
+
+    .select2-selection {
+        height: 34px !important;
+        font-size: 13px;
+        font-family: 'Open Sans', sans-serif;
+        border-radius: 0 !important;
+        border: solid 1px #c4c4c4 !important;
+        padding-left: 4px;
+    }
+
+    .select2-selection--multiple {
+        height: 154px !important;
+        width: 491px !important;
+        /*margin-left:40px;*/
+        margin-left: 376px;
+        margin-top: -39px;
+    }
+
+    .select2-selection__choice {
+        height: 40px;
+        line-height: 40px;
+        padding-right: 16px !important;
+        padding-left: 16px !important;
+        background-color: #CAF1FF !important;
+        color: #333 !important;
+        border: none !important;
+        border-radius: 3px !important;
+    }
+
+    .select2-selection__choice__remove {
+        float: right;
+        margin-right: 0;
+        margin-left: 2px;
+    }
+
+    .select2-search--inline .select2-search__field {
+        line-height: 40px;
+        color: #333;
+        width: 100% !important;
+    }
+
+    .select2-container:hover,
+    .select2-container:focus,
+    .select2-container:active,
+    .select2-selection:hover,
+    .select2-selection:focus,
+    .select2-selection:active {
+        outline-color: transparent;
+        outline-style: none;
+    }
+
+    .select2-results__options li {
+        display: block;
+    }
+
+    .select2-selection__rendered {
+        transform: translateY(2px);
+    }
+
+    .select2-selection__arrow {
+        display: none;
+    }
+
+    .select2-results__option--highlighted {
+        background-color: #CAF1FF !important;
+        color: #333 !important;
+    }
+
+    .select2-dropdown {
+        border-radius: 0 !important;
+        box-shadow: 0px 3px 6px 0 rgba(0,0,0,0.15) !important;
+        border: none !important;
+        margin-top: 4px !important;
+        width: 366px !important;
+    }
+
+    .select2-results__option {
+        font-family: 'Open Sans', sans-serif;
+        font-size: 13px;
+        line-height: 24px !important;
+        vertical-align: middle !important;
+        padding-left: 8px !important;
+        left: 500px;
+    }
+
+        .select2-results__option[aria-selected="true"] {
+            background-color: #eee !important;
+        }
+
+    .select2-search__field {
+        font-family: 'Open Sans', sans-serif;
+        color: #333;
+        font-size: 13px;
+        padding-left: 8px !important;
+        border-color: #c4c4c4 !important;
+    }
+
+    .select2-selection__placeholder {
+        color: #c4c4c4 !important;
+    }
+
+    .select2-container select2-container--default select2-container--open {
+        left: 500px;
+    }
+</style>
+
+<div style="margin-top:10px">
+    <input type="button" class="btn btn-primary" id="btnadd" value="ADD" onclick="show()" />
+</div>
+
+<div style="margin-left:50%">
+
+    <input style="display:none" type="button" value="Back" id="btnback" onclick="location.reload()" class="btn btn-danger" />
+</div>
+
+
+
+<div class="row">
+    <div class="col-md-4 mb-3">
+        <label for="validationCustom02"> Reader IMEI</label> <input type="text" id="txtfullname" class="form-control" />
+    </div>
+    <div class="col-md-4 mb-3">
+        <label for="validationCustom02">Select Vehicle</label>
+        <select id="txtvehiclenumber" class="form-control">
+            <option value="0">-Select-</option>
+        </select>
+
+
+    </div>
+
+    <input type="button" id="btnsave" style="margin-left:80px;margin-top:28px;height:30px;" onclick="saveRFID()" class="btn btn-success" value="Submit" />
+
+</div>
+
+
+<input type="text" hidden id="hiddentime" />
+
+
+
+
+
+
+
+@*<label>Label example</label>*@
+<div>
+
+
+    <table id="tblrfidreaders" style="font-size:14px;margin-top:10px" class="display nowrap table table-hover table-striped table-bordered" cellspacing="0" width="100%">
+        <thead>
+            <tr>
+                <th>READER_ID</th>
+                <th>READER_IMEI</th>
+                <th>READER_VEHICLENO</th>
+
+
+                <th>ACTION</th>
+            </tr>
+        </thead>
+        <tbody id="tbodyTable">
+            @{ int i = 1;
+                foreach (var item in ViewBag.SMVTS_RFID_READER)
+                {
+                    <tr>
+                        <td class="center">@item.READER_ID </td>
+                        <td class="center">@item.READER_IMEI </td>
+                        <td class="center">@item.READER_VEHICLENO </td>
+                        <td class="center">
+
+                            <a href='#' onclick="EDIT(@item.READER_IMEI)" class='btn btn-tbl-edit btn-xs'><i class='fa fa-pencil'></i></a>
+
+                        </td>
+
+                    </tr>
+                }
+            }
+    </table>
+</div>
+
+<input type="text" hidden id="hiddenpassengers" />
+
+<script src="~/Content/multi-select/js/multi-select.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.1/css/select2.min.css" rel="stylesheet" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.1/js/select2.min.js"></script>
+
+<style>
+    .select2-container select2-container--default select2-container--open {
+        left: 500px;
+    }
+</style>
+
+<style>
+    body {
+        font-family: "Roboto", sans-serif;
+    }
+
+    .select-wrapper {
+        margin: auto;
+        max-width: 600px;
+        width: calc(100% - 40px);
+    }
+
+    .select-pure__select {
+        align-items: center;
+        background: #f9f9f8;
+        border-radius: 4px;
+        border: 1px solid rgba(0, 0, 0, 0.15);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
+        box-sizing: border-box;
+        color: #363b3e;
+        cursor: pointer;
+        display: flex;
+        font-size: 16px;
+        font-weight: 500;
+        justify-content: left;
+        min-height: 44px;
+        padding: 5px 10px;
+        position: relative;
+        transition: 0.2s;
+        width: 100%;
+    }
+
+    .select-pure__options {
+        border-radius: 4px;
+        border: 1px solid rgba(0, 0, 0, 0.15);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
+        box-sizing: border-box;
+        color: #363b3e;
+        display: none;
+        left: 0;
+        max-height: 221px;
+        overflow-y: scroll;
+        position: absolute;
+        top: 50px;
+        width: 100%;
+        z-index: 5;
+    }
+
+    .select-pure__select--opened .select-pure__options {
+        display: block;
+    }
+
+    .select-pure__option {
+        background: #fff;
+        border-bottom: 1px solid #e4e4e4;
+        box-sizing: border-box;
+        height: 44px;
+        line-height: 25px;
+        padding: 10px;
+    }
+
+    .select-pure__option--selected {
+        color: #e4e4e4;
+        cursor: initial;
+        pointer-events: none;
+    }
+
+    .select-pure__option--hidden {
+        display: none;
+    }
+
+    .select-pure__selected-label {
+        align-items: 'center';
+        background: #5e6264;
+        border-radius: 4px;
+        color: #fff;
+        cursor: initial;
+        display: inline-flex;
+        justify-content: 'center';
+        margin: 5px 10px 5px 0;
+        padding: 3px 7px;
+    }
+
+        .select-pure__selected-label:last-of-type {
+            margin-right: 0;
+        }
+
+        .select-pure__selected-label i {
+            cursor: pointer;
+            display: inline-block;
+            margin-left: 7px;
+        }
+
+        .select-pure__selected-label img {
+            cursor: pointer;
+            display: inline-block;
+            height: 18px;
+            margin-left: 7px;
+            width: 14px;
+        }
+
+        .select-pure__selected-label i:hover {
+            color: #e4e4e4;
+        }
+
+    .select-pure__autocomplete {
+        background: #f9f9f8;
+        border-bottom: 1px solid #e4e4e4;
+        border-left: none;
+        border-right: none;
+        border-top: none;
+        box-sizing: border-box;
+        font-size: 16px;
+        outline: none;
+        padding: 10px;
+        width: 100%;
+    }
+
+    .select-pure__placeholder--hidden {
+        display: none;
+    }
+</style>
+
+<script>
+
+    window.onload = function () {
+        getall();
+
+
+
+        $("#load").hide();
+
+
+        $("#divend").hide();
+        $("#divclose").hide();
+
+        bindvehicles();
+        $("#divrow").hide();
+        $("#btnupdate").hide();
+
+
+    }
+
+
+    function bindvehicles() {
+        $.post("/Home/bindvehiclesbycategid", function (data) {
+            var dataT = data['data'];
+            var opt = "";
+            // console.log(dataT);
+            $("#txtvehiclenumber").empty();
+            opt += '<option value="0">-Select -</option>'
+            for (var i = 0; i < dataT.length; i++) {
+                opt += "<option value='" + dataT[i].VEHICLES_DEVICE_ID + "'>" + dataT[i].VEHICLES_REGNUMBER + "</option>"
+            }
+            $("#txtvehiclenumber").append(opt);
+        });
+    }
+
+
+
+
+    function getall() {
+        $("#load").show();
+        debugger;
+        $.post("/Home/RFID_Reader", function (data) {
+
+            var dataT = data['data'];
+
+
+            for (var i = 0; i < dataT.length; i++) {
+
+                var tr = $('<tr/>');
+
+                tr.append("<td>" + (i + 1) + "</td>");
+                tr.append("<td>" + dataT[i].READER_ID + "</td>");
+                tr.append("<td>" + dataT[i].READER_IMEI + "</td>");
+                tr.append("<td>" + dataT[i].READER_VEHICLEID + "</td>");
+
+                if (dataT[i].READER_STATUS == true) {
+                    tr.append("<td style='color:green'>Active</td>");
+                    tr.append('<td><input type="button" value="EDIT" class="btn btn-primary" onclick="EDIT(' + dataT[i].READER_ID + ',\'' + dataT[i].READER_IMEI + '\',' + dataT[i].READER_Categid + ',' + dataT[i].LOGINCATEGID + ')"  /></td>');
+                }
+                else {
+                    tr.append("<td style='color:red'>De active</td>");
+                    //onclick="EDIT(' + dataT[i].READER_ID + ',\'' + dataT[i].READER_IMEI + '\')"
+                    tr.append('<td><input type="button" value="EDIT" class="btn btn-primary"  /></td>');
+                }
+                $("#tblrfidreaders").append(tr);
+            }
+            $('#tblrfidreaders').DataTable({
+                dom: 'Bfrtip',
+                buttons: [
+                    //'copy', 'csv', 'excel', 'pdf', 'print'
+                    'excel', 'pdf', 'print'
+                ]
+            });
+
+        });
+    }
+
+
+
+
+
+    function saveRFID() {
+        $("#load").show();
+        var j = 1;
+        if ($("#txtvehiclenumber").val() != '0' && $("#txtfullname").val() != '' ) {
+            debugger;
+            $.post("/Home/RFID_Reader_insert", { "CATEG_ID": "", "User_ID":"", "ReaderIMEI": $("#txtfullname").val(),  "VEHICLE_REGNUMBER": $("#txtvehiclenumber option:selected").text() }, function (data) {
+
+                    var datat = data['data'];
+
+                    if (datat == true) {
+
+                        alert("successfully inserted..");
+                        $("#divrow").hide();
+                        location.reload();
+
+                    }
+                    else {
+
+                        alert("this trip is already existed for this vehicle");
+                    }
+
+
+
+            });
+        }
+        else {
+            $("#load").hide();
+             if ($("#txtfullname").val() == '') {
+                alert("Enter IMEI..")
+                $("#txtfullname").focus();
+            }
+            else if ($("#txtvehiclenumber").val() == '0') {
+                alert("select vehicle number..")
+                $("#txtvehiclenumber").focus();
+            }
+        }
+
+    }
+
+    var arr003 = [];
+    function EDIT(ID, ReaderIMEI, CATEGID, LOGINCATEGID) {
+
+        $("#btnback").css('display', 'block');
+        $("#btnadd").hide();
+        $("#btnadd1").hide();
+
+        if (CATEGID == LOGINCATEGID) {
+
+            localStorage.setItem("ReaderID", ID);
+            $.post("/Home/_RFID_Readerbyid", { "ID": ID }, function (data) {
+                $("body").scrollTop(0);
+                var dataT = data['data'];
+                $("#btnsave").hide();
+                $("#btnupdate").show();
+                $('#ddlReaderIMEI').prop('disabled', true);
+                $("#btnadd").hide();
+                $("#divrow").show();
+                $("#divclose").show();
+                $("#txtvehiclenumber").val(dataT[0].READER_VEHICLENO).trigger('change');
+                $("#ddlshifttime").val(dataT[0].READER_IMEI);
+
+
+
+                BindStations();
+                setTimeout(function () {
+
+                    $.post("/Home/get_Readerdetails_id", { "READERDETAILS_READERID": ID, "READER_IMEI": READER_IMEI }, function (data) {
+                        var dataT = data['data'];
+
+                        for (var i = 0; i < dataT.length; i++) {
+
+
+
+                            $("#hiddenpassengers").val([dataT[i].READERDETAILS_PassendersIDs]);
+                            var fruitvegbasket = [];
+                            fruitvegbasket.push(dataT[i].READERDETAILS_PassendersIDs);
+                            var arr1 = [];
+                            arr1.push([$("#hiddenpassengers").val()])
+
+                            var idd = dataT[i].READERDETAILS_PassendersIDs
+                            var spans = idd.split(',');
+                            //   alert(spans.length);
+                            var Values = new Array();
+                            if (spans.length > 1) {
+                                for (j = 0; j < spans.length; j++) {
+                                    Values.push(spans[j]);
+                                    // Values.push(spans[1]);
+                                }
+                            }
+                            else {
+                                Values.push(spans[0]);
+                            }
+                            //Values.push("2");
+                            //Values.push("3");
+                            $("#ddlpassangers" + i).val(Values).trigger('change');
+                            ///  alert(dataT[i].SCHEDULERDETAILS_Time);
+
+                            // $("#ddlpickup" + i).val(dataT[i].SCHEDULERDETAILS_Type);
+
+
+                            //    $('#ddlpassangers'+i).select2('val', ["1", "2", "3"]);
+
+
+
+
+                        }
+
+                    });
+
+                }, 2000);
+
+
+            });
+        }
+        else {
+            alert("this record can be edit for assigned login only..");
+        }
+    }
+
+
+
+
+
+
+</script>
+
+
+
+
+

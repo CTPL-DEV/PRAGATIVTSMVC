@@ -1,0 +1,100 @@
+﻿@{
+    ViewBag.Title = "Users";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="container-fluid">
+    <div class="row page-titles">
+        <div class="col-md-5 col-8 align-self-center">
+            <h3 class="text-themecolor m-b-0 m-t-0">USERS</h3>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/Home/frm_GridTrack_Distance">Home</a></li>
+                <li class="breadcrumb-item active">USERS</li>
+            </ol>
+        </div>
+    </div>
+    <div class="row" id="divrow">
+        <div class="col-lg-6">
+            Name : <input type="text" id="txtname"  class="form-control" placeholder="" />
+
+            Password : <input type="password" id="txtpassword"  class="form-control" placeholder="" />
+
+            Categories : <select  id="ddlcategories" class="form-control">
+                <option value="0">-Select Category-</option>
+                @foreach (var item in ViewBag.categories)
+                {
+                    if (item.CATEG_STATUS == 1)
+                    {
+                        <option value="@item.CATEG_ID">@item.CATEG_NAME</option>
+                    }
+                }
+            </select>
+
+            Device id's : <input type="text" id="txtdeviceids"  class="form-control" placeholder="" />
+            @*Device id's<input type="number" style="width:107px;margin-top:10px;margin-left:10px;color:white" class="form-control"  /><input type="button" style="margin-left:10px" class="btn btn-primary"  value="ADD" />*@
+        </div>
+        <div class="col-lg-6">
+            Email : <input type="text" id="txtemail"  class="form-control" placeholder="" />
+            Mobile Number :<input type="number" id="txtmobile"  class="form-control" placeholder="" />
+            Role : <select  id="ddlrole" class="form-control">
+                <option value="0">-Select Role-</option>
+                @foreach (var item in ViewBag.roles)
+                {
+                    if (item.ROLE_STATUS == 1)
+                    {
+                        <option value="@item.ROLE_ID">@item.ROLE_NAME</option>
+                    }
+                }
+            </select>
+        </div>
+        <input type="button" id="btnsave" class="btn btn-success" onclick="Save()" style="margin-left:92%;margin-top:10px" value="Submit" />
+    </div>
+
+    <div>
+        <input type="button" class="btn btn-success" onclick="showrow()" style="width:153px;margin-bottom:8px" value="ADD USER" />
+        <table id="tblUser" class="table table-hover table-striped table-bordered" width="100%">
+            <tr>
+                <th>ID</th>
+                <th>USER NAME</th>
+                <th>EMAIL ID</th>
+                <th>PASSWORD</th>
+                <th>CATEGORY</th>
+                <th>ROLE</th>
+                <th>Actions</th>
+            </tr>
+            @{
+                int i = 1;
+
+                foreach (var item in ViewBag.USERS)
+                {
+                    <tr>
+                        <td>@i</td>
+                        <td>@item.USER_NAME</td>
+                        <td>@item.USER_EMAILID</td>
+                        <td>@item.USER_PASSWORD</td>
+                        <td>@item.ROLE_NAME</td>
+                        <td>@item.CATEG_NAME</td>
+
+                        @if (item.USER_STATUS == 1)
+                        {
+                            <td>
+                                <input type="button" value="IN ACTIVE" onclick="UPDATESTATUS(0,@item.USER_ID)" class="btn btn-danger" />
+
+                            </td>
+                        }
+                        else
+                        {
+                            <td>
+                                <input type="button" value="ACTIVE" onclick="UPDATESTATUS(1,@item.USER_ID)" class="btn btn-success" />
+                            </td>
+                        }
+
+                    </tr>
+                        i++;
+                }
+
+            }
+        </table>
+    </div>
+</div>
+
+<script src="~/CUSTOMSCRIPTS/Users.js"></script>

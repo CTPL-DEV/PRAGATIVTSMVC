@@ -1,0 +1,373 @@
+﻿@{
+    Layout = null;
+}
+
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html>
+<!-- Mirrored from colorlib.com/polygon/adminator/signin.html by HTTrack Website Copier/3.x [XR&CO'2014], Thu, 18 Jul 2019 09:08:46 GMT -->
+<!-- Added by HTTrack -->
+<meta http-equiv="content-type" content="text/html;charset=UTF-8" />
+<!-- /Added by HTTrack -->
+<head>
+    <title>Sign In</title>
+    <style>
+        #loader {
+            transition: all .3s ease-in-out;
+            opacity: 1;
+            visibility: visible;
+            position: fixed;
+            height: 100vh;
+            width: 100%;
+            background: #fff;
+            z-index: 90000;
+        }
+
+            #loader.fadeOut {
+                opacity: 0;
+                visibility: hidden;
+            }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            position: absolute;
+            top: calc(50% - 20px);
+            left: calc(50% - 20px);
+            background-color: #333;
+            border-radius: 100%;
+            -webkit-animation: sk-scaleout 1s infinite ease-in-out;
+            animation: sk-scaleout 1s infinite ease-in-out;
+        }
+
+        @@-webkit-keyframes sk-scaleout {
+            0% {
+                -webkit-transform: scale(0);
+            }
+
+            100% {
+                -webkit-transform: scale(1);
+                opacity: 0;
+            }
+        }
+
+        @@keyframes sk-scaleout {
+            0% {
+                -webkit-transform: scale(0);
+                transform: scale(0);
+            }
+
+            100% {
+                -webkit-transform: scale(1);
+                transform: scale(1);
+                opacity: 0;
+            }
+           
+        }
+        .centerXY{
+              top:10%!important;
+              left:50%!important;
+        }
+    </style>
+    <link rel="icon" type="image/png" href="~/IMAGES/Logos/Trano-Pro-App-Icon small.png">
+    <link href="~/assets/style.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-1.12.3.min.js" integrity="sha256-aaODHAgvwQW1bFOGXMeX+pC4PZIPsvn2h1sArYOhgXQ=" crossorigin="anonymous"></script>
+</head>
+<body class="app">
+    <div id="loader">
+        <div class="spinner"></div>
+    </div>
+    <script type="96fe9b4dcd33fb8d117b46e5-text/javascript">
+        window.addEventListener('load', () => {
+            const loader = document.getElementById('loader');
+            setTimeout(() => {
+                loader.classList.add('fadeOut');
+            }, 300);
+        });
+    </script>
+ 
+    <div class="peers ai-s fxw-nw h-100vh">
+        <div class="d-n@sm- peer peer-greed h-100 pos-r bgr-n bgpX-c bgpY-c bgsz-cv" style="background-image:url(/assets/img/Tranobackdropsky.png)">
+            
+        </div>
+        <div class="col-12 col-md-4 peer  h-100 bgc-white scrollable pos-r" style="min-width:320px;margin-top:15px;">
+                <div class="pos-a centerXY">
+                    <img style="width:70%;height:50%;" src="@ViewBag.logo" alt="">
+                </div>
+           
+            <h4 class="fw-300 c-grey-900 mB-5" style="text-align:center;margin-top:20px;">Login</h4>
+            <form>
+                <div class="form-group">
+                    <label class="text-normal text-dark">Username</label>
+                    <input type="text" id="txtUserName" class="form-control" placeholder="Username">
+                </div>
+                <div class="form-group">
+                    <label class="text-normal text-dark">Password</label>
+                    <input type="password" id="txtPassword" class="form-control" placeholder="Password">
+                </div>
+                <div class="form-group">
+                    <div class="peers ai-c jc-sb fxw-nw">
+                        <div class="peer">
+                            <div class="checkbox checkbox-circle checkbox-info peers ai-c">
+                                <input type="checkbox" id="inputCall1" name="inputCheckboxesCall" class="peer">
+                                <label for="inputCall1" class="peers peer-greed js-sb ai-c"><span class="peer peer-greed">Remember Me</span></label>
+                            </div>
+                        </div>
+                        <div class="peer">
+                            @*<button class="btn btn-primary"  onclick="Login()">Login</button>*@
+                            <input type="button" name="submit" value="Login" onclick="Login()" id="btnSignin" class="btn btn-primary btn-block btn-flat">
+                        </div>
+                    </div>
+                </div>
+               
+                <div class="form-group">
+                    <img  src="~/IMAGES/Logos/128x128.png" alt="">
+                    <img src="~/IMAGES/Logos/app_store_128x128.png" style="margin-left:50px;" />
+                    
+                </div>
+              <div class="form-group">
+            <label style="font-weight:bold">For Demo Call: @ViewBag.Phonenumber, @ViewBag.telephone</label>
+            <label style="font-weight:300">Email:  @ViewBag.email</label>
+             </div>
+            </form>
+        </div>
+    </div>
+    
+
+    <script>
+
+        @*$(document).ready(function () {
+            var url=@ViewBag.url;
+            alert(url);
+        });*@
+    window.onload = function () {
+        localStorage.clear();
+        $('#txtPassword').keyup(function () {
+            if (event.keyCode == 13) {
+
+                Login();
+                //   $("#btnSignin").click();
+            }
+        });
+    }
+
+    function Login() {
+        
+        var ChkBox = "off";
+        if ($("#checkbox-signup").is(':checked') == true) {
+            ChkBox = "on";
+        }
+        var USERNAME = $("#txtUserName").val();
+        var PASSWORD = $("#txtPassword").val();
+
+        if ($("#txtUserName").val() != "" && $("#txtPassword").val() != "") {
+
+            $.post("/Home/__DBNAME", { "Username": USERNAME, "Password": PASSWORD }, function (data) {
+                
+                var data = data['data'];
+
+                if (data != "0") {
+                    if (data.length > 0) {
+                        var ORGNAME = data[0].CATEG_NAME;
+                        $.post("/Home/get_User", { "CompanyName": ORGNAME, "UserName": USERNAME, "rememberChkBox": ChkBox, "Password": PASSWORD }, function (data) {
+                            
+
+                            var dataM = data['dataM'];
+
+                            if (dataM == "true") {
+
+
+                                var data = data['data'];
+
+                                //  console.log(data);
+                                var varValue = data.USERS_MENUITEMS;
+                                //  alert(varValue);
+                                //  console.log(data);
+                                //  alert(USERS_USERNAME);
+                                //  alert(varValue);
+                                localStorage.setItem("USERS_CATEG_ID", data.USERS_CATEGORY_ID)
+                                localStorage.setItem("USERS_ROLE_ID", data.USERS_ROLE_ID)
+                                localStorage.setItem("USERNAME", data.USERS_USERNAME);
+
+                                localStorage.setItem("password", $("#txtPassword").val());
+
+                                localStorage.setItem("orgname", ORGNAME);
+                                localStorage.setItem("CATEG_TYPE_ID", data.CATEG_CATETYPE_ID);
+                                localStorage.setItem("Logo_Url", data.USERS_LOGOURL);
+
+                                //  alert(data.USERS_USERNAME);
+
+
+
+                                if (data.USERS_USERNAME == "BAJAJ" || data.USERS_USERNAME == "JLPL" || data.USERS_USERNAME == "OMKAR IB" || data.USERS_USERNAME == "Satish" || data.USERS_USERNAME == "Bafna" || data.USERS_USERNAME == "shreenathji ib" || data.USERS_USERNAME == "AUTOMOBILE ENGINEERS") {
+                                    location.href = "/BAJAJIB/frm_GridTrack_CAB";
+                                }
+                                else if ($("#txtUserName").val() == "MASSENTERPRISES") {
+                                    location.href = "/REPORTS/Verification_certificate";
+                                }
+                                else if ($("#txtUserName").val() == "WAJEED") {
+                                    location.href = "/REPORTS/Payments_invoice";
+                                }
+
+                                else {
+                                    location.href = "/Home/frm_GridTrack_Distance";
+                                }
+                            }
+                            else {
+                                alert("invalid Password..");
+                            }
+                        });
+                    }
+                    else {
+
+                        alert("Invalid Username/Password");
+
+                    }
+                }
+                else
+                {
+                    // window.location.href = '@Url.Action("Error", "Home")'
+                    alert("Invalid Username/Password");
+                }
+            });
+        }
+        else {
+            if ($("#txtUserName").val() == "") {
+                alert("please enter username..");
+                $("#txtUserName").focus();
+            }
+            else if ($("#txtPassword").val() == "") {
+                alert("please enter password..");
+                $("#txtPassword").focus();
+            }
+        }
+    }
+
+
+ @*   function Login() {
+
+        var ChkBox = "off";
+        if ($("#checkbox-signup").is(':checked') == true) {
+            ChkBox = "on";
+        }
+        if ($("#txtOrgname").val() != '') {
+
+            var ORGNAME = "";
+            var USERNAME = "";
+            var PASSWORD = "";
+
+            if ($("#txtOrgname").val() == "MASSENTERPRISES" || $("#txtOrgname").val() == "WAJEED")
+            {
+                ORGNAME = 'pipl';
+            }
+            else {
+                ORGNAME = $("#txtOrgname").val()
+            }
+            if ($("#txtUserName").val() == "MASSENTERPRISES" || $("#txtOrgname").val() == "WAJEED") {
+                USERNAME = 'suresh';
+            }
+            else {
+                USERNAME = $("#txtUserName").val()
+            }
+            if ($("#txtPassword").val() == "mas@123" || $("#txtOrgname").val() == "WAJEED") {
+                PASSWORD = 'admin';
+
+            }
+            else {
+                PASSWORD = $("#txtPassword").val()
+            }
+            $.post("/Home/__DBNAME", { "ORGNAME": ORGNAME }, function (data) {
+
+                var data = data['data'];
+
+                if (data != null) {
+
+                    if ($("#txtUserName").val() != "" && $("#txtPassword").val() != "") {
+                        $.post("/Home/get_User", { "CompanyName": ORGNAME, "UserName": USERNAME, "rememberChkBox": ChkBox, "Password": PASSWORD }, function (data) {
+
+
+                            var dataM = data['dataM'];
+
+                            if (dataM == "true") {
+
+
+                                var data = data['data'];
+
+                                //  console.log(data);
+                                var varValue = data.USERS_MENUITEMS;
+                              //  alert(varValue);
+                              //  console.log(data);
+                              //  alert(USERS_USERNAME);
+                              //  alert(varValue);
+                                localStorage.setItem("USERS_CATEG_ID", data.USERS_CATEGORY_ID)
+
+                                localStorage.setItem("USERNAME", data.USERS_USERNAME);
+
+                                localStorage.setItem("password", $("#txtPassword").val());
+
+                                localStorage.setItem("orgname", $("#txtOrgname").val());
+
+                              //  alert(data.USERS_USERNAME);
+
+
+
+                                if (data.USERS_USERNAME == "BAJAJ" || data.USERS_USERNAME == "JLPL" || data.USERS_USERNAME == "OMKAR IB" || data.USERS_USERNAME == "Satish" || data.USERS_USERNAME == "Bafna" || data.USERS_USERNAME == "shreenathji ib" || data.USERS_USERNAME == "AUTOMOBILE ENGINEERS")
+                                {
+                                    location.href = "/BAJAJIB/frm_GridTrack_CAB";
+                                }
+                                else if ($("#txtUserName").val() == "MASSENTERPRISES")
+                                {
+                                    location.href = "/REPORTS/Verification_certificate";
+                                }
+                                else if ($("#txtUserName").val() == "WAJEED")
+                                {
+                                    location.href = "/REPORTS/Payments_invoice";
+                                }
+
+                                else {
+                                    location.href = "/Home/frm_GridTrack_Distance";
+                                }
+                            }
+                            else {
+                                alert("invalid Password..");
+                            }
+                        });
+                    }
+                    else {
+                        if ($("#txtUserName").val() == "") {
+                            alert("please enter username..");
+
+
+                            $("#txtUserName").focus();
+                        }
+                        else if ($("#txtPassword").val() == "") {
+                            alert("please enter password..");
+                            $("#txtPassword").focus();
+                        }
+                    }
+                }
+                else {
+                    alert("Invalid organization name..");
+                }
+            });
+        }
+        else {
+            alert("enter organization name..")
+            $("#txtOrgname").focus();
+        }
+
+
+    }*@
+    </script>
+    <script type="96fe9b4dcd33fb8d117b46e5-text/javascript" src="~/assets/vendor.js"></script>
+    <script type="96fe9b4dcd33fb8d117b46e5-text/javascript" src="~/assets/bundle.js"></script>
+    <script src="~/assets/rocket-loader.min.js" data-cf-settings="96fe9b4dcd33fb8d117b46e5-|49" defer=""></script>
+</body>
+<!-- Mirrored from colorlib.com/polygon/adminator/signin.html by HTTrack Website Copier/3.x [XR&CO'2014], Thu, 18 Jul 2019 09:08:46 GMT -->
+</html>
+
+

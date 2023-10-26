@@ -1,0 +1,260 @@
+﻿
+@{
+    ViewBag.Title = "SubscriptionPackages";
+    Layout = "~/Views/Shared/Layout2.cshtml";
+}
+<style>
+    .wrapper {
+    text-align: center;
+    position: absolute;
+    top: 50%;
+}
+      .table th {
+       font-weight:500;
+       font-size:13px!important;
+    }
+.button {
+    position: absolute;
+    top: 50%;
+}
+     .table td {
+      
+       font-size:12px!important;
+    }
+</style>
+
+<div class="row" id="divrow">
+    <div class="col-lg-6">
+        Name: <input type="text" class="form-control" id="txt_name" />
+       Billing Cycle:<select class="form-control" id="ddlbilling">
+            <option value="0">-Select-</option>
+                         <option value="3">3 days</option>
+                         <option value="7">7 days</option>
+                         <option value="30">30 days</option>
+                         <option value="60">60 days</option>
+                         <option value="90">90 days</option>
+                         <option value="120">120 days</option>
+                         <option value="150">150 days</option>
+                         <option value="180">180 days</option>
+                         <option value="210">210 days</option>
+                         <option value="240">240 days</option>
+                         <option value="270">270 days</option>
+                         <option value="300">300 days</option>
+                         <option value="330">330 days</option>
+                         <option value="365">365 days</option>
+                         <option value="730">730 days</option>
+
+        </select>
+        @*<div id="dashboard">
+            <h4>Dashboard Columns</h4><br />
+            <div id="dashboardcolumns" style="overflow-x:scroll;height:200px">
+
+            </div>
+        </div>*@
+
+    </div>
+    <div class="col-lg-6">
+        Amount: <input type="text" class="form-control" id="txt_amount" />
+        @*<div id="forms" style="margin-top:70px;">
+            <h4>Form Names Check All <input type="checkbox" class="form-control" id="chkall" onchange="checkall()" style="margin-left: 10px; margin-top: -31px;" /></h4><br />
+            <div id="formsone" class="box" style="overflow-x:scroll;height:200px;">
+
+
+            </div>
+        </div>*@
+    </div>
+    
+    <input type="button" id="btnsave" style="margin-left:auto;margin-right:auto;display:block;margin-top:2%;margin-bottom:0%" class="btn btn-primary" onclick="Save('save')" value="Submit" />
+    <input type="button" value="BACK"  style="margin-right:auto;display:block;margin-top:2%;margin-bottom:0%" id="btnback" onclick="Back()" class="btn btn-danger" />
+</div>
+<div class="card card-box" id="div_table" style="margin-top:10px;">
+    <div class="card-body">
+        <input type="button" class="btn btn-primary" onclick="showrow()" style="width:153px;margin-top:10px" value="ADD" />
+
+
+        <table id="tblorders" class="table table-striped table-bordered" cellspacing="0" width="100%" style="margin-top:10px">
+            <thead>
+                <tr>
+                    <th class="center">ID</th>
+
+                    <th class="center">Subscription Name</th>
+
+                    <th class="center">Amount</th>
+                    <th class="center">Days</th>
+
+                </tr>
+            </thead>
+            <tbody>
+                @{
+                    int i = 1;
+                    foreach (var item in ViewBag.packages)
+                    {
+                        <tr>
+                            <td>@i</td>
+                            <td>@item.PACKAGE_NAME</td>
+                            <td>@item.PACKAGE_PRICE</td>
+                            <td>@item.NUM_OF_DAYS</td>
+
+                        </tr>
+                        i++;
+                    }
+
+                }
+            </tbody>
+        </table>
+    </div>
+   </div>
+    <script>
+
+        $(document).ready(function () {
+            $("#divrow").hide();
+            $("#tblorders").dataTable();
+
+        });
+        function showrow() {
+            $("#divrow").show();
+        }
+        function Back() {
+            location.reload();
+        }
+     //   dashboardonchange();
+        var arrdash = [];
+        function dashboardonchange() {
+
+
+            var id = "GRIDTRACKCAB_COLUMNS";
+            $.post("/Home/Dashboardchange", { "Value": id }, function (data) {
+
+
+                $("#forms").show();
+                $("#dashboard").show();
+
+                var dataT = data['data'];
+
+                var tap = "";
+                //dashboardcolumns
+                for (var i = 0; i < dataT.length; i++) {
+
+                    arrdash.push(dataT[i].COLUMN_ID);
+
+                    tap = "<span>" + dataT[i].COLUMN_NAME + "</span><input type='checkbox' style='margin-top:-21px;margin-left:60px' class='form-control'  id=dash" + dataT[i].COLUMN_ID + "  />";
+                    $("#dashboardcolumns").append(tap);
+                }
+
+            });
+
+
+        }
+
+
+        function checkall() {
+            var length = arrform.length;
+
+
+
+            for (var i = 0; i < length; i++) {
+
+                if ($("#chkall").is(':checked') == true) {
+
+                    $("#chk" + arrform[i] + "").prop('checked', true);
+                }
+                else {
+                    $("#chk" + arrform[i]).prop('checked', false);
+                }
+
+            }
+        }
+
+      //  formsone();
+        var arrform = [];
+        function formsone() {
+
+            $.post("/Home/loadforms", function (data) {
+
+
+                arrform = [];
+
+                var dataT = data['data'];
+
+
+                var tap = "";
+                //dashboardcolumns
+                for (var i = 0; i < dataT.length; i++) {
+                    arrform.push(dataT[i].FORMS_ID);
+                    tap = "<span>" + dataT[i].FORMS_NAME + "</span><label></label><input type='checkbox' style='margin-top: -21px; margin-left: 140px' class='form-control' id=" + "chk" + dataT[i].FORMS_ID + " />";
+                    //tap = "<span>" + dataT[i].COLUMN_NAME + "</span><input type='checkbox' style='margin-top:-21px;margin-left:60px' class='form-control' checked id=" + dataT[i].COLUMN_ID + "  />";
+                    $("#formsone").append(tap);
+                }
+
+            });
+        }
+        function Save(id) {
+
+
+            //
+
+            //var length = arrform.length;
+
+            //var length1 = arrdash.length;
+            //var arr1 = [];
+            //var arr2 = [];
+            //for (var i = 0; i < length; i++) {
+
+            //    var chk = arrform[i];
+
+            //    if ($("#chk" + chk).is(':checked') == true) {
+
+            //        arr1.push(chk);
+            //    }
+            //}
+
+
+          //  var FORMIDS = localStorage.setItem("FORMIDS", arr1);
+
+          //  var frmids = localStorage.getItem("FORMIDS");
+
+            //for (var i = 0; i < length1; i++) {
+
+            //    var chk1 = arrdash[i];
+
+            //    if ($("#dash" + chk1).is(':checked') == true) {
+
+            //        arr2.push(chk1);
+            //    }
+            //}
+
+          //  var COLUMNID = localStorage.setItem("COLUMNIDS", arr2);
+
+           // var columnids = localStorage.getItem("COLUMNIDS");
+            var IDs = "", frmids = "", columnids = "";
+
+            if ($("#txt_name").val() != "" && $("#ddlbilling").val() != 0 && $("#txt_amount").val() != "") {
+
+
+
+                $.post("/Home/Save_Subscriptions", { "Name": $("#txt_name").val(), "billingDays": $("#ddlbilling").val(), "Price": $("#txt_amount").val(), "FORMIDS": frmids, "COLUMNIDS": columnids }, function (data) {
+                    var dataT = data['data']
+
+                    if (dataT == true) {
+                        alert("Saved successfully..");
+                        location.reload();
+                    }
+                    else {
+
+                        alert(dataT);
+                    }
+                });
+            }
+            else {
+                if ($("#txt_name").val() == "") {
+                    alert("Please Enter Name");
+                }
+                else if ($("#ddlbilling").val() == 0) {
+                    alert("Please Select Type of Billing");
+                }
+                else if ($("#txt_amount").val() == "") {
+                    alert("Please Enter Price");
+                }
+            }
+        }
+    </script>

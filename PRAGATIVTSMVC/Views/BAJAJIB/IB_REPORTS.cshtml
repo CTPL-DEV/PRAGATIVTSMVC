@@ -1,0 +1,119 @@
+﻿
+@{
+    ViewBag.Title = "IB_REPORTS";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div id="load"></div>
+<div class="container-fluid">
+    <div class="row page-titles">
+        <div class="col-md-5 col-8 align-self-center">
+            <h3 class="text-themecolor m-b-0 m-t-0">Report</h3>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/Home/frm_GridTrack_Distance">Home</a></li>
+                <li class="breadcrumb-item active">Report</li>
+            </ol>
+        </div>
+    </div>
+    <div class="row" id="divrow">
+        
+    </div>
+    <input type="button" class="btn btn-primary" onclick="window.location.href='@Url.Action("ExcelDownload", "Bajajib")'" value="DETAILS" />
+    <input style="float:right;margin-bottom:10px" type="button" value="back" onclick="window.location.href='@Url.Action("frm_GridTrack_CAB", "Bajajib")'" class="btn btn-danger" />
+    <div >
+       
+            
+                <table id="tblreports" border="1" style="font-size: 11px; width:100%" class="display nowrap table table-hover table-striped table-bordered" cellspacing="0" width="100%">
+                    <thead>
+                        <tr>
+                            <th>TRANSPORTER</th>
+                            <th>TOTAL NO OF TRAILERS </th>
+                            <th>NO OF TRAILERS ON GPS</th>
+                            <th>WAITING FOR LOAD </th>
+                            <th>TRANSIT TO PLANT</th>
+                            <th>AT PLANT</th>
+                            <th>TRANSIT TO PORT</th>
+                            <th>AT PORT</th>
+                            <th>OTHER TRIP</th>
+                            <th>NO DATA</th>
+                            <th>NO GPS DEVICE</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbldevicebody">
+                        @foreach (var item in ViewBag.TRAILERTRPORT)
+                        {
+                            <tr>
+                                <td>@item.CATEGNAME</td>
+                                <td>@item.TOTALVEHICLES</td>
+                                <td>@item.GPS</td>
+                                <td>@item.WAITINGFORLOAD</td>
+                                <td>@item.INTRANSIPLANT</td>
+                                <td>@item.ATPLANT</td>
+                                <td>@item.INTRANSIPORT</td>
+                                <td>@item.ATPORT</td>
+                                <td>@item.OTHERTRIP</td>
+                                <td>@item.NODATA</td>
+                                <td>@item.NOGPSDEVICE</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+    </div>
+    </div>
+
+
+<script>
+
+    window.onload = function () {
+        $("#load").hide();
+       
+
+
+
+
+        $('#tblreports thead tr').clone(true).appendTo('#tblreports thead');
+        $('#tblreports thead tr:eq(1) th').each(function (i) {
+            var title = $(this).text();
+            $(this).html('<input type="text" placeholder="Search ' + title + '" />');
+
+            $('input', this).on('keyup change', function () {
+                if (table.column(i).search() !== this.value) {
+                    table
+                        .column(i)
+                        .search(this.value)
+                        .draw();
+                }
+            });
+        });
+
+        var table = $('#tblreports').DataTable({
+            dom: 'Brtip',
+            // "ordering": false,
+            "ordering": false,
+            "paging": false,
+            buttons: [
+                'excel', 'pdf', 'print',
+            ],
+            "scrollX": true,
+            orderCellsTop: true,
+            fixedHeader: true
+        });
+
+
+
+
+
+
+
+        //$('#tblreports').DataTable({
+        //    dom: 'Bfrtip',
+        //    // "ordering": false,
+        //    "ordering": false,
+        //    "paging": false,
+        //    buttons: [
+        //        'excel', 'pdf', 'print',
+        //    ],
+        //    "scrollX": true
+        //});
+    }
+
+</script>

@@ -1,0 +1,131 @@
+﻿
+@{
+    ViewBag.Title = "frm_cities";
+    Layout = "~/Views/Shared/Layout2.cshtml";
+}
+<style>
+    .table td {
+        padding: 5px;
+        vertical-align: middle;
+         font-size:12px!important;
+    }
+       .table th {
+       font-weight:500;
+       font-size:13px!important;
+    }
+</style>
+<div class="row" id="divrow" style="display:none;">
+    <div class="col-lg-6">
+         Country:<select class="form-control" id="ddlcountry" disabled="disabled" style="width:50%">
+            <option value="0">-Select-</option>
+            @foreach (var item in ViewBag.countries)
+            {
+                <option value="@item.COUNTRY_ID">@item.COUNTRY_NAME</option>
+            }
+
+        </select>
+        States:<select class="form-control" id="ddlstates" style="width:50%">
+            <option value="0">-Select State-</option>
+            @foreach (var item in ViewBag.States)
+            {
+                <option value="@item.STATE_ID">@item.STATE_NAME</option>
+            }
+
+        </select>
+        City Name: <input type="text" class="form-control"  id="txt_cityname" style="width:50%" />
+        <input type="button" id="btnsave" class="btn btn-primary" style="margin-top:15px;" onclick="Save('save')" value="Submit" />
+        <input type="button" id="btnupdate" class="btn btn-primary" style="margin-top:15px;" onclick="Save('update')" value="Update" />
+        <input type="button" value="BACK" id="btnback" onclick="Back()" style="margin-top:15px;" class="btn btn-danger" />
+    </div>
+  
+</div>
+<div class="row">
+    <input type="button" class="btn btn-primary" onclick="showrow()" style="width:153px;" value="ADD" />
+    <div class="card-head" style="text-align:center;">
+        <h4>Cities</h4>
+
+    </div>
+</div>
+<div class="card-body" id="div_table">
+    
+    <table id="tblcities" class="table table-striped table-bordered" cellspacing="0" width="100%" style="margin-top:10px">
+        <thead>
+            <tr>
+                <th class="center">S.no</th>
+
+                <th class="center">State</th>
+
+                <th class="center">City</th>
+
+
+            </tr>
+        </thead>
+        <tbody>
+            @{
+                int i = 1;
+                foreach (var item in ViewBag.Cities)
+                {
+                    <tr>
+                        <td  align="center">@i</td>
+                        <td class="center">@item.STATE_NAME</td>
+                        <td class="center">@item.CITY_NAME</td>
+
+
+                    </tr>
+                    i++;
+                }
+
+            }
+        </tbody>
+    </table>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $("#ddlcountry").val(1);
+       // $("#tblcities").dataTable();
+        $('#tblcities').DataTable({
+            
+            columnDefs: [
+  { targets: 'no-sort', orderable: false },
+      {
+          targets: -1,
+          className: 'dt-right'
+      }
+            ],
+            language: {
+                'loadingRecords': '&nbsp;',
+                'processing': 'Loading...'
+            }
+        });
+    });
+    function showrow() {
+        $("#divrow").show();
+        $("#div_table").hide();
+    }
+    function Back() {
+        location.reload();
+        $("#div_table").show();
+    }
+    function Save()
+    {
+        var stateID = $("#ddlstates").val();
+        $.post("/Home/addCities", { "State_ID": stateID, "CityName": $("#txt_cityname").val() }, function (data) {
+            //console.log(dataT);
+            
+            var dataT = data['data'];
+          
+            if(dataT==true)
+            {
+                alert("City added Successfully");
+                location.reload();
+            }
+            else
+            {
+                alert("Failed to add City");
+            }
+            
+        });
+    }
+</script>
+

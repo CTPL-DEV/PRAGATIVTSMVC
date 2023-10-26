@@ -1,0 +1,184 @@
+﻿
+@{
+    ViewBag.Title = "Search_Vehicle";
+    Layout = "~/Views/Shared/Layout2.cshtml";
+}
+
+<h2>Search_Vehicle</h2>
+
+@{
+    ViewBag.Title = "Vehicle_search";
+    Layout = "~/Views/Shared/Layout2.cshtml";
+}
+
+<h2>Vehicle_search</h2>
+<div class="row" style="margin-top:10px;" id="div_search">
+
+    <input type="hidden" id="hid_categ_name" value="" />
+    <input type="hidden" id="hid_dealer_name" value="" />
+    <label id="lbl_dist">Search By Type:</label> <select id="ddlSearch" option value="2" class="form-control" style="width:200px;">
+        <option value='0' selected>--Select--</option>
+        
+        <option value='3'>Vehicle No</option>
+   
+    </select>
+
+
+    <label>Enter Text:</label><input type="text" id="txt_SearchValue" class="form-control" style="width:200px;" />
+
+    @*Vehicle Number:<input type="text" id="txt_vehicleNum" class="form-control" style="width:200px;margin-left:35px;" />*@
+    <input type="button" id="btn_load" class="btn btn-primary" style="margin-left:20px;" value="Search" onclick="GetDataByType()" />
+
+</div>
+<div class="table-responsive">
+    <table border="1" style="width: 100%;display:none;" class="table table-striped table-bordered" id="tblSearch">
+        <thead>
+            <tr><th class='center'>S.no</th><th class='center'>Status</th><th class='center'>Place</th><th class='center'>Last Update</th><th class='center'> Distributor </th><th class='center'> Dealer </th><th class='center' width="250px;"> Customer </th><th class='center'>Username </th><th class='center'> Password </th><th class='center'> VehicleNumber </th><th class='center'> Device Type </th><th class='center'> IMEI </th><th class='center'> SIM Number </th><th class='center'>SIM Operator</th><th class='center'> Order Start Date </th><th class='center'> Order Exp Date </th></tr>
+        </thead>
+        <tbody id="tblSearchbody"></tbody>
+    </table>
+</div>
+
+
+<div class="modal inmodal" id="changeSIMModal" tabindex="-1" role="dialog" aria-hidden="true" style="display: none;">
+    <div class="modal-dialog">
+        <div class="modal-content animated fadeIn">
+            <div class="modal-header">
+                <h6>Change SIM</h6>
+                <button type="button" id="closeotpmodal" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
+            </div>
+            <div class="modal-body">
+
+                <div id="div_email">
+                    Sim Number : <select class="form-control" id="ddlsimnumber" style="width:400px">
+                        <option value="0" selected>-Select SIM-</option>
+                    </select>
+                </div>
+
+
+                <div id="div_mobileno">
+                    Reason for Change :<select class="form-control" id="ddl_reason">
+                        <option value="0" selected>-Select-</option>
+                        <option value="1">Reason 1</option>
+                        <option value="2">Reason 2</option>
+                    </select>
+                </div>
+                @*<button type="button" id="btn_changesim" onclick="changeSIM()" class="btn btn-primary">Save</button>*@
+                <div class="modal-footer" style="text-align:center;">
+                    @*<div id="div_otp" style="display:none;">
+                            Enter OTP :<input type="text" id="txt_OTP" class="form-control" style="width:400px;" placeholder="" />
+
+                            <button type="button" id="btn_submitotp" onclick="SubmitOTP()" class="btn btn-primary">Submit</button>
+                        </div>*@
+                    <div id="div_password">
+                        Enter Password :<input type="password" id="txt_password" class="form-control" style="width:400px;" placeholder="" />
+
+                        <button type="button" id="btn_submitPassword" onclick="SubmitPassword()" class="btn btn-primary">Submit</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        //
+        //$('#gridTable').hide();
+        //$('#dataTable').show();
+
+        var categType = localStorage.getItem("CATEG_TYPE_ID");
+        if (categType == 1) {
+            $("#tblSearch>thead>tr").append("<th>Chnage SIM</th>");
+            $("#tblSearch>thead>tr").append("<th>Change IMEI</th>");
+            $("#tblSearch>thead>tr").append("<th>Verify SIM</th>");
+
+        }
+        //else {
+        //    document.getElementById("div_search").style.display = "none";
+        //}
+
+    });
+
+    function LoadSimsByCustomer(categID, dealerName) {
+
+        if (categID != '0') {
+            $.post("/Home/LoadSIMSByCustomer", { "categ_name": dealerName }, function (data) {
+                var dataT = data['data'];
+                var opt = "<option value='0'>-Select SIMS</option>";
+                for (var i = 0; i < dataT.length; i++) {
+                    opt += "<option value='" + dataT[i].ID + "'>" + dataT[i].SIMS + "</option>";
+                }
+                $("#ddlsimnumber").text("");
+                $('#ddlsimnumber').append(opt);
+                $('#ddlsimnumber').select3();
+            });
+        }
+    }
+    function GetDataByType() {
+        //$('#gridTable').hide();
+        //$('#dataTable').hide();
+        var categType = localStorage.getItem("CATEG_TYPE_ID");
+        $('#tblSearch').show();
+        $("#load").show();
+        $.post("/Home/getDataByType", { "TypeId": $('#ddlSearch').val(), "TypeValue": $('#txt_SearchValue').val() }, function (data) {
+            // console.log(dataT);
+            
+            var dataT = data['data'];
+            if (dataT == 1) {
+                window.location.href = "/Home/Login";
+            }
+            //  var thead = "<tr><th class='center'>S.no</th><th class='center'> Status </th><th class='center'> Speed </th><th class='center'> Vehicle<br /> Number </th><th class='center'>Ignition </th><th class='center'> Nearest<br /> Landmarks </th><th class='center'> Last Record<br />(D&T) </th><th class='center'>Distance </th><th class='center'> Duration<br />(DAYS:HRS:MINS) </th><th class='center'>Device Type </th><th class='center'>IMEI </th><th class='center'>SIM Num </th><th class='center'>Install Date </th><th class='center'>Exp Date </th></tr>"
+
+            //  $('#gridTable tbody > tr').remove();
+            //  $('#gridTable thead > tr').remove();
+            //  $('#gridTable').append(thead);
+            if ($.fn.dataTable.isDataTable('#tblSearch')) {
+                $('#tblSearch').DataTable().destroy();
+            }
+            //  $("#trdashboard").empty();
+            // $("#trdashboard").append(thead);
+            $('#tblSearchbody').empty();
+            for (var i = 0; i < dataT.length; i++) {
+
+                
+                //var date = dataT[i].DATE;
+                //var nowDate = new Date(parseInt(date.substr(6)));
+
+                tr = $('<tr/>');
+
+                tr.append("<td>" + (i + 1) + "</td>");
+                tr.append("<td class='center'><img src=" + dataT[i].Status + " /></td>");
+                tr.append("<td>" + dataT[i].Location + "</td>");
+                tr.append("<td>" + dataT[i].LastUpdated + "</td>");
+                tr.append("<td>" + dataT[i].Distributorname + "</td>");
+                tr.append("<td>" + dataT[i].DealerName + "</td>");
+                tr.append("<td>" + dataT[i].CustomerName + "</td>");
+                tr.append("<td>" + dataT[i].UserName + "</td>");
+                tr.append("<td>" + dataT[i].UserPassword + "</td>");
+                tr.append("<td>" + dataT[i].VehicleRegNumebr + "</td>");
+                tr.append("<td>" + dataT[i].Device_Name + "</td>")
+                tr.append("<td>" + dataT[i].IMEI + "</td>");
+                tr.append("<td>" + dataT[i].SimNumber + "</td>");
+                tr.append("<td>" + dataT[i].SIMOperator + "</td>");
+                tr.append("<td>" + dataT[i].StartDate + "</td>");
+                tr.append("<td>" + dataT[i].EndDate + "</td>");
+
+              
+                $("#tblSearch").append(tr);
+            }
+            $('#tblSearch').dataTable({
+                dom: 'Blfrtip',
+                "sPaginationType": "full_numbers",
+                buttons: [
+                    //'copy', 'csv', 'excel', 'pdf', 'print'
+                    'excel', 'pdf', 'print'
+                ]
+            });
+            //  $("#load").hide();
+        });
+    }
+
+
+
+</script>
+

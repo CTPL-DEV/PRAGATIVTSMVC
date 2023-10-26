@@ -13,7 +13,7 @@
             setInterval("location.reload(true)", 300000);
         });   
     </script>
-</head> fgfg
+</head> 
 <body>
     <form id="form1" runat="server">
     <div>
